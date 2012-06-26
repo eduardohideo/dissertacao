@@ -1,4 +1,4 @@
-%% ------------------------------------------------------------------------- %%
+ ------------------------------------------------------------------------- %%
 \chapter{Conceitos}
 \label{cap:conceitos}
 
@@ -9,10 +9,11 @@
 
 A virtualização divide um recurso poderoso em recursos menores chamados de máquinas virtuais e cada uma executa uma instância separada de um sistema operacional \cite{barham2003xen}.
 
-Segundo \cite{chaudhary2008comparison}, as estratégias de virtualização estão divididas em 4 grandes categorias: virtualização completa, para-virtualização, virtualização em nível de sistema operacional e virtualização nativa.
+Segundo \cite{chaudhary2008comparison}, as estratégias de virtualização podem ser divididas em 4 grandes categorias: virtualização completa, para-virtualização, virtualização em nível de sistema operacional e virtualização nativa.
 
 Na virtualização completa também conhecido como emulação de hardware, um ou vários sistemas operacionais são rodados dentro de um \textit{hypervisor}.
 O \textit{hypervisor},chamado também como gerenciador de máquinas virtuais, fornece uma plataforma para os sistemas operacionais e gerencia a execução deles.
+
 No \textit{hypervisor} da virtualização completa, é feito a interceptação, tradução e execução das instruções sob demanda dos sistemas operacionais.
 Nessa estratégia, o núcleo do sistema operacional que roda o \textit{hypervisor} não necessita de modificações.
 
@@ -34,15 +35,14 @@ Apesar dos benefícios, o uso da virtualização também traz problemas como citam \
 %% ------------------------------------------------------------------------- %%
 \subsection{Virtualização de dispositivos de E/S}\index{virtualização!virtualização de dispositivos de E/S}
 
-\cite{Rixner:2008:NVB:1348583.1348592} dividiu a virtualização de E/S em duas categorias: privada ou compartilhada.
+\cite{Rixner:2008:NVB:1348583.1348592} separou a virtualização de E/S em duas categorias: privada ou compartilhada.
 
-Na virtualização de E/S privada, cada dispositivo é associado a apenas uma única MV. 
-Por ter somente uma MV utilizando o dispositivo, há uma subutilização em relação a virtualização de E/S compartilhada. 
-Na virtualização de E/S compartilhada, o dispositivo é compartilhado para várias MV.
+Na virtualização de E/S privada, cada dispositivo físico é associado a apenas uma única MV enquanto que na virtualização de E/S compartilhada, o dispositivo é compartilhado para várias MV.
+Comparando a virtualização de E/S privada com a compartilhada há uma subutilização na virtualização privada, pois parte do tempo em que a MV não usa o dispositivo é desperdiçada. Por outro lado, o desempenho da virtualização compartilhada é pior já que divide o recurso com outras máquinas.
 
-%TODO: mostrar que virtualização compartilhada é mais usada
+Quando pensamos em escalar o número de MVs, o custo da virtualização privada se cresce absurdamente(com 10 MVs teriamos que ter 10 dispositivos físicos enquanto que na virtualização compartilhada,talvez até um dispositivo poderia ser o suficiente para resolver o problema).
 
-Em máquinas virtualizadas é necessário o acesso a alguns dispositivos de E/S físicos quando queremos interagir de alguma forma com elas. Porém, disponibilizar de maneira compartilhada o acesso a dispositivos físicos pode trazer muitos problemas de segurança, dificultar o monitoramento das informações e a migração de máquinas virtuais \cite{Santos:2008:BGS:1404014.1404017}.
+Normalmente, queremos que o dispositivo físico seja compartilhado entre as máquinas, tanto pela possibilidade de escalar como pelo custo. Porém, disponibilizar de maneira compartilhada o acesso a dispositivos físicos pode trazer muitos problemas de segurança, dificultar o monitoramento das informações e a migração de máquinas virtuais \cite{Santos:2008:BGS:1404014.1404017}.
 
 Para contornar esse problema, normalmente, \textit{hypervisores} como XEN, KVM e VMWare restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito  através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.
 
