@@ -1,8 +1,0 @@
-para compilar o texto:
-    $ make
-
-se estiver atualizado:
-    $ make clean; make
-
-para passar o corretor de texto(requer o aspell com suporte ao idioma pt-Br)
-    $ dic.sh NOME_DO_ARQUIVO
