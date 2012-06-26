@@ -1,0 +1,134 @@
+%% ------------------------------------------------------------------------- %%
+\chapter{Conceitos}
+\label{cap:conceitos}
+
+%% ------------------------------------------------------------------------- %%
+\section{Virtualização}\index{virtualização!fundamentos}
+\label{sec:virtualizacao}
+\subsection{Virtualização de servidores}
+
+A virtualização divide um recurso poderoso em recursos menores chamados de máquinas virtuais e cada uma executa uma instância separada de um sistema operacional \cite{barham2003xen}.
+
+Segundo \cite{chaudhary2008comparison}, as estratégias de virtualização estão divididas em 4 grandes categorias: virtualização completa, para-virtualização, virtualização em nível de sistema operacional e virtualização nativa.
+
+Na virtualização completa também conhecido como emulação de hardware, um ou vários sistemas operacionais são rodados dentro de um \textit{hypervisor}.
+O \textit{hypervisor},chamado também como gerenciador de máquinas virtuais, fornece uma plataforma para os sistemas operacionais e gerencia a execução deles.
+No \textit{hypervisor} da virtualização completa, é feito a interceptação, tradução e execução das instruções sob demanda dos sistemas operacionais.
+Nessa estratégia, o núcleo do sistema operacional que roda o \textit{hypervisor} não necessita de modificações.
+
+Diferente da virtualização completa, a para-virtualização exige uma modificação do núcleo para poder executar o \textit{hypervisor}. Assim, caso não exista o código-fonte do sistema, não é possível usar essa estratégia. Nele, o hardware virtual consegue conversar diretamente com o dispositivo emulado. Isso garante uma carga extra mínima em relação a tentar emular o dispositivo real.
+
+A virtualização em nível de sistema operacional modifica o núcleo do sistema isolando múltiplas instancias de um sistema operacional dentro de uma máquina física. 
+
+Por fim, a virtualização nativa aproveita o suporte de \textit{hardware} para virtualização dentro do próprio processador. Isto permite que múltiplos sistemas operacionais rodem em um outro, sendo capaz de cada um usar diretamente o processador do hospedeiro.
+
+%% ------------------------------------------------------------------------- %%
+\subsection{Aplicações da virtualização}\index{virtualização!aplicações da virtualização}
+
+Na computação em nuvem, a adoção da virtualização melhora a utilização dos recursos e protege o servidor de problemas que os softwares dos clientes possam causar em relação a servidores com máquinas puras \cite{chaudhary2008comparison}. Como consequência, também permite um novo modelo de negócio chamado ``pague somente quando usa'', onde o cliente paga somente pelo tempo que o recurso é usado. Além disso, com a computação em nuvem, o cliente tem a impressão de estar utilizando um ambiente com recursos infinitos, já que a configuração de uma máquina virtual pode ser ampliada sem interrupção do serviço e, mais máquinas podem ser agregadas para prover o serviço \cite{armbrust2009above}. 
+
+Essas características beneficiam o lado do servidor, que não precisará fornecer um recurso físico inteiro para cada cliente e terá maior segurança e tolerância a falhas, já que cada sistema é independente. Do lado do cliente, ele irá economizar dinheiro pelo novo modelo de negócio e terá recursos sob demanda.
+
+Apesar dos benefícios, o uso da virtualização também traz problemas como citam \cite{chaudhary2008comparison}, \cite{ekanayake2010high}, \cite{wang2010impact}. 
+
+%% ------------------------------------------------------------------------- %%
+\subsection{Virtualização de dispositivos de E/S}\index{virtualização!virtualização de dispositivos de E/S}
+
+\cite{Rixner:2008:NVB:1348583.1348592} dividiu a virtualização de E/S em duas categorias: privada ou compartilhada.
+
+Na virtualização de E/S privada, cada dispositivo é associado a apenas uma única MV. 
+Por ter somente uma MV utilizando o dispositivo, há uma subutilização em relação a virtualização de E/S compartilhada. 
+Na virtualização de E/S compartilhada, o dispositivo é compartilhado para várias MV.
+
+%TODO: mostrar que virtualização compartilhada é mais usada
+
+Em máquinas virtualizadas é necessário o acesso a alguns dispositivos de E/S físicos quando queremos interagir de alguma forma com elas. Porém, disponibilizar de maneira compartilhada o acesso a dispositivos físicos pode trazer muitos problemas de segurança, dificultar o monitoramento das informações e a migração de máquinas virtuais \cite{Santos:2008:BGS:1404014.1404017}.
+
+Para contornar esse problema, normalmente, \textit{hypervisores} como XEN, KVM e VMWare restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito  através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.
+
+\cite{Waldspurger:2012:IV:2063176.2063194} fez algumas menções sobre as vantagens e desvantagens em se utilizar técnicas de virtualização de E/S para desacoplar os dispositivos lógicos da sua implementação física.
+
+Dentre as vantagens, ele cita a melhor utilização dos recursos e a economia de custos em relação a sistemas que estão com a implementação física acoplada com o dispositivo lógico, pois vários sistemas podem aproveitar o mesmo recurso.
+Em relação a flexibilidade, é possível mapear os dispositivos lógicos com as implementações físicas, garantindo uma maior portabilidade. Esse mapeamento pode também trazer novas funcionalidades ao recurso como: balanço da carga de trabalho e mascaramento das falhas. 
+
+A funcionalidade de suspender, migrar e resumir uma máquina virtual também é possível, pois com o dispositivo lógico desacoplado da implementação física possibilita reconectar a máquina virtual em outra máquina física com uma configuração diferente.
+
+Outra funcionalidade trazida com a virtualização é a interposição e transformação das requisições virtuais de E/S. Isso permite que as requisições que passam pelo dispositivo lógico sejam transformadas.
+ Em um exemplo de leitura e escrita no disco, além de simplesmente ler/escrever no disco, é possível guardar uma cópia da informação antiga como cópia de segurança para conseguir num momento futuro, "viajar no tempo" e desfazer algo que foi feito. Outra ideia é criptografar a informação quando alguém escrever no disco, impossibilitando outras pessoas de acessar o seu conteúdo lendo o disco.
+
+%% ------------------------------------------------------------------------- %%
+\subsection{Virtualização da Rede}\index{virtualização!virtualização da rede}
+
+A virtualização de rede que também é um dispositivo de E/S tem algumas particularidades em relação a outros dispositivos.
+Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/S com a virtualização de rede, a complexidade de virtualizar a rede é muito maior pelo fato de não saber o destino de uma informação e a necessidade de estar preparado a qualquer momento para receber/enviar informações diferentemente da virtualização de disco que pode ser controlado pelas interrupções. A informação que passa pelo domínio de E/S pode ser através de buffer na virtualização de disco pelo seu melhor controle no tempo e no tráfego não precisando de copiar ou remapear o dado como na virtualização da rede. 
+
+%% ------------------------------------------------------------------------- %%
+\subsection{Rede no XEN}\index{virtualização!xen}
+
+No XEN, para todas as máquinas conseguirem acessar o dispositivo de rede ao mesmo tempo, temos dois tipos de configuração: ponte e roteamento.
+
+Na configuração de ponte, uma ponte virtual(xenbr0) é criada dentro do dom0 como é possível ver na Figura \ref{ponte}. Essa ponte está ligada na interface de rede física pela porta peth0. A porta vif0.0 está sendo usada para tráfegos de/para dom0 e as portas vifX.0 onde X é um valor maior que 0, está sendo usada para tráfegos de/para algum domU.
+
+Como é possível observar, todo tráfego da rede tem que passa pela ponte antes de chegar na máquina de destino. 
+
+\begin{figure}[h]
+\begin{center}
+  \includegraphics[width=192pt,height=148pt]{./img/Xen1.png}
+\caption{ponte virtual criada no XEN \cite{xenenv}}
+\label{ponte}
+\end{center}
+\end{figure}
+
+%% ------------------------------------------------------------------------- %%
+\section{Computação em Nuvem}\index{Computação em nuvem!fundamentos}
+\label{sec:computacaoEmNuvem}
+
+A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de hardware e software das CPDs(Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
+
+Como o termo nuvem é muito abrangente, ele foi dividido em várias classificações \cite{armbrust2009above}, entre elas, o tipo de serviço o qual fornecem. Nesse texto, quando falamos de nuvem, estaremos nos referindo a serviços que fornecem uma infraestrutura (IaaS). Cada infraestrutura pode receber várias requisições de hospedar programas de desenvolvedores e, nesse caso, terá que implantá-los em algum local no interior dela. Quando um cliente, em algum momento, faz uma requisição para executar esse programa, a nuvem executa o programa internamente e repassa o resultado ao cliente.
+
+Para que isso seja possível, a infraestrutura de nuvem contém vários nós, os quais são recursos físicos como computadores e CPDs, que contém e controlam várias máquinas virtuais (MV) usando alguma técnica de virtualização. Cada requisição para implantar ou executar um programa é feita oferecendo as máquinas virtuais as quais estão dentro de um nó da infraestrutura.
+
+%Pela diversidade dos recursos que pode existir na nuvem, não é trivial escolher o recurso no qual será implantada a aplicação. Alguns recursos podem satisfazer os requisitos da aplicação, ou não.
+% Dessa forma, quando é feita uma requisição para implantar um serviço, um componente da infraestrutura chamado escalonador deverá procurar e selecionar de forma inteligente uma ou mais MVs para implantar a aplicação. 
+% O processo o qual o escalonador faz de buscar, selecionar e fornecer uma MV é chamado alocação de recursos e, nesse caso, o recurso que está sendo alocado é uma MV.
+%Existem duas formas de selecionar um recurso: a priori e a posteriori. A priori, a primeira alocação do recurso já é a solução ótima. Já a posteriori, as soluções são sub-ótimas, assim, os recursos são 
+%gerenciados continuamente, afim de tentar sempre satisfazer os requisitos da aplicação.\cite{goncalvesresource}
+
+%\begin{figure}[h]
+%\begin{center}
+%  \includegraphics[width=60mm,height=60mm]{./img/resource_distance.png}
+%\caption{Recursos interligados com largura de banda e atraso diferentes}
+%\label{resource}
+%\end{center}
+%\end{figure}
+%
+%
+%Nesse procedimento, a dinamicidade e os diferentes requerimentos da aplicação pode fazer com que os recursos (no caso as MVs) sejam mal usados \cite{goncalvesresource}.
+%Como exemplo, se houver 3 recursos iguais com enlaces distintos como mostra na Figura \ref{resource}, 
+%implantar uma aplicação no recurso 1 pode ser diferente de implantar no recurso 2 ou 3, pois ela pode querer se comunicar com alguma outra aplicação que está em outro recurso. 
+%Nesse caso, se a aplicação tem requisitos de largura de banda ou tempo de resposta, essa escolha pode ajudar a respeitar ou não esses requisitos.
+%
+%
+%Guiado pelos requerimentos do projeto CHOReOS\footnote{http://www.choreos.eu/bin/view/Main/}, os serviços os quais a nuvem terá que lidar, serão coreografias. Coreografia é um tipo de %composição de serviços, no qual cada serviço interage com outro sem um elemento central que coordena o processo como um todo. Ela só acontece quando cada participante executa seu papel. %Esse processo é chamado atuação. Na atuação, nós necessitamos implantar um conjunto de serviços que faça a coordenação entre papéis.
+% Quando um serviço interage com outro através de um elemento central, nós a chamamos de orquestração. Semelhante a coreografia, na orquestração devemos implantar serviços para que a %composição possa ser executado. 
+
+%O projeto CHOReOS irá implementar um arcabouço para o desenvolvimento de coreografias escaláveis. A meta desse projeto é possibilitar para experientes do domínio desenvolver soluções de %ultra-larga escala descentralizados, compostos de serviços heterogêneos que são adaptáveis e cientes da QoS. A priori, estas soluções são possíveis somente com a ajuda de dedicados %profissionais de TI fornecendo a habilidade necessária para arquitetura de design e engenharia de software.
+
+%\cite{shouraboura2011placement} estudou o problema de alocar aplicações com o objetivo de reduzir a latência entre os recursos que precisam se comunicar. 
+%Uma forma de conseguir resolver esse problema seria mapear a distância entre cada nó, porém,  a eficiência para mapear n nós é O(\begin{math} n^2\end{math}). %Como a latência pode mudar a qualquer momento, a quantidade de distância analisada pode variar bastante dependendo da rede e queremos uma informação em tempo real do que ocorre na rede %para alocar as aplicações rapidamente, melhorar a eficiência do algoritmo ajudaria a resolver melhor o problema.
+% Nesse artigo foi elaborado um modelo para analisar a distâncias entre nós usando diagramas de voronoi o qual tem eficiência O(\begin{math}n\log{n}\end{math}).
+
+
+%% ------------------------------------------------------------------------- %%
+
+\subsection{Simulação}
+
+Uma infraestrutura de nuvem pode conter vários nós, transparentes ou não, que possuem diferentes configurações e trocam mensagens por complexas topologias de redes, estas que variam bastante em relação a largura de banda e atraso. Isso torna a tarefa de fazer medições e elaborar teorias matemáticas difícil e complexa. 
+
+Assim, experimentos com simulação pode ser mais simples tanto pelo ambiente quanto pelo programa serem mais controláveis. Apesar disso, configurar as variáveis de um sistema inteiro seria uma tarefa que consome muito tempo, principalmente quando queremos fazer vários experimentos.
+Há duas propostas de ferramentas que ajudam na construção de simulações \cite{calheiros2011cloudsim} e \cite{casanova2008simgrid}.
+
+Cloudsim é um framework para modelagem e simulação de infraestruturas em nuvem e serviços. No momento em que o testamos, ele não possuía suporte para aplicações paralelas e distribuídas.
+
+Simgrid é um \textit{framework} para execução de clusters, grades e mecanismos P2P. Ele usa tarefas para executar a simulação. Tais tarefas tem um custo intrínseco para transmitir sobre a rede e um custo de execução.
