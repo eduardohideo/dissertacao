@@ -1,12 +1,19 @@
 %% ------------------------------------------------------------------------- %%
 \chapter{Introdução}
 \label{cap:introducao}
+TODO:referencia sobre a importância de IaaS
 
+Numa infraestrutura de nuvem, os recursos são controlados pelo fornecedor e alocados de maneira elástica de acordo com a necessidade do consumidor \cite{goncalvesresource}. 
+Para obter essa `elasticidade', normalmente, a nuvem adotada uma tecnologia chamada virtualização.
+A virtualização divide um recurso poderoso em recursos menores chamados de máquinas virtuais \cite{barham2003xen}.
+Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
 
+Apesar das máquinas virtuais ajudarem a aumentar a flexibilidade, elas ainda têm um desempenho abaixo da máquina pura quando executamos aplicações que usam muito a rede
+ \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. 
+Uma das principais causas é a arquitetura da virtualização de rede. Diferente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
 
-% \emph{Thesis are random access. Do NOT feel obliged to read a thesis from beginning to end.}
-
-
+Para reduz o custo do processamento uma ideia é agrupar uma quantidade grande de pacotes para interromper poucas vezes o processador e reduzir a quantidade de envios e recepção de pacotes \cite{apparao2006characterization} \cite{chaudhary2008comparison}.
+Assim, pesquisa foca em automatizar a configuração de tamanho de \textit{buffer} e mitigação de transmissão e recepção do \textit{driver} da placa de rede virtual e física, tentando ajustar esses parâmetros de forma a garantir a qualidade do serviço da infraestrutura.
 
 %% ------------------------------------------------------------------------- %%
 \section{Considerações Preliminares}
@@ -22,32 +29,29 @@ texto texto texto texto texto texto texto.
 %% ------------------------------------------------------------------------- %%
 \section{Objetivos}
 \label{sec:objetivo}
-
-Texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto.
+Essa pesquisa tem como objetivo fornecem um algoritmo de tamanho de \textit{buffer} e atenuação de transmissão e recepção a fim de garantir a qualidade do serviço prestado pelas máquinas virtuais dentro da nuvem para diferentes tipos de aplicações.
 
 %% ------------------------------------------------------------------------- %%
 \section{Contribuições}
 \label{sec:contribucoes}
 
-As principais contribuições deste trabalho são as seguintes:
+As principais contribuições desse trabalho são:
 
 \begin{itemize}
-  \item Item 1. Texto texto texto texto texto texto texto texto texto texto
-  texto texto texto texto texto texto texto texto texto texto.
+  \item 
+   Garantir uma melhor qualidade na infraestrutura de nuvem para diferentes tipos de aplicações.
 
-  \item Item 2. Texto texto texto texto texto texto texto texto texto texto
-  texto texto texto texto texto texto texto texto texto texto.
-
+  \item 
+   Automatizar as configurações de tamanho de \textit{buffer} e mitigação de transmissão e recepção do driver da placa de rede.
 \end{itemize}
 
 %% ------------------------------------------------------------------------- %%
 \section{Organização do Trabalho}
 \label{sec:organizacao_trabalho}
 
-No Capítulo~\ref{cap:conceitos}, apresentamos os conceitos ... Finalmente, no
+No Capítulo~\ref{cap:conceitos}, apresentamos os conceitos de virtualização de servidores, virtualização de E/S, virtualização de rede e Computação em nuvem.
+No Capítulo~\ref{cap:revisao_bibliografica}, apresentamos uma revisão bibliográfica na área de virtualização de E/S,
+Finalmente, no
 Capítulo~\ref{cap:conclusoes} discutimos algumas conclusões obtidas neste
-trabalho. Analisamos as vantagens e desvantagens do método proposto ... 
+trabalho. 
 
-As sequências testadas no trabalho estão disponíveis no Apêndice \ref{ape:sequencias}.

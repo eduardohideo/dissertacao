@@ -1,15 +1,17 @@
 \chapter{Revisão Bibliográfica}
-\label{cap:revisao}
+\label{cap:revisao_bibliografica}
 
 \subsection{Objetivo}
-	O objetivo dessa revisão foi analisar e estudar as maneiras já existentes de otimizar o desempenho da rede em ambientes de máquinas virtuais
+	O objetivo dessa revisão foi analisar e estudar as maneiras já existentes de otimizar o desempenho da rede em infraestruturas de máquinas virtuais
  e os problemas em aberto que esse tipo de rede apresenta. Cada estratégia sugerida pode atender bem a um cenário, porém, em outros casos, essa mesma estratégia pode ser pouco eficiente devido a dinamicidade da rede e os diferentes requerimentos de um usuário.
 
 \subsection{Busca}
-	Para busca de referências foram usados o mecanismo de busca do google Acadêmico e  algumas pessoas especializadas na área. Apenas artigos em inglês e português foram selecionados.
+	Para busca de referências foram usados os mecanismos de busca do google Acadêmico, ACM e indicações de pessoas especializadas na área. Apenas artigos em inglês e português foram selecionados.
 
 \subsection{Palavra-chave}
-	TODO
+	network optimization virtualization virtual machine
+	rede otimização virtualização maquina virtual
+		
 
 \subsection{Critérios de Seleção}
 Para seleção das referências, em cada artigo encontrado pela estrategia de busca será lido o seu resumo e classificado manualmente em três categorias de acordo com sua relevância: alta, média, baixa.
@@ -35,6 +37,7 @@ Os artigos de relevância alta serão lidos por completo e resumidos. Os artigos m
 		\cite{shipman07:_inves_infin}&&média-baixa\\
 		\cite{oi2009performance}&&alta\\
 		\cite{gro}&&alta\\
+		\cite{Liao:2008:STI:1477942.1477971}&&média-baixa\\
 	\end{tabular}
 \end{center}
 \end{table}
@@ -58,7 +61,7 @@ Apesar disso, o dispositivo pode escrever em uma posição da memória que não pert
 
 Como atualmente um processador possui vários núcleos, podemos aproveitar esses núcleos para criar multi-filas nas interfaces de rede. O autor cita um estudo em que houve a remoção da ponte no domínio de E/S para associar as filas diretamente com o driver de \textit{backend}, evitando a necessidade de sincronização das mensagens e multiplexação/demultiplexação da rede. Como benefícios do uso da multi-fila se teve: a redução da carga extra na fila e a eliminação de cópias entre o domínio de E/S e a máquina virtual, pois, a multiplexação não é feita. Por outro lado, seria necessário que cada informação seja mandada para a fila correta e que a CPU consiga aguentar a carga extra gerada pelas múltiplas filas.
 
-Na arquitetura de rede virtual CDNA (\textit{acesso direto a memória concorrente}) foi usado a ideia de multi-filas e em adição removeram o dominio de E/S. Sem o responsável por controlar as filas, o \textit{hypervisor} passa a considerar cada conjunto de fila como um interface de rede física e a associa o controlador a uma MV. Assim, cada MV consegue enviar ou receber informações diretamente da rede sem nenhuma interversão do domínio de E/S. Como consequência, a carga extra é reduzida pelo número reduzido de interrupções (antes era necessário interromper tanto o domínio de E/S como as MVs em cada transmissão/recepção).
+Na arquitetura de rede virtual CDNA (\textit{acesso direto a memória concorrente}) foi usado a ideia de multi-filas e em adição removeram o domínio de E/S. Sem o responsável por controlar as filas, o \textit{hypervisor} passa a considerar cada conjunto de fila como um interface de rede física e a associa o controlador a uma MV. Assim, cada MV consegue enviar ou receber informações diretamente da rede sem nenhuma interversão do domínio de E/S. Como consequência, a carga extra é reduzida pelo número reduzido de interrupções (antes era necessário interromper tanto o domínio de E/S como as MVs em cada transmissão/recepção).
 
 Pela MV poder acessar diretamente a interface de rede, ela também pode acessar algum local indevido da memória por \textit{DMA}. Para contornar esse problema o autor sugeriu o uso de \textit{IOMMU}.
 
@@ -78,9 +81,14 @@ Na separação de custos, foi feita a separação do quanto foi utilizado de CPU par
 
 \cite{Santos:2008:BGS:1404014.1404017} propôs modificar a arquitetura do \textit{driver} de E/S do \textit{XEN} para conseguir melhorar o uso da \textit{CPU}.  Dentro dos problemas que ele encontra está o excesso de copias de dados, a fragmentação de pacotes no \textit{socket}, o alinhamento do cache e desabilitar o \textit{netfilter} da ponte. Com essa mudança ele conseguiu uma economia de 56\% no uso do processador.
 
-\cite{oi2009performance} analisou o desempenho de um sistema virtualizado com \textit{XEN} aplicando a estratégia \textit{LRO(large receive offload)}. Nesse experimento eles mediram a vazão da rede variando o tamanho da mensagem e o tamanho da MTU(unidade máxima de transmissão). Os resultados mostraram um ganho de 8\% a 14\% na vazão da rede.
+\cite{oi2009performance} analisou o desempenho de um sistema virtualizado com \textit{XEN} aplicando a estratégia \textit{LRO(large receive offload)} onde ainda dentro do driver da placa de rede é recebido e reunido os pacotes de informações que tiveram que ser segmentados. Nesse experimento eles mediram a vazão da rede variando o tamanho da mensagem e o tamanho da MTU(unidade máxima de transmissão). Os resultados mostraram um ganho de 8\% a 14\% na vazão da rede.
 
 \cite{xenbestpractices} sugere algumas práticas para tentar evitar um baixo desempenho em aplicações intensivas de rede/disco no XEN como dedicar exclusivamente um núcleo de processador ou uma quantidade de memória para o dom0 e dar mais tempo de processamento ao dom0.
+
+\cite{Liao:2008:STI:1477942.1477971} propos duas otimizações na virtualização de rede:escalonamento ciente de cache e roubo de creditos de escalonamento para a recepção de pacotes. 
+A primeira idéia é fazer com que o domU e o dom0 passem a compartilhar o cache, assim, a comunicação entre domínios é reduzida.
+A segunda otimização foca priorizar a recepção de pacotes onde o uso do processador é alto.
+Nos experimentos comparando a estrutura padrão de virtualização e a estrutura modificada com as otimizações, foi concluído um ganho de 96\% na largura de banda.
 
 
 \subsection{Análise das Informações}
