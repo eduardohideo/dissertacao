@@ -27,7 +27,7 @@ Por fim, a virtualização nativa aproveita o suporte de \textit{hardware} para vi
 %% ------------------------------------------------------------------------- %%
 \subsection{Virtualização de dispositivos de E/S}\index{virtualização!virtualização de dispositivos de E/S}
 
-Com a virtualização de servidores, os dispositivos de E/S físicos passam a ter que sofrer modificações já que em uma máquina física não se tem apenas um único sistema, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
+Com a virtualização de servidores, os dispositivos de E/S físicos passam a terem que sofrer modificações já que em um servidor não se tem apenas um único sistema operacional, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
 
 \cite{Rixner:2008:NVB:1348583.1348592} separou a virtualização de E/S em duas categorias: privada ou compartilhada.
 
@@ -38,22 +38,25 @@ Quando pensamos em escalar o número de MVs, o custo da virtualização privada se 
 
 Normalmente, queremos que o dispositivo físico seja compartilhado entre as máquinas, tanto pela possibilidade de escalar como pelo custo. Porém, disponibilizar de maneira compartilhada o acesso a dispositivos físicos pode trazer muitos problemas de segurança, dificultar o monitoramento das informações e a migração de máquinas virtuais \cite{Santos:2008:BGS:1404014.1404017}.
 
-Para contornar esse problema, normalmente, \textit{hypervisores} como \textit{XEN}, \textit{KVM} e \textit{VMWare} restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito  através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.
+Para contornar esse problema, normalmente, \textit{hypervisores} como \textit{XEN}, \textit{KVM} e \textit{VMWare} restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.
 
 \cite{Waldspurger:2012:IV:2063176.2063194} fez algumas menções sobre as vantagens e desvantagens em se utilizar técnicas de virtualização de E/S para desacoplar os dispositivos lógicos da sua implementação física.
 
 Dentre as vantagens, ele cita a melhor utilização dos recursos e a economia de custos em relação a sistemas que estão com a implementação física acoplada com o dispositivo lógico, pois vários sistemas podem aproveitar o mesmo recurso.
+
 Em relação a flexibilidade, é possível mapear os dispositivos lógicos com as implementações físicas, garantindo uma maior portabilidade. Esse mapeamento pode também trazer novas funcionalidades ao recurso como: balanço da carga de trabalho e mascaramento das falhas. 
 
 A funcionalidade de suspender, migrar e resumir uma máquina virtual também é possível, pois com o dispositivo lógico desacoplado da implementação física possibilita reconectar a máquina virtual em outra máquina física com uma configuração diferente.
 
 Outra funcionalidade trazida com a virtualização é a interposição e transformação das requisições virtuais de E/S. Isso permite que as requisições que passam pelo dispositivo lógico sejam transformadas.
+
 Em um exemplo de leitura e escrita no disco, além de simplesmente ler/escrever no disco, é possível guardar uma cópia da informação antiga como cópia de segurança para conseguir num momento futuro, "viajar no tempo" e desfazer algo que foi feito. Outra ideia é criptografar a informação quando alguém escrever no disco, impossibilitando outras pessoas de acessar o seu conteúdo lendo o disco.
 
 %% ------------------------------------------------------------------------- %%
 \subsection{Virtualização da Rede}\index{virtualização!virtualização da rede}
 
 A virtualização de rede que também é um dispositivo de E/S tem algumas particularidades em relação a outros dispositivos.
+
 Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/S com a virtualização de rede, a complexidade de virtualizar a rede é muito maior pelo fato de não saber o destino de uma informação e a necessidade de estar preparado a qualquer momento para receber/enviar informações diferentemente da virtualização de disco que pode ser controlado pelas interrupções. A informação que passa pelo domínio de E/S pode ser através de \textit{buffer} na virtualização de disco pelo seu melhor controle no tempo e no tráfego não precisando de copiar ou remapear o dado como na virtualização da rede. 
 
 %% ------------------------------------------------------------------------- %%
@@ -63,7 +66,7 @@ No \textit{XEN}, para todas as máquinas conseguirem acessar o dispositivo de red
 
 Na configuração de ponte, uma ponte virtual(\texttt{xenbr0}) é criada dentro do dom0 como é possível ver na Figura \ref{ponte}. Essa ponte está ligada na interface de rede física pela porta \texttt{peth0}. A porta \texttt{vif0.0} está sendo usada para tráfegos de/para \texttt{dom0} e as portas \texttt{vifX.0} onde X é um valor maior que 0, está sendo usada para tráfegos de/para algum \texttt{domU}.
 
-Como é possível observar, todo tráfego da rede tem que passa pela ponte antes de chegar na máquina de destino. 
+Como é possível observar, todo pacote que é recebido ou transmitido tem que passa pela ponte.
 
 \begin{figure}[h]
 \begin{center}
@@ -72,6 +75,12 @@ Como é possível observar, todo tráfego da rede tem que passa pela ponte antes de
 \label{ponte}
 \end{center}
 \end{figure}
+
+Apesar do exemplo dado ser específico para o XEN, outros \textit{hypervisores} como \textit{WMware} e \textit{KVM} adotam uma arquitetura semelhante \cite{Santos:2008:BGS:1404014.1404017}.
+
+TODO: transmissão...
+
+TODO: Na recepção...
 
 %% ------------------------------------------------------------------------- %%
 \section{Computação em Nuvem}\index{Computação em nuvem!fundamentos}

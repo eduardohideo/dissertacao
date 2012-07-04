@@ -38,6 +38,8 @@ Os artigos de relevância alta serão lidos por completo e resumidos. Os artigos m
 		\cite{oi2009performance}&&alta\\
 		\cite{gro}&&alta\\
 		\cite{Liao:2008:STI:1477942.1477971}&&média-baixa\\
+		\cite{apparao2006characterization}&&alta\\
+		\cite{jang2011low}&&alta\\
 	\end{tabular}
 \end{center}
 \end{table}
@@ -45,7 +47,7 @@ Os artigos de relevância alta serão lidos por completo e resumidos. Os artigos m
 }
 
 \subsection{Resumo Sintetizado}
-Em \cite{chaudhary2008comparison} foi feito uma comparação entre diferentes tecnologias de virtualização.
+Em \cite{chaudhary2008comparison} o autor fez uma comparação entre diferentes tecnologias de virtualização.
 Nos experimentos foi concluído que o \textit{hypervisor} XEN tem um desempenho baixo em termos de atraso na rede, porém alto em termos de largura de banda em relação a um ambiente com OpenVZ e um ambiente sem virtualização, enquanto que o OpenVZ tem uma perda considerável em largura de banda, mas um atraso pequeno. Os autores de \cite{chaudhary2008comparison} não entram em detalhes sobre os motivos dos resultados terem sido esses.
 
  \cite{ekanayake2010high} estudou a relação entre o número de núcleos e o número de MVs usando XEN e Eucalyptus como infraestrutura de nuvem. Foi concluído que a virtualização funciona bem para aplicações que não se não se comunicam muito,
@@ -65,32 +67,42 @@ Na arquitetura de rede virtual CDNA (\textit{acesso direto a memória concorrente
 
 Pela MV poder acessar diretamente a interface de rede, ela também pode acessar algum local indevido da memória por \textit{DMA}. Para contornar esse problema o autor sugeriu o uso de \textit{IOMMU}.
 
-\cite{Waldspurger:2012:IV:2063176.2063194}  cita diversos desafios e problemas na área de virtualização de E/S como: a carga extra no \textit{hypervisor}, a complexidade em gerenciar recursos (escalonamento e prioridades) e a dificuldade de dar uma semântica ao hardware virtual.
+\cite{Waldspurger:2012:IV:2063176.2063194}  cita diversos desafios e problemas na área de virtualização de E/S: a carga extra no \textit{hypervisor}, a complexidade em gerenciar recursos (escalonamento e prioridades) e a dificuldade de dar uma semântica ao hardware virtual.
 
-Quando usamos dispositivos de E/S físicos, junto com a funcionalidade de DMA(acesso direto a memória), a MV pode acessar uma área que não pertence a ela. Uma possível solução é usar\textit{IOMMU} onde é feito um mapeamento entre a MV e a memória e impede uma MV de acessar um pedaço da memória que não lhe pertence.
+Quando usamos dispositivos de E/S físicos, junto com a funcionalidade de DMA (acesso direto a memória), a MV pode acessar uma área que não pertence a ela. Uma possível solução é usar\textit{IOMMU} onde é feito um mapeamento entre a MV e a memória e impede uma MV de acessar um pedaço da memória que não lhe pertence.
  
 \cite{liu2010evaluating} fez diversos experimentos com virtualizações de E/S baseados em \textit{software} (\textit{virtio}) e em hardware (\textit{SR-IOV}) usando o \textit{hypervisor} KVM. Foram analisadas diversas métricas: a largura de banda, a latência, chamadas para memória, comunicação entre máquinas, tamanho da MTU, IRQ afinitivo e distribuído e \textit{IOMMU}.
 
- Na latência, o \textit{virtio} (driver para virtualizar a E/S nas MVs) teve um desempenho muito baixo. A explicação, provada desabilitando a função de transmissão em lote, é que o hospedeiro atrasa o pacote para ser mandado em lotes, mas mesmo assim, seu desempenho sem espera ainda perdeu próximo de 20 microssegundo em relação a máquina pura. Por outro lado, desabilitar essa função provocaria uma perca de desempenho com quantidade grande de carga de trabalho. Já o \textit{SR-IOV} teve um desempenho próximo da máquina pura perdendo apenas alguns microssegundos devido a virtualização da interrupção.
+ Na latência, o \textit{virtio} (driver para virtualizar a E/S nas MVs) teve um desempenho muito baixo. A explicação, provada desabilitando a função de mitigação de transmissão, é que o hospedeiro atrasa o pacote para ser mandado em lotes, mas mesmo assim, seu desempenho sem espera ainda perdeu próximo de 20 microssegundo em relação a máquina pura.
+ Por outro lado, desabilitar essa função provocaria uma perca de desempenho com quantidade grande de carga de trabalho. Já o \textit{SR-IOV} (single root I/O virtualization) teve um desempenho próximo da máquina pura perdendo apenas alguns microssegundos devido a virtualização da interrupção.
 
- Na largura de banda, a transmissão em todos pareceu ter o mesmo desempenho. Já na recepção o \textit{SR-IOV}(single root I/O virtualization) se aproximou da máquina pura, mas o uso da sua CPU foi muito maior que as demais. No \textit{virtio}, ele não conseguiu um bom desempenho, mas o uso de sua CPU foi baixa. No experimento de uso da memória na recepção, o \textit{SR-IOV} teve um uso muito menor que o \textit{virtio}, assim, o autor concluiu que o mal uso da largura de banda na recepção do virtio foi pelo uso excessivo da memória, o que explica também o baixo uso da CPU.
+ Na largura de banda, a transmissão em todos pareceu ter o mesmo desempenho. Já na recepção o \textit{SR-IOV}se aproximou da máquina pura, mas o uso da sua CPU foi muito maior que as demais. No \textit{virtio}, ele não conseguiu um bom desempenho, mas o uso de sua CPU foi baixa. No experimento de uso da memória na recepção, o \textit{SR-IOV} teve um uso muito menor que o \textit{virtio}, assim, o autor concluiu que o mal uso da largura de banda na recepção do virtio foi pelo uso excessivo da memória, o que explica também o baixo uso da CPU.
 
-Nas transmissões de dados de MV, o \textit{SR-IOV} teve uma quantidade muito maior que o \textit{virtio}. A explicação do autor está na forma com que o \textit{virtio} age quando tem uma alta carga na recepção, durante esse momento, ele troca a interrupção para um modo de pesquisa que reduz o número de interrupções e melhora o desempenho da rede.
+Nas transmissões de dados de MV, o \textit{SR-IOV} teve um desempenho muito maior que o \textit{virtio}. A explicação do autor está na forma com que o \textit{virtio} age quando tem uma alta carga na recepção, durante esse momento, ele troca a interrupção para um modo de pesquisa que reduz o número de interrupções e melhora o desempenho da rede.
 Na separação de custos, foi feita a separação do quanto foi utilizado de CPU para determinada tarefa. O resultado foi que o \textit{virtio} gasta uma quantidade maior na virtualização e cópia, enquanto que o \textit{SR-IOV} gasta uma quantidade maior em interrupções e nas máquinas virtuais.
 
 
-\cite{Santos:2008:BGS:1404014.1404017} propôs modificar a arquitetura do \textit{driver} de E/S do \textit{XEN} para conseguir melhorar o uso da \textit{CPU}.  Dentro dos problemas que ele encontra está o excesso de copias de dados, a fragmentação de pacotes no \textit{socket}, o alinhamento do cache e desabilitar o \textit{netfilter} da ponte. Com essa mudança ele conseguiu uma economia de 56\% no uso do processador.
+\cite{Santos:2008:BGS:1404014.1404017} propôs modificar a arquitetura do \textit{driver} de E/S do \textit{XEN} para conseguir melhorar o uso da \textit{CPU}.  Dentro dos problemas que ele encontra está o excesso de copias de dados, a fragmentação de pacotes no \textit{socket}, a falta de alinhamento do cache e o fitro de rede da ponte. Com algumas modifições ele conseguiu uma economia de 56\% no uso do processador.
 
 \cite{oi2009performance} analisou o desempenho de um sistema virtualizado com \textit{XEN} aplicando a estratégia \textit{LRO(large receive offload)} onde ainda dentro do driver da placa de rede é recebido e reunido os pacotes de informações que tiveram que ser segmentados. Nesse experimento eles mediram a vazão da rede variando o tamanho da mensagem e o tamanho da MTU(unidade máxima de transmissão). Os resultados mostraram um ganho de 8\% a 14\% na vazão da rede.
 
 \cite{xenbestpractices} sugere algumas práticas para tentar evitar um baixo desempenho em aplicações intensivas de rede/disco no XEN como dedicar exclusivamente um núcleo de processador ou uma quantidade de memória para o dom0 e dar mais tempo de processamento ao dom0.
 
-\cite{Liao:2008:STI:1477942.1477971} propos duas otimizações na virtualização de rede:escalonamento ciente de cache e roubo de creditos de escalonamento para a recepção de pacotes. 
+\cite{Liao:2008:STI:1477942.1477971} propos duas otimizações na virtualização de rede: o escalonamento ciente de cache e o roubo de creditos de escalonamento para a recepção de pacotes. 
 A primeira idéia é fazer com que o domU e o dom0 passem a compartilhar o cache, assim, a comunicação entre domínios é reduzida.
 A segunda otimização foca priorizar a recepção de pacotes onde o uso do processador é alto.
-Nos experimentos comparando a estrutura padrão de virtualização e a estrutura modificada com as otimizações, foi concluído um ganho de 96\% na largura de banda.
+Nos experimentos comparando a estrutura padrão de virtualização e a estrutura modificada com as otimizações, foi apresentado um ganho de 96\% na largura de banda.
 
+\cite{apparao2006characterization} pesquisaram as principais causas de carga extra na virtualização de E/S. No experimento eles estudaram dois modos de virtualização de E/S: o domU e o dom0 na mesma \textit{CPU} e em \textit{CPUs} distintas.
+O resultado mostrou que nas duas, tanto a transmissão como a recepção de pacotes perderam mais de 50\% no desempenho comparado com a máquina física. Também foi notado que o rodar o domU e o dom0 em \textit{CPUs} distintas é mais custoso que rodar elas juntas na mesma \textit{CPU}.
+ 
+\cite{jang2011low} estudaram sacrificar o isolamento que existe entre as máquinas virtuais para conseguir reduzir a carga extra do processo. Os resultados mostram uma redução de 29\% no uso do processador e 8\% de ganho de banda na transmissão de pacotes grandes. 
 
 \subsection{Análise das Informações}
+Pelos experimentos e propostas lidos, os artigos parecem se dividir em duas categorias: aqueles que propõem modificar o dispositivo de E/S físico para que este esteja ciente da virtualização e aqueles que propõem otimizar a arquitetura de virtualização de E/S atual. Ambos parecem gerar bons resultados em relação ao desempenho de infraestruturas com máquinas puras. 
+Apesar disso, as propostas de modificar o dispositivo físico dificultam a migração e a portabilidade da infraestrutura \cite{Santos:2008:BGS:1404014.1404017}. 
+Em infraestruturas que usam \textit{OpenVZ} parecem não ter o problema com a virtualização de E/S. Uma das principais causas seria o uso de apenas um núcleo e o compartilhamento da memória entre os domínios.
+TODO: referencia sobre OpenVZ e E/S
 
 \subsection{Conclusão}
+
