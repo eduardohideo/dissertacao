@@ -40,6 +40,7 @@ Os artigos de relevância alta serão lidos por completo e resumidos. Os artigos m
 		\cite{Liao:2008:STI:1477942.1477971}&&média-baixa\\
 		\cite{apparao2006characterization}&&alta\\
 		\cite{jang2011low}&&alta\\
+		\cite{fortuna2012improving}&&alta\\
 	\end{tabular}
 \end{center}
 \end{table}
@@ -73,8 +74,9 @@ Quando usamos dispositivos de E/S físicos, junto com a funcionalidade de DMA (ac
  
 \cite{liu2010evaluating} fez diversos experimentos com virtualizações de E/S baseados em \textit{software} (\textit{virtio}) e em hardware (\textit{SR-IOV}) usando o \textit{hypervisor} KVM. Foram analisadas diversas métricas: a largura de banda, a latência, chamadas para memória, comunicação entre máquinas, tamanho da MTU, IRQ afinitivo e distribuído e \textit{IOMMU}.
 
- Na latência, o \textit{virtio} (driver para virtualizar a E/S nas MVs) teve um desempenho muito baixo. A explicação, provada desabilitando a função de mitigação de transmissão, é que o hospedeiro atrasa o pacote para ser mandado em lotes, mas mesmo assim, seu desempenho sem espera ainda perdeu próximo de 20 microssegundo em relação a máquina pura.
- Por outro lado, desabilitar essa função provocaria uma perca de desempenho com quantidade grande de carga de trabalho. Já o \textit{SR-IOV} (single root I/O virtualization) teve um desempenho próximo da máquina pura perdendo apenas alguns microssegundos devido a virtualização da interrupção.
+ Na latência, o \textit{virtio} (driver para virtualizar a E/S nas MVs) teve um desempenho muito baixo. A explicação, provada desabilitando a função de mitigação de transmissão, é que o hospedeiro atrasa o envio do pacotes para ser mandado em rajadas, mas mesmo assim, seu desempenho sem mitigação ainda perdeu próximo de 20 microssegundo em relação a máquina pura.
+Quando a opção de mitigação é desabilitada, isso provoca uma perda de desempenho pois cada pacote que é transmitido gera uma carga de trabalho no CPU, com a mitigação a carga por pacote é reduzida.  
+Já o \textit{SR-IOV} (single root I/O virtualization) teve um desempenho próximo da máquina pura perdendo apenas alguns microssegundos devido a virtualização da interrupção.
 
  Na largura de banda, a transmissão em todos pareceu ter o mesmo desempenho. Já na recepção o \textit{SR-IOV}se aproximou da máquina pura, mas o uso da sua CPU foi muito maior que as demais. No \textit{virtio}, ele não conseguiu um bom desempenho, mas o uso de sua CPU foi baixa. No experimento de uso da memória na recepção, o \textit{SR-IOV} teve um uso muito menor que o \textit{virtio}, assim, o autor concluiu que o mal uso da largura de banda na recepção do virtio foi pelo uso excessivo da memória, o que explica também o baixo uso da CPU.
 
@@ -98,11 +100,20 @@ O resultado mostrou que nas duas, tanto a transmissão como a recepção de pacotes
  
 \cite{jang2011low} estudaram sacrificar o isolamento que existe entre as máquinas virtuais para conseguir reduzir a carga extra do processo. Os resultados mostram uma redução de 29\% no uso do processador e 8\% de ganho de banda na transmissão de pacotes grandes. 
 
+\cite{fortuna2012improving} fez experimentos tentando adequar o balanço de interrupções para demostrar a possibilidade de reduzir o número de pacotes perdidos. O resultado foi que um balanço adequado pode melhorar muito o desempenho, porém, o comportamento é difícil de ser previsto, dificultando a elaboração de um algoritmo.
+ Uma proposta futura sugerida foi deixar o núcleo automatizar o processo de balanço e analisar os resultados, quando aparecerem bons resultados, congelar a configuração de interrupçãp.
+Eles também, no final, discutem a possibilidade de usar a função de agrupamento existentes nos \textit{drivers} das placas de rede modernas.
+
+
+
 \subsection{Análise das Informações}
-Pelos experimentos e propostas lidos, os artigos parecem se dividir em duas categorias: aqueles que propõem modificar o dispositivo de E/S físico para que este esteja ciente da virtualização e aqueles que propõem otimizar a arquitetura de virtualização de E/S atual. Ambos parecem gerar bons resultados em relação ao desempenho de infraestruturas com máquinas puras. 
-Apesar disso, as propostas de modificar o dispositivo físico dificultam a migração e a portabilidade da infraestrutura \cite{Santos:2008:BGS:1404014.1404017}. 
-Em infraestruturas que usam \textit{OpenVZ} parecem não ter o problema com a virtualização de E/S. Uma das principais causas seria o uso de apenas um núcleo e o compartilhamento da memória entre os domínios.
+Pelos experimentos e propostas lidos, os artigos parecem se dividir em três categorias: aqueles que propõem modificar o dispositivo de E/S físico para que este esteja ciente da virtualização, os que propõem otimizar a arquitetura de virtualização de E/S atual e por fim os que sugerem modificar os parametros que são possíveis de serem configurados e usar ferramentas.
+As três categorias parecem trazer resultados positivos em relação ao desempenho de infraestruturas com máquinas sem virtualização.
+Apesar disso, as propostas que modificam o dispositivo físico dificultam a migração, replicação e alta disponibilidade de recursos na infraestrutura \cite{Santos:2008:BGS:1404014.1404017}. 
+Em infraestruturas que usam \textit{OpenVZ} parecem não terem problemas com a virtualização de E/S. Uma das principais causas seria o uso de apenas um núcleo e o compartilhamento da memória entre os domínios.
 TODO: referencia sobre OpenVZ e E/S
+
+
 
 \subsection{Conclusão}
 
