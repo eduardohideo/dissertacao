@@ -12,7 +12,7 @@ O problema a ser tratado nessa pesquisa é o baixo desempenho das infraestruturas
 
 \section{Evidências do problema}
 
-Infraestruturas que normalmente utilizam técnicas de virtualização, como as infraestruturas em nuvem, têm um desempenho diferente da arquitetura de rede padrão. Alguns passos adicionais são necessários para transmitir e receber um pacote de informação de dentro de uma máquina virtual, que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. Na revisão é possível ver melhor as propostas de cada autor.
+Infraestruturas que normalmente utilizam técnicas de virtualização, como as infraestruturas em nuvem, têm um desempenho diferente da arquitetura de rede padrão. Alguns passos adicionais são necessários para transmitir e receber um pacote de informação de dentro de uma máquina virtual, que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. Na revisão bibliográfica é possível ver melhor as propostas de cada autor.
 
 
 \section{Relevância do problema}
@@ -21,6 +21,9 @@ TODO
 \section{Proposta de pesquisa}
 
 Nessa pesquisa, propomos um algoritmo para automatizar a configuração de tamanho de \textit{buffer} e atenuação de transmissão e recepção do \textit{driver} da placa de rede virtual e física, tentando ajustar esses parâmetros dinamicamente de forma a garantir uma melhor qualidade do serviço da infraestrutura de nuvem. 
+
+A atenuação de transmissão e recepção é usada com driver de redes físicos quando a transmissão/recepção de pacotes é muito rapida no meio físico.
+Quando pacotes são recebidos e enviados com uma frequência grande, a quantidade de interrupções geradas faz sobrecarregar o processamento. \cite{dong2011optimizing}
 
 A proposta será uma solução se o desempenho em largura de banda e latência de aplicações que usam intensamente a rede for equivalente a uma infraestrutura sem virtualização.
 

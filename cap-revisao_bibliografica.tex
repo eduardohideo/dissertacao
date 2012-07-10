@@ -95,7 +95,9 @@ O resultado mostrou que nas duas, tanto a transmissão como a recepção de pacotes
 \cite{jang2011low} estudaram sacrificar o isolamento que existe entre as máquinas virtuais para conseguir reduzir a carga extra do processo. Os resultados mostram uma redução de 29\% no uso do processador e 8\% de ganho de banda na transmissão de pacotes grandes. \newline
 
 \cite{fortuna2012improving} fizeram experimentos em torno do problema da carga extra na virtualização da rede. Para isso eles propuseram adequar o balanço de interrupções para demostrar a possibilidade de reduzir o número de pacotes perdidos. O resultado foi que um balanço adequado pode melhorar muito o desempenho, porém, o comportamento é difícil de ser previsto, dificultando a elaboração de um algoritmo.
+
  Uma proposta futura sugerida foi deixar o núcleo do sistema automatizar o processo de balanço e analisar os resultados, quando aparecerem bons resultados, congelar a configuração de interrupção.
+
 Eles também, no final, discutiram a possibilidade de usar a função de agrupamento existentes nos \textit{drivers} das placas de rede modernas. Essa função permite reduzir a quantidade de interrupções causadas pelas placas de rede. Para isso, o \textit{driver} passa a agrupar os pacotes que chegam antes de gerar uma interrupção ao invés de gerá-la no momento em que chega qualquer pacote.\newline
 
 \cite{dong2011optimizing} propuseram otimizações para reduzir a carga extra na virtualização da rede. Uma das otimizações foi agrupar eficientemente as interrupções virtuais e a outra escalar o lado da recepção. O agrupamento de interrupção normalmente é usado quando a transferência de pacotes do meio físico é muito alta. Com uma transferência grande a placa de rede passa a trabalhar intensamente sobrecarregando o processador com interrupções.
