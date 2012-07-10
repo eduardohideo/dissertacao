@@ -6,7 +6,7 @@
 \section{Virtualização}\index{virtualização!fundamentos}
 \label{sec:virtualizacao}
 \subsection{Virtualização de servidores}
-Os servidores normalmente são constituidos de CPDs que estão ligados de alguma forma por uma rede. Quando queremos queremos fornecer recursos de maneira eficiente, uma tecnologia popularmente utilizada é a virtualização \cite{goncalvesresource}.
+Os servidores normalmente são constituídos de CPDs que estão ligados de alguma forma por uma rede. Quando queremos queremos fornecer recursos de maneira eficiente, uma tecnologia popularmente utilizada é a virtualização \cite{goncalvesresource}.
 A virtualização divide um recurso poderoso em recursos menores chamados de máquinas virtuais e cada uma executa uma instância separada de um sistema operacional \cite{barham2003xen}.
 
 Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
@@ -27,7 +27,7 @@ Por fim, a virtualização nativa aproveita o suporte de \textit{hardware} para vi
 %% ------------------------------------------------------------------------- %%
 \subsection{Virtualização de dispositivos de E/S}\index{virtualização!virtualização de dispositivos de E/S}
 
-Com a virtualização de servidores, os dispositivos de E/S físicos passam a terem que sofrer modificações já que em um servidor não se tem apenas um único sistema operacional, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
+Com a virtualização de servidores, os dispositivos de E/S físicos passam a terem que sofrer modificações já que em um servidor não tem apenas um único sistema operacional, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
 
 \cite{Rixner:2008:NVB:1348583.1348592} separou a virtualização de E/S em duas categorias: privada ou compartilhada.
 
@@ -59,16 +59,17 @@ A virtualização de rede que também é um dispositivo de E/S tem algumas particula
 
 Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/S com a virtualização de rede, a complexidade de virtualizar a rede é muito maior pelo fato de não saber o destino de uma informação e a necessidade de estar preparado a qualquer momento para receber/enviar informações diferentemente da virtualização de disco que pode ser controlado pelas interrupções. A informação que passa pelo domínio de E/S pode ser através de \textit{buffer} na virtualização de disco pelo seu melhor controle no tempo e no tráfego não precisando de copiar ou remapear o dado como na virtualização da rede. 
 
+
 %% ------------------------------------------------------------------------- %%
 \subsection{Rede no XEN}\index{virtualização!xen}
 
 No \textit{XEN}, para todas as máquinas conseguirem acessar o dispositivo de rede ao mesmo tempo, temos dois tipos de configuração: ponte e roteamento.
 
-Na configuração de ponte, uma ponte virtual(\texttt{xenbr0}) é criada dentro do dom0 como é possível ver na Figura \ref{ponte}. Essa ponte está ligada na interface de rede física pela porta \texttt{peth0}. A porta \texttt{vif0.0} está sendo usada para tráfegos de/para \texttt{dom0} e as portas \texttt{vifX.0} onde X é um valor maior que 0, está sendo usada para tráfegos de/para algum \texttt{domU}.
+Na configuração de ponte, uma ponte virtual(\texttt{xenbr0}) é criada dentro do dom0 como é possível ver na Figura \ref{ponte}. Essa ponte está ligada na interface de rede física pela porta \texttt{peth0}. A porta \texttt{vif0.0} está sendo usada para tráfegos de/para \texttt{dom0} e as portas \texttt{vifX.0}, onde X é um valor maior que 0, estão sendo usadas para tráfegos de/para algum \texttt{domU}.
 
 Como é possível observar, todo pacote que é recebido ou transmitido tem que passa pela ponte.
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \begin{center}
   \includegraphics[width=192pt,height=148pt]{./img/Xen1.png}
 \caption{ponte virtual criada no XEN \cite{xenenv}}
@@ -76,17 +77,32 @@ Como é possível observar, todo pacote que é recebido ou transmitido tem que pass
 \end{center}
 \end{figure}
 
+Na configuração de roteamento o \texttt{dom0} faz o roteamento do pacote para o domínio correto.
+
+Na Figura \ref{arq} vemos a arquitetura da rede virtual no XEN. Para transmitir/receber um pacote no domínio hospedeiro(\texttt{domU}) é necessário usar o canal de E/S. Esse canal consiste de um mecanismo de notificação de evento e um \textit{buffer} de descrição em anel onde guarda os detalhes de requisições entre o \textit{driver} de \textit{frontend}(\textit{netfront}) e o \textit{driver} de \textit{backend}(\textit{netback}).
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=192pt,height=148pt]{./img/usenix08001.jpeg}
+\caption{arquitetura da rede virtual no XEN \cite{Santos:2008:BGS:1404014.1404017}}
+\label{arq}
+\end{center}
+\end{figure}
+
+ O mecanismo de notificação de evento avisa que alguém de um domínio escreveu no \textit{buffer} de E/S. Isso é feito através de uma interrupção virtual no outro domínio.
+Para o domínio do controlador dos \textit{drivers} físicos(\textit{domínio do driver}) ter acesso ao \textit{buffer} de E/S dentro da memória do hospedeiro, é necessário um mecanismo de permissão. Neste, o domínio do hospedeiro fornece páginas da sua memória para serem usadas como \textit{buffer} de E/S. Essas páginas são passadas como referência na descrição da requisição.
+
+Na transmissão, o \texttt{domU} coloca um pacote no \textit{buffer} de E/S e a sua página de referência no \textit{buffer} de descrição e notifica o domínio do \textit{driver}. Este então mapeia as páginas recebidas no seu espaço de endereços e pede para o dispositivo de E/S físico transmiti-las.
+Na recepção, o domínio hospedeiro informa as possíveis páginas da memória que podem ser escritas e quando algum pacote chega pelo dispositivo físico, o \textit{netback} o copia para uma página da memória que foi fornecida. Quando o \textit{netfront} recebe uma notificação, ele pega oque está no \textit{buffer} e manda para seu sistema.
+
+
 Apesar do exemplo dado ser específico para o XEN, outros \textit{hypervisores} como \textit{WMware} e \textit{KVM} adotam uma arquitetura semelhante \cite{Santos:2008:BGS:1404014.1404017}.
-
-TODO: transmissão...
-
-TODO: Na recepção...
-
+ 
 %% ------------------------------------------------------------------------- %%
 \section{Computação em Nuvem}\index{Computação em nuvem!fundamentos}
 \label{sec:computacaoEmNuvem}
 
-A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de hardware e software das CPDs(Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
+A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de hardware e software das Cós(Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
 
 Como o termo nuvem é muito abrangente, ele foi dividido em várias classificações \cite{armbrust2009above}, entre elas, o tipo de serviço o qual fornecem. Nesse texto, quando falamos de nuvem, estaremos nos referindo a serviços que fornecem uma infraestrutura (IaaS). Cada infraestrutura pode receber várias requisições de hospedar programas de desenvolvedores e, nesse caso, terá que implantá-los em algum local no interior dela. Quando um cliente, em algum momento, faz uma requisição para executar esse programa, a nuvem executa o programa internamente e repassa o resultado ao cliente.
 

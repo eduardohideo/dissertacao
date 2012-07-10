@@ -8,11 +8,6 @@
 \subsection{Busca}
 	Para busca de referências foram usados os mecanismos de busca do google Acadêmico, ACM e indicações de pessoas especializadas na área. Apenas artigos em inglês e português foram selecionados.
 
-\subsection{Palavra-chave}
-	network optimization virtualization virtual machine
-	rede otimização virtualização maquina virtual
-		
-
 \subsection{Critérios de Seleção}
 Para seleção das referências, em cada artigo encontrado pela estrategia de busca será lido o seu resumo e classificado manualmente em três categorias de acordo com sua relevância: alta, média, baixa.
 Os artigos de relevância alta serão lidos por completo e resumidos. Os artigos médios terão a leitura de sua introdução e a mudança da sua relevância para baixa ou alta. Por fim os artigos baixos não serão lidos. 
@@ -41,6 +36,7 @@ Os artigos de relevância alta serão lidos por completo e resumidos. Os artigos m
 		\cite{apparao2006characterization}&&alta\\
 		\cite{jang2011low}&&alta\\
 		\cite{fortuna2012improving}&&alta\\
+		\cite{dong2011optimizing}&&alta\\
 	\end{tabular}
 \end{center}
 \end{table}
@@ -52,7 +48,7 @@ Em \cite{chaudhary2008comparison} o autor fez uma comparação entre diferentes te
 Nos experimentos foi concluído que o \textit{hypervisor} XEN tem um desempenho baixo em termos de atraso na rede, porém alto em termos de largura de banda em relação a um ambiente com OpenVZ e um ambiente sem virtualização, enquanto que o OpenVZ tem uma perda considerável em largura de banda, mas um atraso pequeno. Os autores de \cite{chaudhary2008comparison} não entram em detalhes sobre os motivos dos resultados terem sido esses.
 
  \cite{ekanayake2010high} estudou a relação entre o número de núcleos e o número de MVs usando XEN e Eucalyptus como infraestrutura de nuvem. Foi concluído que a virtualização funciona bem para aplicações que não se não se comunicam muito,
- enquanto que em aplicações que são sensíveis a latência, houve uma perda de desempenho em relação a um ambiente não virtualizado. Outra conclusão foi que quanto maior o número de máquinas virtuais, maior a sobrecarga na CPU. A explicação para isso, segundo o autor, está na forma como foi implementada a rede virtual. O hardware físico só pode ser controlado por um sistema (\texttt{dom0}), enquanto que os outros (\texttt{domUs}) para conseguir fazer alguma operação de E/S pela rede, tem que passar por esse sistema através de um canal. Isso forma um gargalo no \texttt{dom0}.
+ enquanto que em aplicações que são sensíveis a latência, houve uma perda de desempenho em relação a um ambiente não virtualizado. Outra conclusão foi que quanto maior o número de máquinas virtuais, maior a sobrecarga na CPU. A explicação para isso, segundo o autor, está na forma como foi implementada a virtualização da rede. O hardware físico só pode ser controlado por um sistema (\texttt{dom0}), enquanto que os outros (\texttt{domUs}) para conseguir fazer alguma operação de E/S pela rede, tem que passar por esse sistema através de um canal. Isso forma um gargalo no \texttt{dom0}.
 
 
 \cite{Rixner:2008:NVB:1348583.1348592} fez uma revisão sobre a virtualização de rede.
@@ -62,9 +58,9 @@ Ele sugere um ganho de desempenho fazendo o dispositivo ter a capacidade de ler 
 
 Apesar disso, o dispositivo pode escrever em uma posição da memória que não pertence a MV e, podendo assim, causar problemas em outros processos da máquina física. Assim, foi criado a unidade de gerenciamento de E/S da memória (\textit{IOMMU}). No \textit{IOMMU} a memória é restrita para o dispositivo de acordo com a máquina virtual que controla esse dispositivo.
 
-Como atualmente um processador possui vários núcleos, podemos aproveitar esses núcleos para criar multi-filas nas interfaces de rede. O autor cita um estudo em que houve a remoção da ponte no domínio de E/S para associar as filas diretamente com o driver de \textit{backend}, evitando a necessidade de sincronização das mensagens e multiplexação/demultiplexação da rede. Como benefícios do uso da multi-fila se teve: a redução da carga extra na fila e a eliminação de cópias entre o domínio de E/S e a máquina virtual, pois, a multiplexação não é feita. Por outro lado, seria necessário que cada informação seja mandada para a fila correta e que a CPU consiga aguentar a carga extra gerada pelas múltiplas filas.
+Como atualmente um processador possui vários núcleos, podemos aproveitar esses núcleos para criar multi-filas nas interfaces de rede. O autor cita um estudo em que houve a remoção da ponte no domínio de E/S para associar as filas diretamente com o \textit{driver} de \textit{backend}, evitando a necessidade de sincronização das mensagens e multiplexação/demultiplexação da rede. Como benefícios do uso da multi-fila se teve: a redução da carga extra na fila e a eliminação de cópias entre o domínio de E/S e a máquina virtual, pois, a multiplexação não é feita. Por outro lado, seria necessário que cada informação seja mandada para a fila correta e que a CPU consiga aguentar a carga extra gerada pelas múltiplas filas.
 
-Na arquitetura de rede virtual CDNA (\textit{acesso direto a memória concorrente}) foi usado a ideia de multi-filas e em adição removeram o domínio de E/S. Sem o responsável por controlar as filas, o \textit{hypervisor} passa a considerar cada conjunto de fila como um interface de rede física e a associa o controlador a uma MV. Assim, cada MV consegue enviar ou receber informações diretamente da rede sem nenhuma interversão do domínio de E/S. Como consequência, a carga extra é reduzida pelo número reduzido de interrupções (antes era necessário interromper tanto o domínio de E/S como as MVs em cada transmissão/recepção).
+Na arquitetura de virtualização de rede CDNA (\textit{acesso direto a memória concorrente}) foi usado a ideia de multi-filas e em adição removeram o domínio de E/S. Sem o responsável por controlar as filas, o \textit{hypervisor} passa a considerar cada conjunto de fila como um interface de rede física e a associa o controlador a uma MV. Assim, cada MV consegue enviar ou receber informações diretamente da rede sem nenhuma interversão do domínio de E/S. Como consequência, a carga extra é reduzida pelo número reduzido de interrupções (antes era necessário interromper tanto o domínio de E/S como as MVs em cada transmissão/recepção).
 
 Pela MV poder acessar diretamente a interface de rede, ela também pode acessar algum local indevido da memória por \textit{DMA}. Para contornar esse problema o autor sugeriu o uso de \textit{IOMMU}.
 
@@ -74,7 +70,7 @@ Quando usamos dispositivos de E/S físicos, junto com a funcionalidade de DMA (ac
  
 \cite{liu2010evaluating} fez diversos experimentos com virtualizações de E/S baseados em \textit{software} (\textit{virtio}) e em hardware (\textit{SR-IOV}) usando o \textit{hypervisor} KVM. Foram analisadas diversas métricas: a largura de banda, a latência, chamadas para memória, comunicação entre máquinas, tamanho da MTU, IRQ afinitivo e distribuído e \textit{IOMMU}.
 
- Na latência, o \textit{virtio} (driver para virtualizar a E/S nas MVs) teve um desempenho muito baixo. A explicação, provada desabilitando a função de mitigação de transmissão, é que o hospedeiro atrasa o envio do pacotes para ser mandado em rajadas, mas mesmo assim, seu desempenho sem mitigação ainda perdeu próximo de 20 microssegundo em relação a máquina pura.
+ Na latência, o \textit{virtio} (\textit{driver} para virtualizar a E/S nas MVs) teve um desempenho muito baixo. A explicação, provada desabilitando a função de mitigação de transmissão, é que o hospedeiro atrasa o envio do pacotes para ser mandado em rajadas, mas mesmo assim, seu desempenho sem mitigação ainda perdeu próximo de 20 microssegundo em relação a máquina pura.
 Quando a opção de mitigação é desabilitada, isso provoca uma perda de desempenho pois cada pacote que é transmitido gera uma carga de trabalho no CPU, com a mitigação a carga por pacote é reduzida.  
 Já o \textit{SR-IOV} (single root I/O virtualization) teve um desempenho próximo da máquina pura perdendo apenas alguns microssegundos devido a virtualização da interrupção.
 
@@ -84,30 +80,43 @@ Nas transmissões de dados de MV, o \textit{SR-IOV} teve um desempenho muito maio
 Na separação de custos, foi feita a separação do quanto foi utilizado de CPU para determinada tarefa. O resultado foi que o \textit{virtio} gasta uma quantidade maior na virtualização e cópia, enquanto que o \textit{SR-IOV} gasta uma quantidade maior em interrupções e nas máquinas virtuais.
 
 
-\cite{Santos:2008:BGS:1404014.1404017} propôs modificar a arquitetura do \textit{driver} de E/S do \textit{XEN} para conseguir melhorar o uso da \textit{CPU}.  Dentro dos problemas que ele encontra está o excesso de copias de dados, a fragmentação de pacotes no \textit{socket}, a falta de alinhamento do cache e o fitro de rede da ponte. Com algumas modifições ele conseguiu uma economia de 56\% no uso do processador.
+\cite{Santos:2008:BGS:1404014.1404017} propôs modificar a arquitetura do \textit{driver} de E/S do \textit{XEN} para conseguir melhorar o uso da \textit{CPU}.  Dentro dos problemas que ele encontra está o excesso de copias de dados, a fragmentação de pacotes no \textit{socket}, a falta de alinhamento do cache e o filtro de rede da ponte. Com algumas modificações ele conseguiu uma economia de 56\% no uso do processador.
 
-\cite{oi2009performance} analisou o desempenho de um sistema virtualizado com \textit{XEN} aplicando a estratégia \textit{LRO(large receive offload)} onde ainda dentro do driver da placa de rede é recebido e reunido os pacotes de informações que tiveram que ser segmentados. Nesse experimento eles mediram a vazão da rede variando o tamanho da mensagem e o tamanho da MTU(unidade máxima de transmissão). Os resultados mostraram um ganho de 8\% a 14\% na vazão da rede.
+\cite{oi2009performance} analisou o desempenho de um sistema virtualizado com \textit{XEN} aplicando a estratégia \textit{LRO(large receive offload)} onde ainda dentro do \textit{driver} da placa de rede é recebido e reunido os pacotes de informações que tiveram que ser segmentados. Nesse experimento eles mediram a vazão da rede variando o tamanho da mensagem e o tamanho da \textit{MTU}(unidade máxima de transmissão). Os resultados mostraram um ganho de 8\% a 14\% na vazão da rede.
 
-\cite{xenbestpractices} sugere algumas práticas para tentar evitar um baixo desempenho em aplicações intensivas de rede/disco no XEN como dedicar exclusivamente um núcleo de processador ou uma quantidade de memória para o dom0 e dar mais tempo de processamento ao dom0.
+\cite{xenbestpractices} sugere algumas práticas para tentar evitar um baixo desempenho em aplicações intensivas de rede/disco no XEN como dedicar exclusivamente um núcleo de processador ou uma quantidade de memória para o \texttt{dom0} e dar mais tempo de processamento ao \texttt{dom0}.
 
-\cite{Liao:2008:STI:1477942.1477971} propos duas otimizações na virtualização de rede: o escalonamento ciente de cache e o roubo de creditos de escalonamento para a recepção de pacotes. 
-A primeira idéia é fazer com que o domU e o dom0 passem a compartilhar o cache, assim, a comunicação entre domínios é reduzida.
+\cite{Liao:2008:STI:1477942.1477971} propôs duas otimizações na virtualização de rede: o escalonamento ciente de cache e o roubo de créditos de escalonamento para a recepção de pacotes. 
+A primeira ideia é fazer com que o \texttt{domU} e o \texttt{dom0} passem a compartilhar o cache, assim, a comunicação entre domínios é reduzida.
 A segunda otimização foca priorizar a recepção de pacotes onde o uso do processador é alto.
 Nos experimentos comparando a estrutura padrão de virtualização e a estrutura modificada com as otimizações, foi apresentado um ganho de 96\% na largura de banda.
 
-\cite{apparao2006characterization} pesquisaram as principais causas de carga extra na virtualização de E/S. No experimento eles estudaram dois modos de virtualização de E/S: o domU e o dom0 na mesma \textit{CPU} e em \textit{CPUs} distintas.
-O resultado mostrou que nas duas, tanto a transmissão como a recepção de pacotes perderam mais de 50\% no desempenho comparado com a máquina física. Também foi notado que o rodar o domU e o dom0 em \textit{CPUs} distintas é mais custoso que rodar elas juntas na mesma \textit{CPU}.
+\cite{apparao2006characterization} pesquisaram as principais causas de carga extra na virtualização de E/S. No experimento eles estudaram dois modos de virtualização de E/S: o \texttt{domU} e o \texttt{dom0} na mesma \textit{CPU} e em \textit{CPUs} distintas.
+O resultado mostrou que nas duas, tanto a transmissão como a recepção de pacotes perderam mais de 50\% no desempenho comparado com a máquina física. Também foi notado que o rodar o \texttt{domU} e o \texttt{dom0} em \textit{CPUs} distintas é mais custoso que rodar elas juntas na mesma \textit{CPU}.
  
 \cite{jang2011low} estudaram sacrificar o isolamento que existe entre as máquinas virtuais para conseguir reduzir a carga extra do processo. Os resultados mostram uma redução de 29\% no uso do processador e 8\% de ganho de banda na transmissão de pacotes grandes. 
 
-\cite{fortuna2012improving} fez experimentos tentando adequar o balanço de interrupções para demostrar a possibilidade de reduzir o número de pacotes perdidos. O resultado foi que um balanço adequado pode melhorar muito o desempenho, porém, o comportamento é difícil de ser previsto, dificultando a elaboração de um algoritmo.
- Uma proposta futura sugerida foi deixar o núcleo automatizar o processo de balanço e analisar os resultados, quando aparecerem bons resultados, congelar a configuração de interrupçãp.
-Eles também, no final, discutem a possibilidade de usar a função de agrupamento existentes nos \textit{drivers} das placas de rede modernas.
+\cite{fortuna2012improving} fizeram experimentos em torno do problema da carga extra na virtualização da rede. Para isso eles propuseram adequar o balanço de interrupções para demostrar a possibilidade de reduzir o número de pacotes perdidos. O resultado foi que um balanço adequado pode melhorar muito o desempenho, porém, o comportamento é difícil de ser previsto, dificultando a elaboração de um algoritmo.
+ Uma proposta futura sugerida foi deixar o núcleo do sistema automatizar o processo de balanço e analisar os resultados, quando aparecerem bons resultados, congelar a configuração de interrupção.
+Eles também, no final, discutiram a possibilidade de usar a função de agrupamento existentes nos \textit{drivers} das placas de rede modernas. Essa função permite reduzir a quantidade de interrupções causadas pelas placas de rede. Para isso, o \textit{driver} passa a agrupar os pacotes que chegam antes de gerar uma interrupção ao invés de gerá-la no momento em que chega qualquer pacote.
+
+
+\cite{dong2011optimizing} propuseram otimizações para reduzir a carga extra na virtualização da rede. Uma das otimizações foi agrupar eficientemente as interrupções virtuais e a outra escalar o lado da recepção. O agrupamento de interrupção normalmente é usado quando a transferência de pacotes do meio físico é muito alta. Com uma transferência grande a placa de rede passa a trabalhar intensamente sobrecarregando o processador com interrupções.
+Na virtualização da rede, a transferência de pacotes passa a gerar interrupções físicas e virtuais. Interrupções virtuais são mais custosas em termos de ciclos de CPU em relação a interrupções físicas.
+
+O agrupamento de interrupções virtuais pode ser feito no \textit{driver} virtual de \textit{backend}(na porte dentro do \texttt{dom0}) ou no \textit{driver} virtual de \textit{frontend}(dentro de um \texttt{domU}).
+
+A ideia de escalar o lado da recepção foi baseado na ideia de paralelizar o \textit{driver} virtual de \textit{backend} tentando aproveitar melhor as propriedades de um processador multi-núcleo. Assim, foi introduzido o conceito de RSS que balanceia a carga de trabalho eficientemente entre os processadores.
+
+O resultado no experimento de agrupamento de interrupções foi um ganho de até 76\% na largura de banda em relação a configuração padrão e na de escalar o lado da recepção foi até 2,2 vezes mais também na largura de banda.
 
 
 
 \subsection{Análise das Informações}
-Pelos experimentos e propostas lidos, os artigos parecem se dividir em três categorias: aqueles que propõem modificar o dispositivo de E/S físico para que este esteja ciente da virtualização, os que propõem otimizar a arquitetura de virtualização de E/S atual e por fim os que sugerem modificar os parametros que são possíveis de serem configurados e usar ferramentas.
+
+
+Pelos experimentos e propostas lidos, os artigos parecem se dividir em três categorias: aqueles que propõem modificar o dispositivo de E/S físico para que este esteja ciente da virtualização, os que propõem otimizar a arquitetura de virtualização de E/S atual e por fim os que sugerem modificar os parâmetros que são possíveis de serem configurados e usar ferramentas.
+
 As três categorias parecem trazer resultados positivos em relação ao desempenho de infraestruturas com máquinas sem virtualização.
 Apesar disso, as propostas que modificam o dispositivo físico dificultam a migração, replicação e alta disponibilidade de recursos na infraestrutura \cite{Santos:2008:BGS:1404014.1404017}. 
 Em infraestruturas que usam \textit{OpenVZ} parecem não terem problemas com a virtualização de E/S. Uma das principais causas seria o uso de apenas um núcleo e o compartilhamento da memória entre os domínios.
@@ -116,4 +125,5 @@ TODO: referencia sobre OpenVZ e E/S
 
 
 \subsection{Conclusão}
-
+A revisão ajudou a entender melhor a área de virtualização de rede. Diversas formas de melhorar o desempenho foram encontradas, podendo separa-las em 3 categorias: aqueles que propõem modificar o dispositivo de E/S físico para que este esteja ciente da virtualização, os que propõem otimizar a arquitetura de virtualização de E/S atual e por fim os que sugerem modificar os parâmetros que são possíveis de serem configurados e usar ferramentas. Essa separação fez dificultar um pouco a correlacionar os trabalhos propostos.
+Numa próxima revisão, seria interessante focar em alguma categoria para facitar a comparação entre pesquisas.
