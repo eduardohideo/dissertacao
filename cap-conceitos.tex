@@ -10,6 +10,7 @@ Os servidores normalmente são constituídos de CPDs que estão ligados de alguma f
 A virtualização divide um recurso poderoso em recursos menores chamados de máquinas virtuais e cada uma executa uma instância separada de um sistema operacional \cite{barham2003xen}.
 
 Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
+
 Segundo \cite{chaudhary2008comparison}, as estratégias de virtualização podem ser divididas em 4 grandes categorias: virtualização completa, para-virtualização, virtualização em nível de sistema operacional e virtualização nativa.
 
 Na virtualização completa também conhecido como emulação de hardware, um ou vários sistemas operacionais são rodados dentro de um \textit{hypervisor}.
@@ -32,6 +33,7 @@ Com a virtualização de servidores, os dispositivos de E/S físicos passam a terem
 \cite{Rixner:2008:NVB:1348583.1348592} separou a virtualização de E/S em duas categorias: privada ou compartilhada.
 
 Na virtualização de E/S privada, cada dispositivo físico é associado a apenas uma única MV enquanto que na virtualização de E/S compartilhada, o dispositivo é compartilhado para várias MV.
+
 Comparando a virtualização de E/S privada com a compartilhada há uma subutilização na virtualização privada, pois parte do tempo em que a MV não usa o dispositivo é desperdiçada. Por outro lado, o desempenho da virtualização compartilhada é pior já que divide o recurso com outras máquinas.
 
 Quando pensamos em escalar o número de MVs, o custo da virtualização privada se cresce absurdamente(com 10 MVs teríamos que ter 10 dispositivos físicos enquanto que na virtualização compartilhada,talvez até um dispositivo poderia ser o suficiente para resolver o problema).
@@ -57,7 +59,9 @@ Em um exemplo de leitura e escrita no disco, além de simplesmente ler/escrever n
 
 A virtualização de rede que também é um dispositivo de E/S tem algumas particularidades em relação a outros dispositivos.
 
-Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/S com a virtualização de rede, a complexidade de virtualizar a rede é muito maior pelo fato de não saber o destino de uma informação e a necessidade de estar preparado a qualquer momento para receber/enviar informações diferentemente da virtualização de disco que pode ser controlado pelas interrupções. A informação que passa pelo domínio de E/S pode ser através de \textit{buffer} na virtualização de disco pelo seu melhor controle no tempo e no tráfego não precisando de copiar ou remapear o dado como na virtualização da rede. 
+Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/S com a virtualização de rede, a complexidade de virtualizar a rede é muito maior pelo fato de não saber o destino de uma informação e a necessidade de estar preparado a qualquer momento para receber/enviar informações diferentemente da virtualização de disco que pode ser controlado pelas interrupções.
+
+A informação que passa pelo domínio de E/S pode ser através de \textit{buffer} na virtualização de disco pelo seu melhor controle no tempo e no tráfego não precisando de copiar ou remapear o dado como na virtualização da rede. 
 
 
 %% ------------------------------------------------------------------------- %%
@@ -90,9 +94,11 @@ Na Figura \ref{arq} vemos a arquitetura da rede virtual no XEN. Para transmitir/
 \end{figure}
 
  O mecanismo de notificação de evento avisa que alguém de um domínio escreveu no \textit{buffer} de E/S. Isso é feito através de uma interrupção virtual no outro domínio.
+
 Para o domínio do controlador dos \textit{drivers} físicos(\textit{domínio do driver}) ter acesso ao \textit{buffer} de E/S dentro da memória do hospedeiro, é necessário um mecanismo de permissão. Neste, o domínio do hospedeiro fornece páginas da sua memória para serem usadas como \textit{buffer} de E/S. Essas páginas são passadas como referência na descrição da requisição.
 
 Na transmissão, o \texttt{domU} coloca um pacote no \textit{buffer} de E/S e a sua página de referência no \textit{buffer} de descrição e notifica o domínio do \textit{driver}. Este então mapeia as páginas recebidas no seu espaço de endereços e pede para o dispositivo de E/S físico transmiti-las.
+
 Na recepção, o domínio hospedeiro informa as possíveis páginas da memória que podem ser escritas e quando algum pacote chega pelo dispositivo físico, o \textit{netback} o copia para uma página da memória que foi fornecida. Quando o \textit{netfront} recebe uma notificação, ele pega oque está no \textit{buffer} e manda para seu sistema.
 
 
@@ -142,7 +148,9 @@ Para que isso seja possível, a infraestrutura de nuvem contém vários nós, os qua
 %% ------------------------------------------------------------------------- %%
 \subsection{Aplicações da virtualização}\index{virtualização!aplicações da virtualização}
 
-Na computação em nuvem, em particular quando se é fornecido uma infraestrutura para implantar aplicações(IaaS), a adoção da virtualização melhora a utilização dos recursos e protege o servidor de problemas que os softwares dos clientes possam causar em relação a servidores com máquinas puras \cite{chaudhary2008comparison}. Como consequência, também permite um novo modelo de negócio chamado ``pague somente quando usa'', onde o cliente paga somente pelo tempo que o recurso é usado. 
+Na computação em nuvem, em particular quando se é fornecido uma infraestrutura para implantar aplicações(IaaS), a adoção da virtualização melhora a utilização dos recursos e protege o servidor de problemas que os softwares dos clientes possam causar em relação a servidores com máquinas puras \cite{chaudhary2008comparison}. 
+
+Como consequência, também permite um novo modelo de negócio chamado ``pague somente quando usa'', onde o cliente paga somente pelo tempo que o recurso é usado. 
 Além disso, o cliente tem a impressão de estar utilizando um ambiente com recursos infinitos, já que a configuração de uma máquina virtual pode ser ampliada sem interrupção do serviço e, mais máquinas podem ser agregadas para prover o serviço \cite{armbrust2009above}. 
 
 Essas características beneficiam o lado do servidor, que não precisará fornecer um recurso físico inteiro para cada cliente e terá maior segurança e tolerância a falhas, já que cada sistema é independente. Do lado do cliente, ele irá economizar dinheiro pelo novo modelo de negócio e terá recursos sob demanda.

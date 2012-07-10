@@ -3,21 +3,24 @@
 \label{cap:introducao}
 Numa infraestrutura de nuvem, os recursos são controlados pelo fornecedor e alocados de maneira elástica de acordo com a necessidade do consumidor \cite{goncalvesresource}. 
 Para obter essa `elasticidade', normalmente, a nuvem adotada uma tecnologia chamada virtualização.
+
 A virtualização divide um recurso poderoso em recursos menores chamados de máquinas virtuais \cite{barham2003xen}.
 Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
 
 Apesar das máquinas virtuais ajudarem a aumentar a flexibilidade, elas ainda têm um desempenho abaixo da máquina pura quando executamos aplicações que usam muito a rede
  \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. 
+
 Uma das principais causas é a arquitetura da virtualização de rede. Diferente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
 
 Para reduz o custo do processamento, uma ideia é agrupar uma quantidade grande de pacotes para envia-lás ou recebe-lás em rajadas, isso faria interromper menos o processador e reduziria a quantidade de envios e recepções de pacotes \cite{apparao2006characterization} \cite{chaudhary2008comparison}.
+
 Assim, essa pesquisa foca em automatizar a configuração de tamanho de \textit{buffer} e atenuação de transmissão e recepção do \textit{driver} da placa de rede virtual e física, tentando ajustar esses parâmetros dinamicamente de forma a garantir uma melhor qualidade do serviço da infraestrutura.
 
 %% ------------------------------------------------------------------------- %%
 \section{Considerações Preliminares}
 \label{sec:consideracoes_preliminares}
 % index permite acrescentar um item no indice remissivo
-Esse trabalho está direcionado para contribuições em expecífico na área de computação em nuvem e redes pelo interesse do autor.
+Esse trabalho está direcionado para contribuições em específico na área de computação em nuvem e redes pelo interesse do autor.
 
 %% ------------------------------------------------------------------------- %%
 \section{Objetivos}
@@ -42,6 +45,7 @@ As principais contribuições desse trabalho são:
 \label{sec:organizacao_trabalho}
 
 No Capítulo~\ref{cap:conceitos}, apresentamos os conceitos de virtualização de servidores, virtualização de E/S, virtualização de rede e Computação em nuvem.
-No Capítulo~\ref{cap:revisao_bibliografica}, apresentamos uma revisão bibliográfica na área de virtualização de E/S,
-Finalmente, no
-No Capítulo~\ref{cap:pesquisa}, apresentamos uma proposta na área de virtualização de redes
+No Capítulo~\ref{cap:revisao_bibliografica}, apresentamos uma revisão bibliográfica na área de virtualização de E/S.
+Finalmente, no Capítulo~\ref{cap:proposta}, apresentamos uma proposta na área de virtualização de rede.
+
+
