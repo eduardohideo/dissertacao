@@ -2,14 +2,16 @@
 \label{cap:revisao_bibliografica}
 
 \subsection{Objetivo}
-	O objetivo dessa revisão foi analisar e estudar as maneiras já existentes de otimizar o desempenho da rede em infraestruturas de máquinas virtuais
- e os problemas em aberto que esse tipo de rede apresenta. Cada estratégia sugerida pode atender bem a um cenário, porém, em outros casos, essa mesma estratégia pode ser pouco eficiente devido a dinamicidade da rede e os diferentes requerimentos de um usuário.
+O objetivo dessa revisão foi analisar e estudar as maneiras já existentes de otimizar o desempenho da rede em infraestruturas de máquinas virtuais
+ e os problemas em aberto que esse tipo de rede apresenta. 
+Cada estratégia sugerida pode atender bem a um cenário, porém, em outros casos, essa mesma estratégia pode ser pouco eficiente devido a dinamicidade da rede e os diferentes requerimentos de um usuário.
 
 \subsection{Busca}
-	Para busca de referências foram usados os mecanismos de busca do google Acadêmico, ACM e indicações de pessoas especializadas na área. Apenas artigos em inglês e português foram selecionados.
+Para busca de referências foram usados os mecanismos de busca do google Acadêmico, ACM e indicações de pessoas especializadas na área. Apenas artigos em inglês e português foram selecionados.
 
 \subsection{Critérios de Seleção}
-Para seleção das referências, em cada artigo encontrado pela estrategia de busca será lido o seu resumo e classificado manualmente em três categorias de acordo com sua relevância: alta, média, baixa.
+Para seleção das referências, em cada artigo encontrado pela estratégia de busca será lido o seu resumo e classificado manualmente em três categorias de acordo com sua relevância: alta, média, baixa.
+
 Os artigos de relevância alta serão lidos por completo e resumidos. Os artigos médios terão a leitura de sua introdução e a mudança da sua relevância para baixa ou alta. Por fim os artigos baixos não serão lidos. 
 
 
@@ -98,32 +100,28 @@ O resultado mostrou que nas duas, tanto a transmissão como a recepção de pacotes
 
  Uma proposta futura sugerida foi deixar o núcleo do sistema automatizar o processo de balanço e analisar os resultados, quando aparecerem bons resultados, congelar a configuração de interrupção.
 
-Eles também, no final, discutiram a possibilidade de usar a função de agrupamento existentes nos \textit{drivers} das placas de rede modernas. Essa função permite reduzir a quantidade de interrupções causadas pelas placas de rede. Para isso, o \textit{driver} passa a agrupar os pacotes que chegam antes de gerar uma interrupção ao invés de gerá-la no momento em que chega qualquer pacote.\newline
+Eles também, no final, discutiram a possibilidade de usar a função de mesclagem existentes nos \textit{drivers} das placas de rede modernas.
 
-\cite{dong2011optimizing} propuseram otimizações para reduzir a carga extra na virtualização da rede. Uma das otimizações foi agrupar eficientemente as interrupções virtuais e a outra escalar o lado da recepção. O agrupamento de interrupção normalmente é usado quando a transferência de pacotes do meio físico é muito alta. Com uma transferência grande a placa de rede passa a trabalhar intensamente sobrecarregando o processador com interrupções.
+\cite{dong2011optimizing} propuseram otimizações para reduzir a carga extra na virtualização da rede. Uma das otimizações foi mesclar eficientemente as interrupções virtuais e a outra escalar o lado da recepção. A mesclagem de interrupção normalmente é usada quando a transferência de pacotes do meio físico é muito alta. Com uma transferência grande a placa de rede passa a trabalhar intensamente sobrecarregando o processador com interrupções.
 Na virtualização da rede, a transferência de pacotes passa a gerar interrupções físicas e virtuais. Interrupções virtuais são mais custosas em termos de ciclos de CPU em relação a interrupções físicas.
 
-O agrupamento de interrupções virtuais pode ser feito no \textit{driver} virtual de \textit{backend}(na porte dentro do \texttt{dom0}) ou no \textit{driver} virtual de \textit{frontend}(dentro de um \texttt{domU}).
+A mesclagem de interrupções virtuais pode ser feita no \textit{driver} virtual de \textit{backend}(na porte dentro do \texttt{dom0}) ou no \textit{driver} virtual de \textit{frontend}(dentro de um \texttt{domU}).
 
 A ideia de escalar o lado da recepção foi baseado na ideia de paralelizar o \textit{driver} virtual de \textit{backend} tentando aproveitar melhor as propriedades de um processador multi-núcleo. Assim, foi introduzido o conceito de RSS que balanceia a carga de trabalho eficientemente entre os processadores.
 
-O resultado no experimento de agrupamento de interrupções foi um ganho de até 76\% na largura de banda em relação a configuração padrão e na de escalar o lado da recepção foi até 2,2 vezes mais também na largura de banda.
-
+O resultado no experimento de mesclagem de interrupções foi um ganho de até 76\% na largura de banda em relação a configuração padrão e na de escalar o lado da recepção foi até 2,2 vezes mais também na largura de banda.
 
 
 \subsection{Análise das Informações}
+Nessa revisão foram encontrados diversos artigos com propostas que modificam diferentes partes da infraestrutura: \textit{driver} de rede, placa de rede física, arquitetura da virtualização da rede e núcleo do sistema operacional.
+Essa variação dificultou um pouco na correlação entre os artigos.
 
+Nos experimentos todos parecem terem feito medições em infraestruturas reais usando o \textit{hypervisor} XEN e alguma distribuição linux como sistema operacional. 
+Isso talvez ocorreu por eles serem \textit{open-sources} e o XEN suportar diferentes sistemas operacionais.
 
-Pelos experimentos e propostas lidos, os artigos parecem se dividir em três categorias: aqueles que propõem modificar o dispositivo de E/S físico para que este esteja ciente da virtualização, os que propõem otimizar a arquitetura de virtualização de E/S atual e por fim os que sugerem modificar os parâmetros que são possíveis de serem configurados e usar ferramentas.
-
-As três categorias parecem trazer resultados positivos em relação ao desempenho de infraestruturas com máquinas sem virtualização.
-Apesar disso, as propostas que modificam o dispositivo físico dificultam a migração, replicação e alta disponibilidade de recursos na infraestrutura \cite{Santos:2008:BGS:1404014.1404017}. 
-
-Em infraestruturas que usam \textit{OpenVZ} parecem não terem problemas com a virtualização de E/S. Uma das principais causas seria o uso de apenas um núcleo e o compartilhamento da memória entre os domínios.
-
+Todos que propuseram alguma estratégia as validaram através de medições em infraestruturas reais.
+Uma possível causa seria a facilidade e o baixo custo em montar uma infraestrutura com virtualização e controlar todo o processo do experimento.
 
 \subsection{Conclusão}
-A revisão ajudou a entender melhor a área de virtualização de rede. Diversas formas de melhorar o desempenho foram encontradas, podendo separa-las em 3 categorias: aqueles que propõem modificar o dispositivo de E/S físico para que este esteja ciente da virtualização, os que propõem otimizar a arquitetura de virtualização de E/S atual e por fim os que sugerem modificar os parâmetros que são possíveis de serem configurados e usar ferramentas. 
-Essa separação fez dificultar um pouco a correlação entre trabalhos propostos.
-
+A revisão ajudou a entender melhor a área de virtualização de rede. Diversas formas de melhorar o desempenho foram encontradas. 
 Numa próxima revisão, seria interessante focar em alguma categoria para facilitar a comparação entre pesquisas.

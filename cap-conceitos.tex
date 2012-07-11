@@ -28,7 +28,7 @@ Por fim, a virtualização nativa aproveita o suporte de \textit{hardware} para vi
 %% ------------------------------------------------------------------------- %%
 \subsection{Virtualização de dispositivos de E/S}\index{virtualização!virtualização de dispositivos de E/S}
 
-Com a virtualização de servidores, os dispositivos de E/S físicos passam a terem que sofrer modificações já que em um servidor não tem apenas um único sistema operacional, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
+Com a virtualização de servidores, os dispositivos de E/S físicos passam a ter que sofrer modificações já que em um servidor não tem apenas um único sistema operacional, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
 
 \cite{Rixner:2008:NVB:1348583.1348592} separou a virtualização de E/S em duas categorias: privada ou compartilhada.
 
@@ -41,6 +41,7 @@ Quando pensamos em escalar o número de MVs, o custo da virtualização privada se 
 Normalmente, queremos que o dispositivo físico seja compartilhado entre as máquinas, tanto pela possibilidade de escalar como pelo custo. Porém, disponibilizar de maneira compartilhada o acesso a dispositivos físicos pode trazer muitos problemas de segurança, dificultar o monitoramento das informações e a migração de máquinas virtuais \cite{Santos:2008:BGS:1404014.1404017}.
 
 Para contornar esse problema, normalmente, \textit{hypervisores} como \textit{XEN}, \textit{KVM} e \textit{VMWare} restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.
+
 
 \cite{Waldspurger:2012:IV:2063176.2063194} fez algumas menções sobre as vantagens e desvantagens em se utilizar técnicas de virtualização de E/S para desacoplar os dispositivos lógicos da sua implementação física.
 
@@ -103,6 +104,18 @@ Na recepção, o domínio hospedeiro informa as possíveis páginas da memória que po
 
 
 Apesar do exemplo dado ser específico para o XEN, outros \textit{hypervisores} como \textit{WMware} e \textit{KVM} adotam uma arquitetura semelhante \cite{Santos:2008:BGS:1404014.1404017}.
+
+
+%% ------------------------------------------------------------------------- %%
+
+\subsection{Mesclagem de interrupções}\index{virtualizaçào!agrupamento de interrupções}
+
+A mesclagem de interrupções é um conjunto de parametros do \textit{driver} de redes que podem ser configurados.
+
+Ele serve para reduzir a quantidade de interrupções na transmissão/recepção de pacotes dentro de um intervalo de tempo ou número de pacotes.
+Normalmente ele é usado quando a transmissão/recepção de pacotes é muito rápida no meio físico \cite{dong2011optimizing}. Quando isso acontece, a quantidade de interrupções devido a chegada de pacotes é muito grande e acaba sobrecarregando o processador e a memória. 
+
+No contexto da virtualização de rede, ele 
  
 %% ------------------------------------------------------------------------- %%
 \section{Computação em Nuvem}\index{Computação em nuvem!fundamentos}
@@ -157,14 +170,16 @@ Essas características beneficiam o lado do servidor, que não precisará fornecer 
 
 Apesar dos benefícios, o uso da virtualização também traz problemas como citam \cite{chaudhary2008comparison}, \cite{ekanayake2010high}, \cite{wang2010impact}. 
 
-%% ------------------------------------------------------------------------- %%
-\subsection{Simulação}
 
-Uma infraestrutura de nuvem pode conter vários nós, transparentes ou não, que possuem diferentes configurações e trocam mensagens por complexas topologias de redes, estas que variam bastante em relação a largura de banda e atraso. Isso torna a tarefa de fazer medições e elaborar teorias matemáticas difícil e complexa. 
 
-Assim, experimentos com simulação pode ser mais simples tanto pelo ambiente quanto pelo programa serem mais controláveis. Apesar disso, configurar as variáveis de um sistema inteiro seria uma tarefa que consome muito tempo, principalmente quando queremos fazer vários experimentos.
-Há duas propostas de ferramentas que ajudam na construção de simulações \cite{calheiros2011cloudsim} e \cite{casanova2008simgrid}.
-
-Cloudsim é um \textit{framework} para modelagem e simulação de infraestruturas em nuvem e serviços. No momento em que o testamos, ele não possuía suporte para aplicações paralelas e distribuídas.
-
-Simgrid é um \textit{framework} para execução de \textit{clusters}, grades e mecanismos P2P. Ele usa tarefas para executar a simulação. Tais tarefas tem um custo intrínseco para transmitir sobre a rede e um custo de execução.
+%%% ------------------------------------------------------------------------- %%
+%\subsection{Simulação}
+%
+%Uma infraestrutura de nuvem pode conter vários nós, transparentes ou não, que possuem diferentes configurações e trocam mensagens por complexas topologias de redes, estas que variam bastante em relação a largura de banda e atraso. Isso torna a tarefa de fazer medições e elaborar teorias matemáticas difícil e complexa. 
+%
+%Assim, experimentos com simulação pode ser mais simples tanto pelo ambiente quanto pelo programa serem mais controláveis. Apesar disso, configurar as variáveis de um sistema inteiro seria uma tarefa que consome muito tempo, principalmente quando queremos fazer vários experimentos.
+%Há duas propostas de ferramentas que ajudam na construção de simulações \cite{calheiros2011cloudsim} e \cite{casanova2008simgrid}.
+%
+%Cloudsim é um \textit{framework} para modelagem e simulação de infraestruturas em nuvem e serviços. No momento em que o testamos, ele não possuía suporte para aplicações paralelas e distribuídas.
+%
+%Simgrid é um \textit{framework} para execução de \textit{clusters}, grades e mecanismos P2P. Ele usa tarefas para executar a simulação. Tais tarefas tem um custo intrínseco para transmitir sobre a rede e um custo de execução.
