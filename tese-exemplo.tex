@@ -102,7 +102,7 @@ framexrightmargin=10pt
 \thispagestyle{empty}
 \begin{center}
     \vspace*{2.3cm}
-    \textbf{\Large{Otimização da Virtuação de Redes em Infraestruturas em Nuvem}}\\
+    \textbf{\Large{Otimização da Mesclagem de Interrupções em Infraestruturas em Nuvem}}\\
     
     \vspace*{1.2cm}
     \Large{Eduardo Hideo Kuroda}
@@ -141,15 +141,20 @@ framexrightmargin=10pt
 \thispagestyle{empty}
     \begin{center}
         \vspace*{2.3 cm}
-        \textbf{\Large{Otimização da Virtuação de Redes em Infraestruturas em Nuvem}}\\
+        \textbf{\Large{Otimização da Mesclagem de Interrupções em Infraestruturas em Nuvem}}\\
         \vspace*{2 cm}
     \end{center}
 
     \vskip 2cm
 
     \begin{flushright}
-	Esta dissertação trata-se da versão original\\
-	do aluno Eduardo Hideo Kuroda.
+Proposta de dissertação apresentada ao 
+
+Instituto de Matemática e Estatística da Universidade de São Paulo
+
+como requisito parcial para qualificação de 
+
+Mestre em Ciência da Computação.	
     \end{flushright}
 
 \pagebreak
@@ -167,10 +172,10 @@ Porém, as mesmas se comportam com um desempenho baixo se comparado com infraestr
 
 Uma das principais causas é a arquitetura da virtualização de rede. Diferente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação dentro de uma máquina virtual o que implicam em um custo adicional tanto na memória como no processamento.
 
-Para reduz o custo do processamento, uma ideia é agrupar uma quantidade grande de pacotes para enviá-las ou recebê-las em rajadas, isso faria interromper menos o processador e reduzir a quantidade processamento por pacotes. 
+Para reduz o custo do processamento, uma ideia é  agrupar uma quantidade grande de pacotes para enviá-las ou recebê-las em rajadas, isso faria interromper menos o processador e reduzir a quantidade processamento por pacotes. 
 Essa estratégia é chamada mesclagem de interrupções.
 
-Assim, essa pesquisa tem como objetivo criar um algoritmo para a mesclagem de interrupções dos \textit{drivers} da placa de rede virtual e física tentando garantir uma melhor qualidade dos serviços dentro da infraestrutura.
+Assim, essa pesquisa tem como objetivo criar um algoritmo para otimizar a mesclagem de interrupções tentando garantir uma melhor qualidade dos serviços dentro da infraestrutura.
 
 
 \noindent \textbf{Palavras-chave:} computação em nuvem, virtualização de rede, mesclagem de interrupções
@@ -202,6 +207,7 @@ Abstract ...
 	MTU	& unidade máxima de transmissão (\emph{maximum transmission unit})\\
 	SR-IOV	& virtualização de E/S de raiz única (\emph{single root I/O virtualization})\\
 	IaaS	& infraestrutura como um serviço (\emph{Infrastructure as a service})\\
+	IP	& protocolo de Internet (\emph{Internet Protocol})\\
 \end{tabular}
 
 % ---------------------------------------------------------------------------- %
