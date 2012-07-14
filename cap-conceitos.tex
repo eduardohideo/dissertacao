@@ -5,7 +5,7 @@
 \section{Computação em Nuvem}\index{Computação em nuvem!fundamentos}
 \label{sec:computacaoEmNuvem}
 
-A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de hardware e software das Cós(Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
+A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de hardware e software das CPDs(Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
 
 Como o termo nuvem é muito abrangente, ele foi dividido em várias classificações \cite{armbrust2009above}, entre elas, o tipo de serviço o qual fornecem. Nesse texto, quando falamos de nuvem, estaremos nos referindo a serviços que fornecem uma infraestrutura (IaaS). Cada infraestrutura pode receber várias requisições de hospedar programas de desenvolvedores e, nesse caso, terá que implantá-los em algum local no interior dela. Quando um cliente, em algum momento, faz uma requisição para executar esse programa, a nuvem executa o programa internamente e repassa o resultado ao cliente.
 
@@ -20,32 +20,33 @@ Além disso, o cliente tem a impressão de estar utilizando um ambiente com recurs
 
 Essas características beneficiam o lado do servidor, que não precisará fornecer um recurso físico inteiro para cada cliente e terá maior segurança e tolerância a falhas, já que cada sistema é independente. Do lado do cliente, ele irá economizar dinheiro pelo novo modelo de negócio e terá recursos sob demanda.
 
-Apesar dos benefícios, o uso da virtualização também traz problemas como citam \cite{chaudhary2008comparison}, \cite{ekanayake2010high}, \cite{wang2010impact}. 
-
 %% ------------------------------------------------------------------------- %%
 \section{Virtualização}\index{virtualização!fundamentos}
+
 \label{sec:virtualizacao}
 \subsection{Virtualização de servidores}
 Os servidores normalmente são constituídos de CPDs que estão ligados de alguma forma por uma rede. Quando queremos queremos fornecer recursos de maneira eficiente, uma tecnologia popularmente utilizada é a virtualização \cite{goncalvesresource}.
-A virtualização divide um recurso poderoso em recursos menores chamados de máquinas virtuais e cada uma executa uma instância separada de um sistema operacional \cite{barham2003xen}.
+A virtualização divide um computador, geralmente com grande capacidade de processamento, em recursos menores chamados de máquinas virtuais de modo que cada uma age como se fosse um computador separado podendo ter inclusive diferentes sistemas operacionais \cite{barham2003xen}.
 
 Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
-
 Segundo \cite{chaudhary2008comparison}, as estratégias de virtualização podem ser divididas em 4 grandes categorias: virtualização completa, para-virtualização, virtualização em nível de sistema operacional e virtualização nativa.
 
-Na virtualização completa também conhecido como emulação de hardware, um ou vários sistemas operacionais são rodados dentro de um \textit{hypervisor}.
-O \textit{hypervisor},chamado também como gerenciador de máquinas virtuais, fornece uma plataforma para os sistemas operacionais e gerencia a execução deles.
+Na virtualização completa também conhecida como emulação de hardware, um ou vários sistemas operacionais são executados dentro de um \textit{hypervisor}.
+O \textit{hypervisor}, chamado também de gerenciador de máquinas virtuais, fornece uma plataforma para os sistemas operacionais das máquinas virtuais e gerencia a execução delas.
 
-No \textit{hypervisor} da virtualização completa, é feito a interceptação, tradução e execução das instruções sob demanda dos sistemas operacionais.
+No \textit{hypervisor} da virtualização completa, é feita a interceptação, tradução e execução das instruções sob demanda dos sistemas operacionais das máquinas virtuais.
 Nessa estratégia, o núcleo do sistema operacional que roda o \textit{hypervisor} não necessita de modificações. Dentro dessa categoria estão o \textit{KVM}, o \textit{XEN}, o \textit{VMWare} e o \textit{VirtualBox}.
 
 Diferente da virtualização completa, a para-virtualização exige uma modificação do núcleo para poder executar o \textit{hypervisor}. Assim, caso não exista o código-fonte do sistema, não é possível usar essa estratégia. Nele, o hardware virtual consegue conversar diretamente com o dispositivo emulado. Isso garante uma carga extra mínima em relação a tentar emular o dispositivo real. Nessa categoria estão incluídos o \textit{XEN}, o \textit{VMWare}.
 
-A virtualização em nível de sistema operacional modifica o núcleo do sistema isolando múltiplas instancias de um sistema operacional dentro de uma máquina física. Está incluído nessa categoria o \textit{OpenVZ}.
+A virtualização em nível de sistema operacional não tem um \textit{hypervisor}. Ela modifica o núcleo do sistema operacional isolando múltiplas instancias do sistema dentro de uma máquina física. Nesse caso, como é feito apenas um isolamento entre os sistemas, estas ficam limitadas a terem o mesmo sistema operacional. Está incluído nessa categoria o \textit{OpenVZ}.
 
-Por fim, a virtualização nativa aproveita o suporte de \textit{hardware} para virtualização dentro do próprio processador. Isto permite que múltiplos sistemas operacionais rodem em um outro, sendo capaz de cada um usar diretamente o processador do hospedeiro. Como exemplos temos o \textit{XEN}, o \textit{VMWare} e o \textit{VirtualBox}.
+Por fim, a virtualização nativa aproveita o suporte de \textit{hardware} para virtualização dentro do próprio processador. Isto permite que múltiplos sistemas operacionais rodem sobre outros, sendo capazes de cada um acessar diretamente o processador do hospedeiro. Como exemplos temos o \textit{XEN}, o \textit{VMWare} e o \textit{VirtualBox}.
+
+A virtualização completa e nativa tem uma grande vantagem em relação as outras: não é necessário mexer no núcleo do sistema oque as tornam mais simples e mais portável já que sistemas operacionais com código fechados o podem usar. A para-virtualização e virtualização em nível de sistema operacional exige uma modificação no núcleo, porém, são os que tem um melhor desempenho pois tem acesso ao hardware diretamente. Comparando as duas, a virtualização em nível de sistema operacional é bem mais intrusivo e limita o sistema operacional das instancias, mas também tem um desempenho melhor que a para-virtualização \cite{chaudhary2008comparison}.
 
 %% ------------------------------------------------------------------------- %%
+
 \subsection{Virtualização de dispositivos de E/S}\index{virtualização!virtualização de dispositivos de E/S}
 
 Com a virtualização de servidores, os dispositivos de E/S físicos passam a ter que sofrer modificações já que em um servidor não tem apenas um único sistema operacional, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
@@ -60,37 +61,33 @@ Quando pensamos em escalar o número de MVs, o custo da virtualização privada se 
 
 Normalmente, queremos que o dispositivo físico seja compartilhado entre as máquinas, tanto pela possibilidade de escalar como pelo custo. Porém, disponibilizar de maneira compartilhada o acesso a dispositivos físicos pode trazer muitos problemas de segurança, dificultar o monitoramento das informações e a migração de máquinas virtuais \cite{Santos:2008:BGS:1404014.1404017}.
 
-Para contornar esse problema, normalmente, \textit{hypervisores} como \textit{XEN}, \textit{KVM} e \textit{VMWare} restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.\\
+Para contornar esse problema, normalmente, \textit{hypervisores} como \textit{XEN}, \textit{KVM} e \textit{VMWare} restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa, por exemplo \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.\\
 
 
-\cite{Waldspurger:2012:IV:2063176.2063194} fez algumas menções sobre o uso de técnicas de virtualização de E/S.
+\cite{Waldspurger:2012:IV:2063176.2063194} fez algumas menções sobre o uso de técnicas de virtualização de E/S. Dentre as vantagens, ele cita a melhor utilização dos recursos e a economia de custos em relação a sistemas que estão com a implementação física acoplada com o dispositivo lógico, pois vários sistemas podem aproveitar o mesmo recurso. Em relação a flexibilidade, é possível mapear os dispositivos lógicos com as implementações físicas, garantindo uma maior portabilidade. Esse mapeamento pode também trazer novas funcionalidades ao recurso como: balanceamento da carga de trabalho e mascaramento das falhas. 
 
-Dentre as vantagens, ele cita a melhor utilização dos recursos e a economia de custos em relação a sistemas que estão com a implementação física acoplada com o dispositivo lógico, pois vários sistemas podem aproveitar o mesmo recurso.
-
-Em relação a flexibilidade, é possível mapear os dispositivos lógicos com as implementações físicas, garantindo uma maior portabilidade. Esse mapeamento pode também trazer novas funcionalidades ao recurso como: balanço da carga de trabalho e mascaramento das falhas. 
-
-A funcionalidade de suspender, migrar e resumir uma máquina virtual também é possível, pois com o dispositivo lógico desacoplado da implementação física possibilita reconectar a máquina virtual em outra máquina física com uma configuração diferente.
+A funcionalidade de suspender, migrar e resumir uma máquina virtual também é possível, pois com o dispositivo lógico desacoplado da implementação física, é possível reconectar a máquina virtual em outra máquina física com uma configuração diferente.
 
 Outra funcionalidade trazida com a virtualização é a interposição e transformação das requisições virtuais de E/S. Isso permite que as requisições que passam pelo dispositivo lógico sejam transformadas.
-
-Em um exemplo de leitura e escrita no disco, além de simplesmente ler/escrever no disco, é possível guardar uma cópia da informação antiga como cópia de segurança para conseguir num momento futuro, "viajar no tempo" e desfazer algo que foi feito. Outra ideia é criptografar a informação quando alguém escrever no disco, impossibilitando outras pessoas de acessar o seu conteúdo lendo o disco.
+Em um exemplo de leitura e escrita no disco, além de simplesmente ler/escrever no disco, é possível guardar uma cópia da informação antiga como cópia de segurança para conseguir num momento futuro, "viajar no tempo" e desfazer algo que foi feito. Outra ideia é criptografar a informação quando alguém escrever no disco, dificultando outras pessoas de acessarem o seu conteúdo escrito.
 
 %% ------------------------------------------------------------------------- %%
 \subsection{Virtualização da Rede}\index{virtualização!virtualização da rede}
 
 A virtualização de rede que também é um dispositivo de E/S tem algumas particularidades em relação a outros dispositivos.
-
-Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/S com a virtualização de rede, a complexidade de virtualizar a rede é muito maior pelo fato de não saber o destino de uma informação e a necessidade de estar preparado a qualquer momento para receber/enviar informações diferentemente da virtualização de disco que pode ser controlado pelas interrupções.
-A informação que passa pelo domínio de E/S pode ser através de \textit{buffer} na virtualização de disco pelo seu melhor controle no tempo e no tráfego não precisando de copiar ou remapear o dado como na virtualização da rede. 
+Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/S com a virtualização de rede, a complexidade de virtualizar a rede é muito maior pelo fato de não se conhecer o destino de uma informação e a necessidade de estar preparado a qualquer momento para receber e responder ao tráfego da rede, diferentemente da virtualização de disco em que a leitura e escrita só ocorre quando requisitado pela máquina virtual.
 
 %% ------------------------------------------------------------------------- %%
 \subsection{Virtualização da Rede no XEN}\index{virtualização!xen}
 
+
+Apesar da implementação dada ser específica para o XEN, outros \textit{hypervisores} como \textit{WMware} e \textit{KVM} adotam uma arquitetura semelhante \cite{Santos:2008:BGS:1404014.1404017}.
+
 No \textit{XEN}, para todas as máquinas conseguirem acessar o dispositivo de rede ao mesmo tempo, temos dois tipos de configuração: ponte e roteamento.
 
-Na configuração de ponte, uma ponte virtual(\texttt{xenbr0}) é criada dentro do dom0 como é possível ver na Figura \ref{ponte}. Essa ponte está ligada na interface de rede física pela porta \texttt{peth0}. A porta \texttt{vif0.0} está sendo usada para tráfegos de/para \texttt{dom0} e as portas \texttt{vifX.0}, onde X é um valor maior que 0, estão sendo usadas para tráfegos de/para algum \texttt{domU}.
+Na configuração de ponte, uma ponte virtual(\texttt{xenbr0}) é criada dentro do \texttt{dom0} como é possível ver na Figura \ref{ponte}. Essa ponte está ligada na interface de rede física pela porta \texttt{peth0}. A porta \texttt{vif0.0} está sendo usada para tráfegos de/para \texttt{dom0} e as portas \texttt{vifX.0}, onde X é um valor maior que 0, estão sendo usadas para tráfegos de/para algum \texttt{domU}.
 
-Como é possível observar, todo pacote que é recebido ou transmitido tem que passa pela ponte.
+Como é possível observar, todo pacote que é recebido ou transmitido para alguma máquina virtual tem que passa pela ponte.
 
 \begin{figure}[h!]
 \begin{center}
@@ -114,30 +111,30 @@ Na Figura \ref{arq} vemos a arquitetura da rede virtual no XEN. Para transmitir/
 
  O mecanismo de notificação de evento avisa que alguém de um domínio escreveu no \textit{buffer} de E/S. Isso é feito através de uma interrupção virtual no outro domínio.
 
-Para o domínio do controlador dos \textit{drivers} físicos(\textit{domínio do driver}) ter acesso ao \textit{buffer} de E/S dentro da memória do hospedeiro, é necessário um mecanismo de permissão. Neste, o domínio do hospedeiro fornece páginas da sua memória para serem usadas como \textit{buffer} de E/S. Essas páginas são passadas como referência na descrição da requisição.
+Para o domínio do controlador dos \textit{drivers} físicos(domínio do \textit{driver}) ter acesso ao \textit{buffer} de E/S dentro da memória do hospedeiro, é necessário um mecanismo de permissão. Neste, o domínio do hospedeiro fornece páginas da sua memória para serem usadas como \textit{buffer} de E/S. Essas páginas são passadas como referência na descrição da requisição.
 
-Na transmissão, o \texttt{domU} coloca um pacote no \textit{buffer} de E/S e a sua página de referência no \textit{buffer} de descrição e notifica o domínio do \textit{driver}. Este então mapeia as páginas recebidas no seu espaço de endereços e pede para o dispositivo de E/S físico transmiti-las.
+Na transmissão, o \texttt{domU} coloca um pacote no \textit{buffer} de E/S e a sua página de referência no \textit{buffer} de descrição e notifica o domínio do \textit{driver}. Este então mapeia as páginas recebidas no seu espaço de endereços e pede para o dispositivo de E/S físico transmiti-la, quando o dispositivo o dispositivo termina a transmissão, o \texttt{domU} libera a página.
 
-Na recepção, o domínio hospedeiro informa as possíveis páginas da memória que podem ser escritas e quando algum pacote chega pelo dispositivo físico, o \textit{netback} o copia para uma página da memória que foi fornecida. Quando o \textit{netfront} recebe uma notificação, ele pega oque está no \textit{buffer} e manda para seu sistema.
-
-
-Apesar do exemplo dado ser específico para o XEN, outros \textit{hypervisores} como \textit{WMware} e \textit{KVM} adotam uma arquitetura semelhante \cite{Santos:2008:BGS:1404014.1404017}.
+Na recepção, o domínio hospedeiro informa as possíveis páginas da memória que podem ser escritas e quando algum pacote chega pelo dispositivo físico, o dispositivo físico envia uma interrupção de chegada de pacote ao domínio do \textit{driver}, o \texttt{netback} o copia para uma página da memória que foi fornecida e envia uma interrupção para o \texttt{netfront}. Quando o \texttt{netfront} recebe uma notificação, ele pega oque está no \textit{buffer}, manda para o seu sistema e libera o buffer.
 
 
 %% ------------------------------------------------------------------------- %%
 
-\subsection{Mesclagem de Interrupções}\index{virtualizaçào!agrupamento de interrupções}
+\section{Mesclagem de Interrupções}\index{Mesclagem de interrupções}
 
-As interrupções tem prioridade absoluta sobre todas as outras tarefas e se a taxa de interrupções é suficientemente elevada, o sistema gastará todo seu tempo para respondê-la e o rendimento do sistema cairá para zero.
-Consequentemente, a largura de banda do sistema cai a zero.
- \cite{salah2007coalesce}.
+Quando a recepção de pacotes é muito rápida no meio físico, a quantidade de interrupções devido a chegada de pacotes é muito grande podendo sobrecarregar o processamento.\cite{dong2011optimizing}.
+Isso ocorre porque as interrupções têm prioridade absoluta sobre todas as outras tarefas e se a taxa de interrupções é suficientemente elevada, o sistema gastará todo seu tempo para respondê-la e o rendimento do sistema cairá para zero. \cite{salah2007coalesce}.
 
-Várias soluções são propostas na literatura para resolver esse problema: mesclagem de interrupções \cite{salah2007coalesce}, \textit{polling} \cite{Corbet:2005:LDD:1209083}, copia-zero \cite{Santos:2008:BGS:1404014.1404017}, \textit{scatter/gather} \cite{Corbet:2005:LDD:1209083}, \textit{TSO} \cite{gro}, \textit{GRO} \cite{gro}. 
+Várias soluções são propostas na literatura para resolver esse problema: mesclagem de interrupções \cite{salah2007coalesce},copia-zero \cite{Santos:2008:BGS:1404014.1404017}, \textit{scatter/gather} \cite{Corbet:2005:LDD:1209083}, \textit{TSO} \cite{gro}, \textit{GRO} \cite{gro}. 
 
 O foco dessa pesquisa está na mesclagem de interrupções que pode ser feita através de um conjunto de parâmetros do \textit{driver} de redes.
-O objetivo dele é reduzir a quantidade de interrupções na transmissão/recepção de pacotes dentro de um intervalo de tempo ou número de pacotes. 
-Para isso é possível manipular 4 parâmetros, \texttt{tx-frames},\texttt{rx-frames},\texttt{tx-usecs},\texttt{rx-usecs}. A descrição de cada parâmetro está na tabela \ref{funcoes}.
+O objetivo dele é reduzir a quantidade de interrupções na transmissão/recepção de pacotes dentro de um intervalo de tempo ou número de pacotes em troca de aumentar a latência da rede. 
 
+Para isso é possível manipular 4 parâmetros, \texttt{tx-frames},\texttt{rx-frames},\texttt{tx-usecs},\texttt{rx-usecs}. A descrição de cada parâmetro está na tabela \ref{funcoes}.
+Como pode-se notar a mesclagem de interrupções depende do tamanho do \textit{buffer} de transmissão e recepção.
+O \textit{buffer} pode ser tanto um espaço de memória da máquina(usando DMA) como uma memória interna da placa de rede. Caso este seja pequeno, vários pacotes serão descartados durante o tráfego de pacotes por falta de espaço, caso seja grande, pode aumentar a latência por ter muitos pacotes em espera dentro dele.
+
+O NAPI \cite{Corbet:2005:LDD:1209083} é uma interface para usar técnicas de mesclagem de interrupções para dispositivo de rede no núcleo do Linux. O objetivo dele é reduzir a carga extra do processamento na recepção de pacotes. Para isso, no momento em que há uma grande quantidade de tráfego, o núcleo desabilita as interrupções, passa a checar continuamente a chegada de pacotes na rede e caso o sistema não dê conta de manipular os pacotes, ele passa a jogá-los fora antes de levá-los ao núcleo. Esse processo é chamado de \textit{polling}. Quando o tráfego é reduzido o núcleo volta a forma padrão de recepção.
 
 {
 \begin{table}[ht!]
@@ -147,17 +144,19 @@ Para isso é possível manipular 4 parâmetros, \texttt{tx-frames},\texttt{rx-frame
 	\begin{tabular}{| cp{3.0cm} | l|}
 		nome&&descrição\\
 	\hline
-	\texttt{tx-frame} N && gera uma interrupção quando\\&& a quantidade de pacotes dentro do buffer de transmissão chegar a N\\
-	\texttt{rx-frame} N && gera uma interrupção quando\\&& a quantidade de pacotes dentro do buffer de recepção chegar a N\\
-	\texttt{tx-usecs} N && envia uma interrupção quando\\&& nenhum pacote a mais for transmitido após N microssegundos\\
-	\texttt{rx-usecs} N && envia uma interrupção quando\\&& nenhum pacote a mais for recebido após N microssegundos\\
+	\texttt{tx-frame} N && gera uma interrupção quando a quantidade de pacotes \\&& dentro do buffer de transmissão chegar a N\\
+	\texttt{rx-frame} N && gera uma interrupção quando a quantidade de pacotes \\&& dentro do buffer de recepção chegar a N\\
+	\texttt{tx-usecs} N && gera uma interrupção N microssegundos depois que um \\&& pacote for transmitido\\
+	\texttt{rx-usecs} N && gera uma interrupção N microssegundos depois que um \\&& pacote for recebido\\
 	\end{tabular}
 \end{center}
 \end{table}
 }
 
-Normalmente, essas funcionalidades é usada quando a transmissão/recepção de pacotes é muito rápida no meio físico \cite{dong2011optimizing}. Nesse cenário,a quantidade de interrupções devido a chegada de pacotes é muito grande podendo sobrecarregar o processamento.
+\subsection{Transmissão x Recepção}
+Ambas a transmissão e a recepção de pacotes podem gerar interrupções com uma frequência grande. Porém, a transmissão 
 
+\subsection{virtualização de rede}
 No contexto da virtualização de rede, como foi possível ver na arquitetura da virtualização da rede no \textit{XEN}, muitos passos extras são feitos durante recepção e transmissão de pacotes, incluindo o aumento no número de interrupções. 
 
 Como foi possível observar, na virtualização de rede do XEN, dois \textit{drivers} virtuais(\textit{frontend},\textit{backend}) são criados pelo próprio XEN para ligar o \texttt{dom0} com um \texttt{domU}.
