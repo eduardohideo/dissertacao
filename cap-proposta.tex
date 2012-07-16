@@ -3,42 +3,56 @@
 
 \section{Tema de Pesquisa}
 
-Essa pesquisa tem como tema técnicas de otimização na virtualização de rede dentro de infraestruturas de nuvem.
+Essa pesquisa tem como tema técnicas de otimização na virtualização de rede dentro de infraestruturas em nuvem.
 
 \section{Problema de Pesquisa}
 
-O problema a ser tratado nessa pesquisa é o baixo desempenho das infraestruturas em nuvem em aplicações que usam muito a rede.
+O problema a ser tratado nessa pesquisa é o baixo desempenho das infraestruturas em nuvem em relação a infraestruturas que não usam virtualização quando executam aplicações que usam intensamente a rede.
 
 \section{Evidências do problema}
 
 Infraestruturas que normalmente utilizam técnicas de virtualização, como as infraestruturas em nuvem, têm um desempenho diferente da arquitetura de rede padrão. Alguns passos adicionais são necessários para transmitir e receber um pacote de informação de dentro de uma máquina virtual, que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. Na revisão bibliográfica é possível ver melhor as propostas de cada autor.
 
 \section{Relevância do problema}
-TODO
+A computação em nuvem é importante para os negócios e vem crescendo como citam:
+Muitas organizações tem investido em computação em nuvem, mais de 150 empresas tem entrado na indústria como fornecedoras de nuvem. No lado dos consumidores de nuvem, um recente pesquisa com mais de 600 companhias pelo InformationWeek revelou que o número de companhias usando computação em nuvem aumentou de 18\% em fevereiro de 2009 para 30\% em outubro de 2010 \cite{goncalvesresource}.
+ 
+Uma infraestrutura com um desempenho baixo do que ela pode obter reduz a quantidade de recursos que ela pode forner. Com menos recursos o ganho monetário poderá ser menor seguindo o modelo ``pague somente quando usa''\cite{armbrust2009above}.
 
 \section{Propostas da Literatura}
 Após ter feito uma revisão bibliográfica na área, no qual tivemos diversas estratégias diferentes, nessa pesquisa resolvemos direcionar o trabalho para as estratégias que tentam otimizar a mesclagem de interrupções.
 
-\cite{dong2011optimizing} propuseram uma otimização por mesclagem de interrupções na recepção dentro dos \textit{drivers} virtuais. 
-Os autores perceberam que o pacote passa por duas camadas de \textit{drivers} virtuais de rede antes de chegar no destino. O primeiro é o \textit{driver} de \textit{backend} que ficam na ponte e o outro é o driver de \textit{frontend} que está dentro da máquina virtual. 
-Considerando estas duas camadas, a combinação de mesclagem de interrupções nas duas causaria um atraso adicional no envio.
-
-Nessa pesquisa eles focaram em otimizar os \textit{drivers} virtuais, deixando de fora o \textit{driver} físico.
-
-
 
 \section{Proposta de pesquisa}
 
-Nessa pesquisa, propomos um algoritmo para mesclagem de interrupção do \textit{driver} da placa de rede virtual e física, tentando ajustar esses parâmetros dinamicamente de forma a garantir uma melhor qualidade do serviço da infraestrutura de nuvem. 
+Nessa pesquisa, propomos um algoritmo para mesclagem de interrupções do \textit{driver} da placa de rede virtual e física, tentando ajustar esses parâmetros dinamicamente de forma a garantir uma melhor qualidade do serviço da infraestrutura de nuvem. 
 
-A proposta será uma solução se o desempenho em largura de banda e latência de aplicações que usam intensamente a rede for equivalente a uma infraestrutura sem virtualização.
+A proposta será uma solução se o desempenho em largura de banda e latência de aplicações que usam intensamente a rede tiverem próximas do desempenho de infraestruturas sem virtualização.
 
+Tomando como base a arquitetura da virtualização de rede do XEN\ref{arq}, vemos que existe três \textit{drivers} de rede antes de chegar ao destino: o \textit{driver} do dispositivo físico, o \textit{netback} e o \textit{netfront}.
+
+A mesclagem no \textit{driver} do dispositivo físico é complexa já que afeta todas máquinas virtuais e podemos ter nelas diferentes clientes rodando aplicações com diferentes requisitos. 
+Quando modificamos o driver físico, os requisitos da aplicação pode tanto ser satisfeito como deixar de ser.
+
+Como exemplo, podemos ter duas aplicação as quais uma requer uma baixa latência e baixa largura de banda enquanto que outra requer muito processamento e alta largura de banda. 
+Enquanto não mesclar as interrupções a primeira aplicação funcionará bem pois nenhum pacote precisa esperar para ser enviado enquanto que a segunda funcionará mal porque a rede irá precisar de muito processamento e a aplicação também.  
+Quando mesclar, a primeira funcionará mal pois a mesclagem irá provocar um atraso e a segunda funcionará bem porque a mesclagem reduziu o processamento da rede. 
+
+Uma possível solução seria forçar todas as aplicações a terem o mesmos requisitos realocando as máquinas com requisitos de aplicação diferentes para outras infraestruturas. Porém, se existir máquinas com várias aplicações isso não seria possível.
+
+A mesclagem no \textit{netback}, diferente do \textit{driver} do dispositivo físico afeta apenas as aplicações de uma máquina virtual. Pelo \textit{netback} estar no \textit{driver domain} junto com outros \textit{netbacks}, reduzir as interrupções nesse domínio aliviaria o processamento de rede em todas as máquinas virtuais.
+Seria necessário analisar os requisitos de aplicação de cada máquina virtual para definir os parâmetros da mesclagem de cada \textit{netback}.
+
+A mesclagem no \textit{netfront} como o \textit{netback} depende das aplicações da máquina virtual que a pertence. 
+O ganho pode ser menor em relação ao \textit{netback} já que irá reduzir a interrupção no núcleo da máquina virtual que é separada das outras.
+
+Se pensarmos em mesclar as interrupções nos três \textit{drivers}, no melhor caso, quando todos os \textit{drivers} esperam receber uma quantidade de pacotes para gerar uma interrupção e recebem, o atraso será baixo porque no momento que o último pacote chega é gerada a interrupção. 
+Porém, no pior caso, quando recebe um pacote apenas, o pacote terá que ficar esperando no \textit{buffer} dos três \textit{drivers} os quais esperam que mais algum pacote apareça e só irá gerar a interrupção quando o tempo limite de espera por pacote terminar.
+
+ 
 \section{Questão de pesquisa}
 
-
-
 \section{Método de pesquisa}
-
 
 \section{Cronograma}
 

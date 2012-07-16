@@ -176,6 +176,12 @@ Na virtualização de rede do XEN, dois \textit{drivers} virtuais(\textit{frontend
 
 A estratégia de mesclagem então pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend}.
 
+\cite{dong2011optimizing} propuseram uma otimização por mesclagem de interrupções na recepção dentro dos \textit{drivers} virtuais. 
+Os autores perceberam que o pacote passa por duas camadas de \textit{drivers} virtuais de rede antes de chegar no destino. O primeiro é o \textit{driver} de \textit{backend} que ficam na ponte e o outro é o driver de \textit{frontend} que está dentro da máquina virtual. 
+Considerando estas duas camadas, a combinação de mesclagem de interrupções nas duas causaria um atraso adicional no envio.
+
+Nessa pesquisa eles focaram em otimizar os \textit{drivers} virtuais, deixando de fora o \textit{driver} físico.
+
 
 %Pela diversidade dos recursos que pode existir na nuvem, não é trivial escolher o recurso no qual será implantada a aplicação. Alguns recursos podem satisfazer os requisitos da aplicação, ou não.
 % Dessa forma, quando é feita uma requisição para implantar um serviço, um componente da infraestrutura chamado escalonador deverá procurar e selecionar de forma inteligente uma ou mais MVs para implantar a aplicação. 
