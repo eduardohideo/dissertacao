@@ -28,7 +28,7 @@ A proposta será uma solução se o desempenho em largura de banda e latência de ap
 Tomando como base a arquitetura da virtualização de rede do \textit{XEN} na Figura \ref{arq}, vemos que existe três \textit{drivers} de rede antes de chegar ao destino: o \textit{driver} do dispositivo físico, o \textit{netback} e o \textit{netfront}.
 
 \subsection{driver do dispositivo}
-A mesclagem no \textit{driver} do dispositivo físico é complexa já que afeta todas máquinas virtuais e podemos ter nelas diferentes clientes rodando aplicações com diferentes requisitos. 
+A mesclagem no \textit{driver} do dispositivo físico é complexa já que afeta todas máquinas virtuais e podemos ter nelas diferentes clientes rodando aplicações com diferentes requisitos. Também depende da placa de rede ter suporte a mesclagem. 
 Quando modificamos o driver físico, os requisitos da aplicação podem tanto serem satisfeitos como deixarem de ser.
 
 Como exemplo, podemos ter duas aplicação as quais uma requer uma baixa latência e baixa largura de banda, e a outra requer muito processamento e alta largura de banda. 
@@ -41,6 +41,7 @@ Uma possível solução seria forçar todas as aplicações a terem o mesmos requisito
 \subsection{netback}
 A mesclagem no \textit{netback}, diferente do \textit{driver} do dispositivo físico afeta apenas as aplicações de uma máquina virtual. Pelo \textit{netback} estar no \textit{driver domain} junto com outros \textit{netbacks}, reduzir as interrupções nesse domínio aliviaria o processamento de rede em todas as máquinas virtuais.
 Seria necessário analisar os requisitos de aplicação de cada máquina virtual para definir os parâmetros da mesclagem de cada \textit{netback}.
+Pelo \textit{netback} e \textit{netfront} serem virtuais e desacoplados da lógica do \textit{driver} de rede físico, eles podem usar técnicas de mesclagem se tiverem suporte independente do \textit{driver} de rede físico.
 
 \subsection{netfront}
 A mesclagem no \textit{netfront} como o \textit{netback} depende das aplicações da máquina virtual que a pertence. 
