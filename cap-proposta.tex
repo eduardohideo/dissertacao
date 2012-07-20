@@ -7,55 +7,42 @@ Essa pesquisa tem como tema técnicas de otimização na virtualização de rede em i
 
 \section{Problema de Pesquisa}
 
-O problema a ser tratado nessa pesquisa é o baixo desempenho das infraestruturas em nuvem em relação a infraestruturas que não usam virtualização quando executam aplicações que usam intensamente a rede.
+O problema a ser tratado nessa pesquisa é o desempenho baixo nas infraestruturas em nuvem que utilizam técnicas de virtualização com \textit{hypervisores} em relação a infraestruturas que virtualizam usando a virtualização em nível de sistema operacional ou não virtualizam quando executam aplicações que usam intensamente a rede.
 
 \section{Evidências do problema}
 
-Infraestruturas que normalmente utilizam técnicas de virtualização, como as infraestruturas em nuvem, têm um desempenho diferente da arquitetura de rede padrão. Alguns passos adicionais são necessários para transmitir e receber um pacote de informação de dentro de uma máquina virtual, que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. Na revisão bibliográfica é possível ver melhor as propostas de cada autor.
+Para ter evidências que o problema existe, foi feita uma revisão bibliográfica.
+Nela diversos autores falam sobre problemas na arquitetura da virtualização de rede que é usada pelos \textit{hypervisores} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592} \cite{Santos:2008:BGS:1404014.1404017} \cite{oi2009performance} \cite{xenbestpractices}. 
+
+\cite{ekanayake2010high} fizeram experimentos com infraestruturas usando \textit{XEN} e infraestruturas sem virtualização. O resultado foi que as infraestruturas usando \textit{XEN} tiveram um desempenho muito inferior causado pela alta latência e muito uso do processador.
 
 \section{Relevância do problema}
 Muitas organizações tem investido em computação em nuvem, mais de 150 empresas tem entrado na indústria como fornecedoras de nuvem \cite{cloudexpo}. No lado dos consumidores de nuvem, uma recente pesquisa com mais de 600 companhias pelo InformationWeek revelou que o número de companhias usando computação em nuvem aumentou de 18\% em fevereiro de 2009 para 30\% em outubro de 2010 \cite{goncalvesresource}.
 
+Na revisão bibliográfica foram encontrados vários autores que propuseram técnicas para tentar resolver esse problema. \cite{Rixner:2008:NVB:1348583.1348592} \cite{Santos:2008:BGS:1404014.1404017} \cite{oi2009performance} \cite{Liao:2008:STI:1477942.1477971} \cite{apparao2006characterization} \cite{jang2011low} \cite{fortuna2012improving} \cite{dong2011optimizing}. 
+
+Uma especificação para dispositivos PCIe chamada \textit{SR-IOV} foi criada apenas para tentar resolver esse problema \cite{SRIOV} e vários fabricantes de placas de rede como a Intel\cite{intel_SRIOV}, Cisco\cite{cisco_SRIOV} passaram a fabricar e vender placas de rede com essa especificação para servidores que usam \textit{XEN} ou \textit{KVM}.
+
 \section{Propostas da Literatura}
-Para essa seção foi feita uma revisão bibliográfica na área. Os detalhes de cada proposta podem ser vistos em resumo sintetizado. 
+Os detalhes de cada proposta da literatura podem ser vistos na subseção resumo sintetizado da seção da revisão bibliográfica. 
 
 \section{Proposta de pesquisa}
 
-Nessa pesquisa, propomos um algoritmo para mesclagem de interrupções do \textit{driver} da placa de rede virtual e física, tentando ajustar esses parâmetros dinamicamente de forma a garantir uma melhor qualidade do serviço da infraestrutura de nuvem. 
+Nessa pesquisa, propomos um algoritmo para mesclagem de interrupções do \textit{driver} da placa de rede virtual e física, tentando ajustar esses parâmetros dinamicamente de forma a garantir uma melhor qualidade dos serviços da infraestrutura de nuvem. 
 
-A proposta será uma solução se o desempenho em largura de banda e latência de aplicações que usam intensamente a rede tiverem algum ganho.
+O algoritmo será uma solução se reduzir o uso da \textit{CPU} por pacote na transmissão e recepção e manter a latência consideravelmente baixa.
 
-Tomando como base a arquitetura da virtualização de rede do \textit{XEN} na Figura \ref{arq}, vemos que existe três \textit{drivers} de rede antes de chegar ao destino: o \textit{driver} do dispositivo físico, o \textit{netback} e o \textit{netfront}.
+\subsection{mesclagem de interrupção na recepção em múltiplos drivers}
+Se pensarmos em mesclar as interrupções na recepção dos três \textit{drivers}, no melhor caso, quando todos os \textit{drivers} esperam receber uma quantidade de pacotes para gerar uma interrupção e recebem, o atraso será baixo porque no momento que o último pacote chega é gerada a interrupção. 
+Porém, no pior caso, quando todos recebem uma quantidade de pacotes menor que o esperado, eles terão que ficar retidos no \textit{buffer} dos \textit{drivers} os quais estavam esperando que mais algum pacote apareceria e só geraria a interrupção quando o tempo limite de espera por pacote terminasse.
+Ainda não foi encontrado nenhum artigo que analisa a mesclagem nesses três \textit{drivers} ao mesmo tempo.
 
-\subsection{driver do dispositivo}
-A mesclagem no \textit{driver} do dispositivo físico é complexa já que afeta todas máquinas virtuais e podemos ter nelas diferentes clientes rodando aplicações com diferentes requisitos. Também depende da placa de rede ter suporte a mesclagem. 
-Quando modificamos o driver físico, os requisitos da aplicação podem tanto serem satisfeitos como deixarem de ser.
-
-Como exemplo, podemos ter duas aplicação as quais uma requer uma baixa latência e baixa largura de banda, e a outra requer muito processamento e alta largura de banda. 
-Enquanto não mesclar as interrupções a primeira aplicação funcionará bem, pois nenhum pacote precisa esperar para ser enviado enquanto que a segunda funcionará mal porque a rede irá precisar de muito processamento e a aplicação também.  
-Quando mesclar, a primeira funcionará mal pois a mesclagem irá provocar um atraso considerável na rede e a segunda funcionará bem porque a mesclagem reduziu o processamento da rede liberando processamento para a aplicação. 
-
-Uma possível solução seria forçar todas as aplicações a terem o mesmos requisitos realocando as máquinas com requisitos de aplicação diferentes para outras infraestruturas. Porém, se existirem máquinas com várias aplicações isso não poderá ser possível.
-
-
-\subsection{netback}
-A mesclagem no \textit{netback}, diferente do \textit{driver} do dispositivo físico afeta apenas as aplicações de uma máquina virtual. Pelo \textit{netback} estar no \textit{driver domain} junto com outros \textit{netbacks}, reduzir as interrupções nesse domínio aliviaria o processamento de rede em todas as máquinas virtuais.
-Seria necessário analisar os requisitos de aplicação de cada máquina virtual para definir os parâmetros da mesclagem de cada \textit{netback}.
-Pelo \textit{netback} e \textit{netfront} serem virtuais e desacoplados da lógica do \textit{driver} de rede físico, eles podem usar técnicas de mesclagem se tiverem suporte independente do \textit{driver} de rede físico.
-
-\subsection{netfront}
-A mesclagem no \textit{netfront} como o \textit{netback} depende das aplicações da máquina virtual que a pertence. 
-O ganho pode ser menor em relação ao \textit{netback} já que irá reduzir a interrupção no núcleo da máquina virtual que é separada das outras.
-
-
-\subsection{mesclagem em múltiplos drivers}
-Se pensarmos em mesclar as interrupções nos três \textit{drivers}, no melhor caso, quando todos os \textit{drivers} esperam receber uma quantidade de pacotes para gerar uma interrupção e recebem, o atraso será baixo porque no momento que o último pacote chega é gerada a interrupção. 
-Porém, no pior caso, quando recebe um pacote apenas, o pacote terá que ficar esperando no \textit{buffer} dos três \textit{drivers} os quais esperam que mais algum pacote apareça e só irá gerar a interrupção quando o tempo limite de espera por pacote terminar.
-
- 
 \section{Questão de pesquisa}
+O algoritmo de mesclagem de interrupção proposto reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantêm a latência consideravelmente baixa em relação a infraestrutura sem o algoritmo?
+
 
 \section{Método de pesquisa}
+
 
 \section{Cronograma}
 

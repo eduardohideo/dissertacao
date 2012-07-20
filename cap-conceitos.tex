@@ -83,15 +83,21 @@ Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/
 Apesar da implementação dada ser específica para o \textit{XEN}, outros \textit{hypervisores} como \textit{WMware} e \textit{KVM} adotam uma arquitetura semelhante \cite{Santos:2008:BGS:1404014.1404017}.
 
 Dando uma breve explicação sobre os termos que o \textit{XEN} usa:
-O \textit{dom0} ou domínio zero é a primeira máquina virtual iniciada pelo XEN. Ela tem certos privilégios que as outras máquinas virtuais não têm como iniciar novas máquinas e acessar o hardware diretamente. O \textit{domU} ou domínio do usuário são máquinas virtuais que, por padrão, não tem alguns privilégios que o \texttt{dom0} tem como o acesso direto ao \textit{hardware}. Assim, é necessário um mecanismo para conseguir acessar o dispositivo de rede \cite{xenguide}.
+O \textit{dom0} ou domínio zero é a primeira máquina virtual iniciada pelo XEN. Ela tem certos privilégios que as outras máquinas virtuais não têm como iniciar novas máquinas e acessar o hardware diretamente. O \texttt{domU} ou domínio do usuário são máquinas virtuais que, por padrão, não tem alguns privilégios que o \texttt{dom0} tem como o acesso direto ao \textit{hardware}. Assim, é necessário um mecanismo para conseguir acessar o dispositivo de red \cite{xenguide}.
 
-No \textit{XEN}, para todas as máquinas conseguirem acessar o dispositivo de rede ao mesmo tempo, temos dois tipos de configuração: ponte e roteamento.
+No \textit{XEN}, para todas as máquinas conseguirem acessar o dispositivo de rede ao mesmo tempo, temos dois tipos de configuração: ponte e roteador.
+Ambos são sistemas que servem para encaminhar pacotes entre domínios baseados nas informações que os próprios pacotes contêm, porém, a ponte se fundamenta nos dados da camada de enlace enquanto que o roteador se fundamenta nos dados da camada de rede \cite{bradner1999rfc}. 
+Podendo trafegar pacotes entre domínios, os \texttt{domUs} conseguiriam enviar e receber pacotes do dispositivo de rede com o \texttt{dom0} como intermediário.
 
-Como explica \cite{xenenv}, na configuração de ponte, uma ponte virtual(\texttt{xenbr0}) é criada dentro do \texttt{dom0} como é possível ver na Figura \ref{ponte}.
+\cite{xenenv} descrevem a implementação da configuração de ponte na qual uma ponte virtual(\texttt{xenbr0}) é criada dentro do \texttt{dom0} como é possível ver na Figura \ref{ponte}.
 Essa ponte está ligada na interface de rede física pela porta \texttt{peth0}. A porta \texttt{vif0.0} está sendo usada para tráfegos de/para \texttt{dom0} e as portas \texttt{vifX.0}, onde X é um valor maior que 0, estão sendo usadas para tráfegos de/para algum \texttt{domU}.
 Como é possível observar, todo pacote que é recebido ou transmitido para alguma máquina virtual tem que passa pela ponte dentro do \texttt{dom0}.
 
-Na configuração de roteamento o \texttt{dom0} cria uma ligação entre ele e cada \texttt{domU}. Rotas de cada domU são adicionados na tabela de roteamento do \texttt{dom0}, nesse caso o \textit{IP} de cada  \textit{domU} tem que ser estático.\\
+Na configuração de roteador o \texttt{dom0} cria uma ligação entre ele e cada \texttt{domU}. Rotas de cada domU são adicionados na tabela de roteamento do \texttt{dom0}, nesse caso o \textit{IP} de cada \textit{domU} tem que ser estático.\\
+
+
+\textit{james2004performance} fez um experimento comparando a ponte virtual e o roteador virtual. Os resultados foram semelhantes tanto na largura de banda como na latência e no uso do processador. 
+Nessa pesquisa focaremos na configuração de ponte pela maioria dos trabalhos relacionados terem feito experimentos com essa configuração.
 
 \begin{figure}[h!]
 \begin{center}
@@ -177,9 +183,14 @@ Tanto a transmissão e a recepção de pacotes podem gerar interrupções com uma fre
 A transmissão gera uma interrupção quando um pacote é transmitido com sucesso e a recepção gera uma interrupção quando um pacote é recebido.
 A diferença entre eles é que enquanto a transmissão pode ser controlar os pacotes que são enviados pelo sistema, a recepção não consegue controlar os pacotes que chegam.
 Assim, na transmissão podemos reduzir de outras formas a quantidade de interrupções. Uma das principais propostas da literatura é o \textit{GSO} \cite{gro}.
+
+Atualmente, o tamanho do pacote é limitado pela \textit{MTU}. No protocolo \textit{Ethernet} ela tem como valor padrão 1500 \textit{bytes}. Esse valor acabou sendo adotado na época do crescimento da Internet pelo seus limites de hardware e infelizmente continua até hoje. Assim, não é possível enviar pacotes maiores que 1500 \textit{bytes} pela Internet oque força o sistema operacional a segmentar seus dados em pacotes pequenos para conseguir enviá-los. Isso sobrecarrega o processador tanto para segmentar os dados, como para enviar e receber esses pacotes.
+
  O \textit{GSO}(\textit{Generic segmentation offload}) permite ao \textit{driver} de rede segmentar os pacotes, uma tarefa que normalmente é feita pelo sistema operacional.
-Com a segmentação sendo feita fora do sistema, isso permite então enganar o \textit{MTU} da interface de rede do sistema. 
-Fingindo ter um MTU alto o pacote é segmentado em pedaços grandes e em menor quantidade quando o sistema mandar transmití-lo. Com menos pacotes a quantidade de interrupções por pacote é reduzida. 
+
+Com a segmentação sendo feita fora do sistema, isso permite então enganar o \textit{MTU} na interface de rede do sistema. 
+
+Fingindo ter uma \textit{MTU} alta o pacote é segmentado em pedaços grandes e em menor quantidade quando o sistema mandar transmití-lo. Com menos pacotes a quantidade de interrupções por pacote é reduzida. 
 Na recepção, o \textit{LRO}(large receive offload) e \textit{GRO}(generic receive offload) \cite{gro} são soluções baseado do \textit{GSO} onde os pacotes são mesclados quando recebidos. O \textit{LRO} agrega todos os pacotes TCP que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a mesclagem dos pacotes pelos cabeçalhos oque não traz perdas e além disso o \textit{GRO} não é limitado ao TCP. Apesar de conseguir uma mesclagem dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes oque força a ter que usar uma técnica de mesclagem de interrupção como o \textit{NAPI} para conseguir resegmentar os pacotes.
 
 \subsection{virtualização de rede}
@@ -189,52 +200,30 @@ Na virtualização de rede do \textit{XEN}, dois \textit{drivers} virtuais(\textit
 
 A estratégia de mesclagem então pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend}.
 
+Mesclar as interrupções em cada dispositivo tem certas diferenças que devem ser consideradas
+
+\subsection{driver do dispositivo}
+A mesclagem no \textit{driver} do dispositivo físico é complexa já que afeta o tráfego de pacotes em todas máquinas virtuais e, consequentemente, em todas as aplicações que usam a rede.
+Também necessita que a placa de rede tenha suporte a mesclagem. 
+Quando modificamos o \textit{driver} físico, os requisitos de várias aplicações podem tanto serem satisfeitos como deixarem de ser.
+
+Como exemplo, podemos ter duas aplicação as quais uma requer uma baixa latência e baixa largura de banda, e a outra requer muito processamento e alta largura de banda. 
+Enquanto não mesclar as interrupções a primeira aplicação funcionará bem, pois nenhum pacote precisa esperar para ser enviado enquanto que a segunda funcionará mal porque a rede irá precisar de muito processamento e a aplicação também.  
+Quando mesclar, a primeira funcionará mal pois a mesclagem irá provocar um atraso considerável na rede e a segunda funcionará bem porque a mesclagem reduziu o processamento da rede liberando processamento para a aplicação. 
+
+Uma possível solução para conseguir satisfazer os requisitos seria forçar todas as aplicações da infraestrutura a terem os mesmos requisitos realocando as máquinas com requisitos de aplicações diferentes para outras infraestruturas.
+
+\subsection{netback}
+A mesclagem no \textit{netback}, diferente do \textit{driver} do dispositivo físico afeta apenas as aplicações de uma determinada máquina virtual. 
+Pelo \textit{netback} estar no \textit{driver domain} consumindo processamento junto com vários outros \textit{netbacks}, reduzir as interrupções dele aliviaria o processamento da rede por máquina virtual do \textit{driver domain} e poderia permitir que mais máquinas virtuais usem a rede.
+
+Seria necessário analisar os requisitos de aplicação de cada máquina virtual para definir os parâmetros da mesclagem de cada \textit{netback}.
+Pelo \textit{netback} e \textit{netfront} serem virtuais e desacoplados da lógica do \textit{driver} de rede físico, eles podem usar técnicas de mesclagem se tiverem suporte independente do \textit{driver} de rede físico.
+
+\subsection{netfront}
+A mesclagem no \textit{netfront} como o \textit{netback} depende das aplicações da máquina virtual que a pertence. 
+O ganho pode ser menor em relação ao \textit{netback} já que irá reduzir a interrupção no núcleo da máquina virtual que é isolada das outras.
+
 \cite{dong2011optimizing} propuseram uma otimização por mesclagem de interrupções na recepção dentro dos \textit{drivers} virtuais. 
 Os autores perceberam que o pacote passa por duas camadas de \textit{drivers} virtuais de rede antes de chegar no destino. O primeiro é o \textit{driver} de \textit{backend} que fica na ponte e o outro é o driver de \textit{frontend} que está dentro da máquina virtual. 
 Considerando estas duas camadas, a combinação de mesclagem de interrupções nas duas causaria um atraso adicional no envio. Nessa pesquisa eles focaram em otimizar os \textit{drivers} virtuais, deixando de fora o \textit{driver} físico.
-
-%Pela diversidade dos recursos que pode existir na nuvem, não é trivial escolher o recurso no qual será implantada a aplicação. Alguns recursos podem satisfazer os requisitos da aplicação, ou não.
-% Dessa forma, quando é feita uma requisição para implantar um serviço, um componente da infraestrutura chamado escalonador deverá procurar e selecionar de forma inteligente uma ou mais MVs para implantar a aplicação. 
-% O processo o qual o escalonador faz de buscar, selecionar e fornecer uma MV é chamado alocação de recursos e, nesse caso, o recurso que está sendo alocado é uma MV.
-%Existem duas formas de selecionar um recurso: a priori e a posteriori. A priori, a primeira alocação do recurso já é a solução ótima. Já a posteriori, as soluções são sub-ótimas, assim, os recursos são 
-%gerenciados continuamente, afim de tentar sempre satisfazer os requisitos da aplicação.\cite{goncalvesresource}
-
-%\begin{figure}[h]
-%\begin{center}
-%  \includegraphics[width=60mm,height=60mm]{./img/resource_distance.png}
-%\caption{Recursos interligados com largura de banda e atraso diferentes}
-%\label{resource}
-%\end{center}
-%\end{figure}
-%
-%
-%Nesse procedimento, a dinamicidade e os diferentes requerimentos da aplicação pode fazer com que os recursos (no caso as MVs) sejam mal usados \cite{goncalvesresource}.
-%Como exemplo, se houver 3 recursos iguais com enlaces distintos como mostra na Figura \ref{resource}, 
-%implantar uma aplicação no recurso 1 pode ser diferente de implantar no recurso 2 ou 3, pois ela pode querer se comunicar com alguma outra aplicação que está em outro recurso. 
-%Nesse caso, se a aplicação tem requisitos de largura de banda ou tempo de resposta, essa escolha pode ajudar a respeitar ou não esses requisitos.
-%
-%
-%Guiado pelos requerimentos do projeto CHOReOS\footnote{http://www.choreos.eu/bin/view/Main/}, os serviços os quais a nuvem terá que lidar, serão coreografias. Coreografia é um tipo de %composição de serviços, no qual cada serviço interage com outro sem um elemento central que coordena o processo como um todo. Ela só acontece quando cada participante executa seu papel. %Esse processo é chamado atuação. Na atuação, nós necessitamos implantar um conjunto de serviços que faça a coordenação entre papéis.
-% Quando um serviço interage com outro através de um elemento central, nós a chamamos de orquestração. Semelhante a coreografia, na orquestração devemos implantar serviços para que a %composição possa ser executado. 
-
-%O projeto CHOReOS irá implementar um arcabouço para o desenvolvimento de coreografias escaláveis. A meta desse projeto é possibilitar para experientes do domínio desenvolver soluções de %ultra-larga escala descentralizados, compostos de serviços heterogêneos que são adaptáveis e cientes da QoS. A priori, estas soluções são possíveis somente com a ajuda de dedicados %profissionais de TI fornecendo a habilidade necessária para arquitetura de design e engenharia de software.
-
-%\cite{shouraboura2011placement} estudou o problema de alocar aplicações com o objetivo de reduzir a latência entre os recursos que precisam se comunicar. 
-%Uma forma de conseguir resolver esse problema seria mapear a distância entre cada nó, porém,  a eficiência para mapear n nós é O(\begin{math} n^2\end{math}). %Como a latência pode mudar a qualquer momento, a quantidade de distância analisada pode variar bastante dependendo da rede e queremos uma informação em tempo real do que ocorre na rede %para alocar as aplicações rapidamente, melhorar a eficiência do algoritmo ajudaria a resolver melhor o problema.
-% Nesse artigo foi elaborado um modelo para analisar a distâncias entre nós usando diagramas de voronoi o qual tem eficiência O(\begin{math}n\log{n}\end{math}).
-
-
-%% ------------------------------------------------------------------------- %%
-
-
-%%% ------------------------------------------------------------------------- %%
-%\subsection{Simulação}
-%
-%Uma infraestrutura de nuvem pode conter vários nós, transparentes ou não, que possuem diferentes configurações e trocam mensagens por complexas topologias de redes, estas que variam bastante em relação a largura de banda e atraso. Isso torna a tarefa de fazer medições e elaborar teorias matemáticas difícil e complexa. 
-%
-%Assim, experimentos com simulação pode ser mais simples tanto pelo ambiente quanto pelo programa serem mais controláveis. Apesar disso, configurar as variáveis de um sistema inteiro seria uma tarefa que consome muito tempo, principalmente quando queremos fazer vários experimentos.
-%Há duas propostas de ferramentas que ajudam na construção de simulações \cite{calheiros2011cloudsim} e \cite{casanova2008simgrid}.
-%
-%Cloudsim é um \textit{framework} para modelagem e simulação de infraestruturas em nuvem e serviços. No momento em que o testamos, ele não possuía suporte para aplicações paralelas e distribuídas.
-%
-%Simgrid é um \textit{framework} para execução de \textit{clusters}, grades e mecanismos P2P. Ele usa tarefas para executar a simulação. Tais tarefas tem um custo intrínseco para transmitir sobre a rede e um custo de execução.
