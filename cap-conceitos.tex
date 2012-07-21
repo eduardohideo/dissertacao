@@ -83,7 +83,7 @@ Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/
 Apesar da implementação dada ser específica para o \textit{XEN}, outros \textit{hypervisores} como \textit{WMware} e \textit{KVM} adotam uma arquitetura semelhante \cite{Santos:2008:BGS:1404014.1404017}.
 
 Dando uma breve explicação sobre os termos que o \textit{XEN} usa:
-O \textit{dom0} ou domínio zero é a primeira máquina virtual iniciada pelo XEN. Ela tem certos privilégios que as outras máquinas virtuais não têm como iniciar novas máquinas e acessar o hardware diretamente. O \texttt{domU} ou domínio do usuário são máquinas virtuais que, por padrão, não tem alguns privilégios que o \texttt{dom0} tem como o acesso direto ao \textit{hardware}. Assim, é necessário um mecanismo para conseguir acessar o dispositivo de red \cite{xenguide}.
+O \textit{dom0} ou domínio zero é a primeira máquina virtual iniciada pelo XEN. Ela tem certos privilégios que as outras máquinas virtuais não têm como iniciar novas máquinas e acessar o hardware diretamente. O \texttt{domU} ou domínio do usuário são máquinas virtuais que, por padrão, não tem alguns privilégios que o \texttt{dom0} tem como o acesso direto ao \textit{hardware}. Assim, é necessário um mecanismo para conseguir acessar o dispositivo de rede \cite{xenguide}.
 
 No \textit{XEN}, para todas as máquinas conseguirem acessar o dispositivo de rede ao mesmo tempo, temos dois tipos de configuração: ponte e roteador.
 Ambos são sistemas que servem para encaminhar pacotes entre domínios baseados nas informações que os próprios pacotes contêm, porém, a ponte se fundamenta nos dados da camada de enlace enquanto que o roteador se fundamenta nos dados da camada de rede \cite{bradner1999rfc}. 
@@ -93,7 +93,7 @@ Podendo trafegar pacotes entre domínios, os \texttt{domUs} conseguiriam enviar e
 Essa ponte está ligada na interface de rede física pela porta \texttt{peth0}. A porta \texttt{vif0.0} está sendo usada para tráfegos de/para \texttt{dom0} e as portas \texttt{vifX.0}, onde X é um valor maior que 0, estão sendo usadas para tráfegos de/para algum \texttt{domU}.
 Como é possível observar, todo pacote que é recebido ou transmitido para alguma máquina virtual tem que passa pela ponte dentro do \texttt{dom0}.
 
-Na configuração de roteador o \texttt{dom0} cria uma ligação entre ele e cada \texttt{domU}. Rotas de cada domU são adicionados na tabela de roteamento do \texttt{dom0}, nesse caso o \textit{IP} de cada \textit{domU} tem que ser estático.\\
+Na configuração de roteador o \texttt{dom0} cria uma ligação entre ele e cada \texttt{domU}. Rotas de cada domU são adicionados na tabela de roteamento do \texttt{dom0}, nesse caso o \textit{IP} de cada \textit{domU} tem que ser estático.
 
 
 \cite{james2004performance} fez um experimento comparando a ponte virtual e o roteador virtual. Os resultados foram semelhantes tanto na largura de banda como na latência e no uso do processador. 
@@ -112,7 +112,7 @@ Na Figura \ref{arq} vemos a arquitetura da virtualização da rede usando ponte no
 Para transmitir/receber um pacote no domínio hospedeiro(\texttt{domU}) é usado o canal de E/S.
 Esse canal evita que cada pacote tenha que ser copiado de um domínio a outro. Para tal, o textit{domU} compartilha algumas páginas de sua memória e informa a referência delas por esse canal para o outro domínio mapea-las em seu espaço de endereço. Quando algum domínio coloca algum pacote nessas páginas uma notificação é enviada para o outro domínio.
 
-Esse mecanismo consiste de notificações de evento e um \textit{buffer} de descrição em anel. 
+O canal de E/S consiste de notificações de evento e um \textit{buffer} de descrição em anel. 
 
 A notificação de evento avisa que alguém de um domínio escreveu no \textit{buffer} de E/S. Isso é feito através de uma interrupção virtual no outro domínio.
 
@@ -150,7 +150,8 @@ A mesclagem de interrupções é uma das propostas da literatura para resolver esse
 Ela pode ser feita através de um conjunto de parâmetros do \textit{driver} de redes se este o suportar.
 O objetivo dela é reduzir a quantidade de interrupções na transmissão/recepção de pacotes dentro de um intervalo de tempo ou número de pacotes em troca de aumentar a latência da rede. 
 
-Para isso é possível manipular 4 parâmetros, \texttt{tx-frames},\texttt{rx-frames},\texttt{tx-usecs},\texttt{rx-usecs}. A descrição de cada parâmetro está na tabela \ref{funcoes}.
+Para isso é possível manipular 4 parâmetros: \texttt{tx-frames},\texttt{rx-frames},\texttt{tx-usecs},\texttt{rx-usecs}. A descrição de cada parâmetro está na tabela \ref{funcoes}.
+
 Como pode-se notar a mesclagem de interrupções depende do tamanho do \textit{buffer} de transmissão e recepção.
 O \textit{buffer} pode ser tanto um espaço de memória da máquina(usando \textit{DMA}, um mecanismo que permite a um dispositivo de E/S usar a memória do sistema como \textit{buffer}) como uma memória interna da placa de rede. Caso este seja pequeno, vários pacotes serão descartados durante o tráfego de pacotes por falta de espaço, caso seja grande, pode aumentar a latência por ter muitos pacotes esperando serem lidos dentro dele.
 
@@ -159,7 +160,7 @@ Para isso, no momento em que há uma grande quantidade de tráfego em vários dispo
 Esse processo é chamado de \textit{polling}. 
 Como nem sempre se tem um tráfego grande de pacotes, usar essa estratégia o tempo todo pode acabar gerando um atraso considerável na rede. Assim, o modo de interrupção por pacote padrão e o modo de \textit{polling} ficam se alternando de acordo com o tráfego.
 O controle de quando ele deve entra ou sair no modo de \textit{polling} e quantos pacotes ele deve pegar por interrupção em cada dispositivo de rede são definidos por um parâmetro chamado ``peso''.
- Com pesos altos, a quantidade de pacotes esperada para gerar uma interrupção ou para entrar em \textit{polling} no dispositivo é maior, enquanto que com pesos baixos, a quantidade de pacotes esperada é menor. \textit{NAPI}.
+ Com pesos altos, a quantidade de pacotes esperada para gerar uma interrupção ou para entrar em \textit{polling} no dispositivo é maior, enquanto que com pesos baixos, a quantidade de pacotes esperada é menor. \cite{NAPI}.
 
 {
 \begin{table}[ht!]
@@ -178,10 +179,10 @@ O controle de quando ele deve entra ou sair no modo de \textit{polling} e quanto
 \end{table}
 }
 
-\subsection{Mesclagem de Interrupções na Transmissão}
+\section{Mesclagem de Interrupções na Transmissão}
 Tanto a transmissão e a recepção de pacotes podem gerar interrupções com uma frequência grande. 
 A transmissão gera uma interrupção quando um pacote é transmitido com sucesso e a recepção gera uma interrupção quando um pacote é recebido.
-A diferença entre eles é que enquanto a transmissão pode ser controlar os pacotes que são enviados pelo sistema, a recepção não consegue controlar os pacotes que chegam.
+A diferença entre elas é que enquanto a transmissão pode ser controlar os pacotes que são enviados pelo sistema, a recepção não consegue controlar os pacotes que chegam.
 Assim, na transmissão podemos reduzir de outras formas a quantidade de interrupções. Uma das principais propostas da literatura é o \textit{GSO} \cite{gro}.
 
 Atualmente, o tamanho do pacote é limitado pela \textit{MTU}. No protocolo \textit{Ethernet} ela tem como valor padrão 1500 \textit{bytes}. Esse valor acabou sendo adotado na época do crescimento da Internet pelo seus limites de hardware e infelizmente continua até hoje. Assim, não é possível enviar pacotes maiores que 1500 \textit{bytes} pela Internet oque força o sistema operacional a segmentar seus dados em pacotes pequenos para conseguir enviá-los. Isso sobrecarrega o processador tanto para segmentar os dados, como para enviar e receber esses pacotes.
@@ -191,18 +192,22 @@ Atualmente, o tamanho do pacote é limitado pela \textit{MTU}. No protocolo \text
 Com a segmentação sendo feita fora do sistema, isso permite então enganar o \textit{MTU} na interface de rede do sistema. 
 
 Fingindo ter uma \textit{MTU} alta o pacote é segmentado em pedaços grandes e em menor quantidade quando o sistema mandar transmití-lo. Com menos pacotes a quantidade de interrupções por pacote é reduzida. 
-Na recepção, o \textit{LRO}(large receive offload) e \textit{GRO}(generic receive offload) \cite{gro} são soluções baseado do \textit{GSO} onde os pacotes são mesclados quando recebidos. O \textit{LRO} agrega todos os pacotes TCP que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a mesclagem dos pacotes pelos cabeçalhos oque não traz perdas e além disso o \textit{GRO} não é limitado ao TCP. Apesar de conseguir uma mesclagem dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes oque força a ter que usar uma técnica de mesclagem de interrupção como o \textit{NAPI} para conseguir resegmentar os pacotes.
+Na recepção, o \textit{LRO}(large receive offload) e o \textit{GRO}(generic receive offload) \cite{gro} são soluções baseadas no \textit{GSO} onde os pacotes são mesclados quando recebidos. O \textit{LRO} agrega todos os pacotes TCP que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a mesclagem dos pacotes pelos cabeçalhos oque não traz perdas e além disso o \textit{GRO} não é limitado ao TCP. Apesar de conseguir uma mesclagem dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes oque força a ter que usar uma técnica de mesclagem de interrupção como o \textit{NAPI} para conseguir resegmentar os pacotes.
 
-\subsection{virtualização de rede}
-No contexto da virtualização de rede, como foi possível observar na arquitetura da virtualização da rede no \textit{XEN}, muitos passos extras são feitos durante recepção e transmissão de pacotes, incluindo o aumento no número de interrupções. 
+\section{Mesclagem e Virtualização de Rede}
+No contexto da virtualização de rede, como foi possível observar na arquitetura da virtualização da rede no \textit{XEN}, muitos passos extras são feitos durante recepção e transmissão de pacotes, fazendo aumentar o número de interrupções. 
 
 Na virtualização de rede do \textit{XEN}, dois \textit{drivers} virtuais(\textit{frontend},\textit{backend}) são criados pelo próprio \textit{XEN} para ligar o \texttt{dom0} com um \texttt{domU}.
 
 A estratégia de mesclagem então pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend}.
 
-Mesclar as interrupções em cada dispositivo tem certas diferenças que devem ser consideradas
+\cite{dong2011optimizing} propuseram uma otimização por mesclagem de interrupções na recepção dentro dos \textit{drivers} virtuais. 
+Os autores perceberam que o pacote passa por duas camadas de \textit{drivers} virtuais de rede antes de chegar no destino. O primeiro é o \textit{driver} de \textit{backend} que fica na ponte e o outro é o driver de \textit{frontend} que está dentro da máquina virtual. 
+Considerando estas duas camadas, a combinação de mesclagem de interrupções nas duas causaria um atraso adicional no envio. Nessa pesquisa eles focaram em otimizar os \textit{drivers} virtuais, deixando de fora o \textit{driver} físico.
 
-\subsection{driver do dispositivo}
+Mesclar as interrupções em cada dispositivo tem certas diferenças que devem ser consideradas.
+
+\subsection{Driver do Dispositivo}
 A mesclagem no \textit{driver} do dispositivo físico é complexa já que afeta o tráfego de pacotes em todas máquinas virtuais e, consequentemente, em todas as aplicações que usam a rede.
 Também necessita que a placa de rede tenha suporte a mesclagem. 
 Quando modificamos o \textit{driver} físico, os requisitos de várias aplicações podem tanto serem satisfeitos como deixarem de ser.
@@ -213,17 +218,15 @@ Quando mesclar, a primeira funcionará mal pois a mesclagem irá provocar um atras
 
 Uma possível solução para conseguir satisfazer os requisitos seria forçar todas as aplicações da infraestrutura a terem os mesmos requisitos realocando as máquinas com requisitos de aplicações diferentes para outras infraestruturas.
 
-\subsection{netback}
+\subsection{Netback}
 A mesclagem no \textit{netback}, diferente do \textit{driver} do dispositivo físico afeta apenas as aplicações de uma determinada máquina virtual. 
 Pelo \textit{netback} estar no \textit{driver domain} consumindo processamento junto com vários outros \textit{netbacks}, reduzir as interrupções dele aliviaria o processamento da rede por máquina virtual do \textit{driver domain} e poderia permitir que mais máquinas virtuais usem a rede.
 
 Seria necessário analisar os requisitos de aplicação de cada máquina virtual para definir os parâmetros da mesclagem de cada \textit{netback}.
 Pelo \textit{netback} e \textit{netfront} serem virtuais e desacoplados da lógica do \textit{driver} de rede físico, eles podem usar técnicas de mesclagem se tiverem suporte independente do \textit{driver} de rede físico.
 
-\subsection{netfront}
+\subsection{Netfront}
 A mesclagem no \textit{netfront} como o \textit{netback} depende das aplicações da máquina virtual que a pertence. 
 O ganho pode ser menor em relação ao \textit{netback} já que irá reduzir a interrupção no núcleo da máquina virtual que é isolada das outras.
 
-\cite{dong2011optimizing} propuseram uma otimização por mesclagem de interrupções na recepção dentro dos \textit{drivers} virtuais. 
-Os autores perceberam que o pacote passa por duas camadas de \textit{drivers} virtuais de rede antes de chegar no destino. O primeiro é o \textit{driver} de \textit{backend} que fica na ponte e o outro é o driver de \textit{frontend} que está dentro da máquina virtual. 
-Considerando estas duas camadas, a combinação de mesclagem de interrupções nas duas causaria um atraso adicional no envio. Nessa pesquisa eles focaram em otimizar os \textit{drivers} virtuais, deixando de fora o \textit{driver} físico.
+
