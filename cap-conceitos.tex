@@ -180,8 +180,8 @@ O controle de quando ele deve entra ou sair no modo de \textit{polling} e quanto
 }
 
 \section{Mesclagem de Interrupções na Transmissão}
-Tanto a transmissão e a recepção de pacotes podem gerar interrupções com uma frequência grande. 
-A transmissão gera uma interrupção quando um pacote é transmitido com sucesso e a recepção gera uma interrupção quando um pacote é recebido.
+Tanto a transmissão e a recepção de pacotes podem gerar interrupções com uma frequência grande \cite{menon2006optimizing}.
+A transmissão gera uma interrupção quando um pacote é transmitido com sucesso e a recepção gera uma interrupção quando um pacote é recebido \cite{Corbet:2005:LDD:1209083}.
 A diferença entre elas é que enquanto a transmissão pode ser controlar os pacotes que são enviados pelo sistema, a recepção não consegue controlar os pacotes que chegam.
 Assim, na transmissão podemos reduzir de outras formas a quantidade de interrupções. Uma das principais propostas da literatura é o \textit{GSO} \cite{gro}.
 

@@ -7,7 +7,7 @@ Essa pesquisa tem como tema técnicas de otimização na virtualização de rede em i
 
 \section{Problema de Pesquisa}
 
-O problema a ser tratado nessa pesquisa é o desempenho baixo nas infraestruturas em nuvem que utilizam técnicas de virtualização com \textit{hypervisores} em relação a infraestruturas que virtualizam usando a virtualização em nível de sistema operacional ou não virtualizam quando executam aplicações que usam intensamente a rede.
+O problema a ser tratado nessa pesquisa é o desempenho baixo nas infraestruturas em nuvem que utilizam técnicas de virtualização com \textit{hypervisores} em relação a infraestruturas que virtualizam sem o uso de \textit{hypervisores}, como a virtualização em nível de sistema operacional, ou não virtualizam quando executam aplicações que usam intensamente a rede.
 
 \section{Evidências do problema}
 
@@ -27,22 +27,27 @@ Uma especificação para dispositivos PCIe chamada \textit{SR-IOV} foi criada apen
 Os detalhes de cada proposta da literatura podem ser vistos na subseção resumo sintetizado da seção da revisão bibliográfica. 
 
 \section{Proposta de pesquisa}
+Nessa pesquisa, propomos um algoritmo para mesclagem de interrupções dos \textit{drivers} das placas de rede virtuais e física tentando ajustar os parâmetros de mesclagem dinamicamente de forma a garantir uma melhor qualidade dos serviços da infraestrutura de nuvem que utilizam a rede.
 
-Nessa pesquisa, propomos um algoritmo para mesclagem de interrupções do \textit{driver} da placa de rede virtual e física, tentando ajustar os parâmetros de mesclagem dinamicamente de forma a garantir uma melhor qualidade dos serviços da infraestrutura de nuvem que utilizam a rede.
+O algoritmo será uma solução se, na infraestrutura, reduzir o uso da \textit{CPU} por pacote na transmissão e recepção, manter a latência consideravelmente baixa e a largura de banda constante.
 
-O algoritmo será uma solução se reduzir o uso da \textit{CPU} por pacote na transmissão e recepção e manter a latência consideravelmente baixa.
+A estratégia de mesclagem pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend} como foi dita na seção de mesclagem e virtualização de rede no capítulo de conceitos.
+Se pensarmos em mesclar as interrupções na recepção dos três \textit{drivers} ao mesmo tempo, o comportamento final da rede pode ser um pouco mais complexo de se prever em relação a mesclar apenas um dos \textit{drivers}.
+Isso porque cada \textit{driver} depende tanto dos próprios parâmetros de previsão de chegada de pacotes como também depende dos parâmetros dos \textit{drivers} em que o tráfego de pacotes já passou. 
+O \textit{driver} virtual de \textit{frontend} como exemplo, recebe pacotes que passaram pelo \textit{driver} virtual de \textit{backend}. Sabendo que o \textit{driver} de \textit{backend} espera X pacotes ou Y microsegundos para gerar uma interrupção, esperar receber mais que X pacotes no \textit{frontend} poderia fazer o driver ficar esperando demais por pacotes.
 
-\subsection{mesclagem de interrupção na recepção em múltiplos drivers}
-Se pensarmos em mesclar as interrupções na recepção dos três \textit{drivers}, no melhor caso, quando todos os \textit{drivers} esperam receber uma quantidade de pacotes para gerar uma interrupção e recebem, o atraso será baixo porque no momento que o último pacote chega é gerada a interrupção. 
-Porém, no pior caso, quando todos recebem uma quantidade de pacotes menor que o esperado, eles terão que ficar retidos no \textit{buffer} dos \textit{drivers} os quais estavam esperando que mais algum pacote apareceria e só geraria a interrupção quando o tempo limite de espera por pacote terminasse.
-Ainda não foi encontrado nenhum artigo que analisa a mesclagem nesses três \textit{drivers} ao mesmo tempo.
+Na mesclagem de interrupções na transmissão não foram encontrados experimentos, mas \cite{Corbet:2005:LDD:1209083} mostra que a quantidade de interrupção devido a transmissão de pacotes é equivalente as interrupções de recepção na virtualização de rede do \textit{XEN}. 
+Ainda não foi encontrado nenhum artigo que analisa a mesclagem desses três \textit{drivers} ao mesmo tempo.
+Uma análise de como os parametros estão relacionados e como eles influenciam no tráfego de rede seria necessário antes de elaborar um algoritmo.
 
 \section{Questão de pesquisa}
 O algoritmo de mesclagem de interrupção proposto reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantêm a latência consideravelmente baixa em relação a infraestrutura sem o algoritmo?
 
-
-\section{Método de pesquisa}
-
-
 \section{Cronograma}
+Revisão bibliografica adicional: Julho/Agosto
 
+Experimento analisando a relação entre cada parâmetro da mesclagem nos \textit{drivers}: Agosto/Setembro
+
+Experimento avaliando o algoritmo proposto: Outubro
+
+texto da dissertação: Novembro/Dezembro
