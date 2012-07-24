@@ -35,8 +35,9 @@ Resolvemos direcionar essa proposta para as estratégias de mesclagem de interrup
 Apesar de não garantir que essa estratégia irá ser melhor que as outras, podemos juntar diferentes estratégias para tentar conseguir um ganho ainda maior já que cada estratégia pode modificar uma diferente parte da mesma infraestrutura.
 
 Nessa pesquisa, propomos um algoritmo para mesclagem de interrupções dos \textit{drivers} das placas de rede virtuais e física tentando ajustar os parâmetros de mesclagem dinamicamente de forma a garantir uma melhor qualidade dos serviços da infraestrutura de nuvem que utilizam a rede.
+A qualidade a qual estamos focando está em atributos de desempenho, em específico, a latência e o uso do processador. Estes variam quando modificamos os parâmetros de mesclagem. 
 
-O algoritmo será uma solução se, na infraestrutura, reduzir o uso da \textit{CPU} por pacote na transmissão e recepção, manter a latência consideravelmente baixa e a largura de banda constante.
+O algoritmo será uma solução se, na infraestrutura, reduzir o uso da \textit{CPU} por pacote na transmissão e recepção e manter a latência consideravelmente baixa.
 
 A estratégia de mesclagem pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend} como foi dita na seção de mesclagem e virtualização de rede no capítulo de conceitos.
 Se pensarmos em mesclar as interrupções na recepção dos três \textit{drivers} ao mesmo tempo, o comportamento final da rede pode ser um pouco mais complexo de se prever em relação a mesclar apenas um dos \textit{drivers}.
@@ -49,6 +50,7 @@ Na mesclagem de interrupções na transmissão não foram encontrados experimentos, 
 Ainda não foi encontrado nenhum artigo que analisa a mesclagem desses três \textit{drivers} ao mesmo tempo.
 
 Uma análise de como os parâmetros estão relacionados e como eles influenciam no tráfego de rede seria necessário antes de elaborar um algoritmo.
+
 
 \section{Questão de pesquisa}
 O algoritmo de mesclagem de interrupção proposto reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantêm a latência consideravelmente baixa em relação a infraestrutura sem o algoritmo?

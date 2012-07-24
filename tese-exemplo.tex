@@ -180,7 +180,13 @@ Nessa pesquisa criaremos um algoritmo para otimizar a mesclagem de interrupções 
 % ---------------------------------------------------------------------------- %
 % Abstract
 \chapter*{Abstract}
-Abstract ...
+The cloud infrastructure behaves underperforming compared to infrastructure without virtualization, especially when we think of deploying network-intensive applications.
+
+One major cause is the architecture of network virtualization. Unlike the standard network architecture, there are some additional steps to transmit and receive a packet of information within a virtual machine, which imply an additional cost in both memory and the processing.
+
+To reduce the cost of processing, one idea is coalesce multiple interrupts generated when a packet is sent or received. This would reduce the amount of processing a packet, but also increase the latency. This strategy is called coalescing interruption.
+
+This research will create an algorithm to optimize the interruption coalescing trying to ensure a better quality of services within the infrastructure.
 
 \noindent \textbf{Keywords:} cloud computing, network virtualization, interrupt coalesing
 

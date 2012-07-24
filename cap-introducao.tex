@@ -14,7 +14,7 @@ Uma das principais causas é o \textit{hypervisor} e sua arquitetura de virtualiz
 
 Para reduz o custo do processamento, uma ideia é mesclar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes \cite{apparao2006characterization} \cite{chaudhary2008comparison}.
 
-Assim, essa pesquisa foca em automatizar a configuração de mesclagem de interrupções do \textit{driver} da placa de rede física e virtual, esta gerada pelo \textit{hypervisor}, tentando ajustar esse parâmetro dinamicamente de forma a garantir uma melhor qualidade do serviços na infraestrutura.
+Assim, essa pesquisa foca em automatizar a configuração de mesclagem de interrupções dos \textit{drivers} de rede, esta gerada pelo \textit{hypervisor}, tentando ajustar esse parâmetro dinamicamente de forma a garantir uma melhor qualidade do serviço da infraestrutura.
 
 %% ------------------------------------------------------------------------- %%
 \section{Considerações Preliminares}
@@ -25,8 +25,7 @@ Esse trabalho está direcionado para contribuições em específico na área de compu
 %% ------------------------------------------------------------------------- %%
 \section{Objetivos}
 \label{sec:objetivo}
-O objetivo dessa pesquisa é demostrar que o algoritmo de mesclagem de interrupções reduza o uso da \textit{CPU} por pacote na transmissão e recepção, mantenha a latência consideravelmente baixa e a largura de banda constante para que possa garantir uma melhor qualidade de serviço na infraestrutura.
-
+O objetivo dessa pesquisa é demostrar que o algoritmo de mesclagem de interrupções reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantém a latência consideravelmente baixa.
 
 %% ------------------------------------------------------------------------- %%
 \section{Contribuições}
@@ -38,7 +37,8 @@ As principais contribuições desse trabalho são:
   \item 
    Fornecer um algoritmo capaz de garantir uma melhor qualidade na infraestrutura de nuvem para diferentes tipos de aplicações.
   \item 
-   Automatizar as configurações de mesclagem de interrupção do \textit{driver} da placa de rede física e virtual de forma que eles se adaptem a diferentes infraestruturas e aplicações.
+   Automatizar as configurações de mesclagem de interrupções do \textit{driver} da placa de rede física e virtual de acordo com a transmissão e recepção de pacotes.
+
 \end{itemize}
 
 %% ------------------------------------------------------------------------- %%
