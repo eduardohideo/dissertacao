@@ -166,16 +166,13 @@ Mestre em Ciência da Computação.
 % ---------------------------------------------------------------------------- %
 % Resumo
 \chapter*{Resumo}
-Uma infraestrutura em nuvem é formada por máquinas virtuais. Estas possuem 
-funcionalidades que as tornam atrativas para o mercado como a migração e a escalabilidade de recursos. 
-Porém, as mesmas se comportam com um desempenho baixo se comparado com infraestruturas sem virtualização, principalmente quando pensamos em implantar aplicações intensivas de rede. 
+As infraestrutura em nuvem se comportam com um desempenho baixo se comparado com infraestruturas sem virtualização, principalmente quando pensamos em implantar aplicações intensivas de rede. 
 
 Uma das principais causas é a arquitetura da virtualização de rede. Diferente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação dentro de uma máquina virtual o que implicam em um custo adicional tanto na memória como no processamento.
 
-Para reduz o custo do processamento, uma ideia é agrupar uma quantidade grande de pacotes para recebê-las em rajadas, isso faria interromper menos o processador e reduzir a quantidade processamento por pacotes, mas em troca aumentaria a latência da rede. 
-Essa estratégia é chamada mesclagem de interrupções.
+Para reduz o custo do processamento, uma ideia é mesclar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes, mas também aumentaria a latência. Essa estratégia é chamada mesclagem de interrupções.
 
-Assim, essa pesquisa tem como objetivo criar um algoritmo para otimizar a mesclagem de interrupções tentando garantir uma melhor qualidade dos serviços dentro da infraestrutura.
+Nessa pesquisa criaremos um algoritmo para otimizar a mesclagem de interrupções tentando garantir uma melhor qualidade dos serviços dentro da infraestrutura.
 
 
 \noindent \textbf{Palavras-chave:} computação em nuvem, virtualização de rede, mesclagem de interrupções
