@@ -30,35 +30,35 @@ Os detalhes de cada proposta da literatura podem ser vistos na subseção resumo s
 
 Na revisão foram descobertos vários artigos que modificam diferentes partes de uma infraestrutura de nuvem para conseguir um ganho de desempenho. 
 
-Resolvemos direcionar essa proposta para as estratégias de mesclagem de interrupções por parecer uma estratégia ainda pouco pesquisada e que pode trazer uma redução grande de interrupções as quais, consequentemente, poderia melhorar o desempenho da infraestrutura de nuvem.
+Resolvemos direcionar essa proposta para as estratégias de agregação de interrupções por parecer uma estratégia ainda pouco pesquisada e que pode trazer uma redução grande de interrupções as quais, consequentemente, poderia melhorar o desempenho da infraestrutura de nuvem.
 
 Apesar de não garantir que essa estratégia irá ser melhor que as outras, podemos juntar diferentes estratégias para tentar conseguir um ganho ainda maior já que cada estratégia pode modificar uma diferente parte da mesma infraestrutura.
 
-Nessa pesquisa, propomos um algoritmo para mesclagem de interrupções dos \textit{drivers} das placas de rede virtuais e física tentando ajustar os parâmetros de mesclagem dinamicamente de forma a garantir uma melhor qualidade dos serviços da infraestrutura de nuvem que utilizam a rede.
-A qualidade a qual estamos focando está em atributos de desempenho, em específico, a latência e o uso do processador. Estes variam quando modificamos os parâmetros de mesclagem. 
+Nessa pesquisa, propomos um algoritmo para agregação de interrupções dos \textit{drivers} das placas de rede virtuais e física tentando ajustar os parâmetros de agregação dinamicamente de forma a garantir uma melhor qualidade dos serviços da infraestrutura de nuvem que utilizam a rede.
+A qualidade a qual estamos focando está em atributos de desempenho, em específico, a latência e o uso do processador. Estes variam quando modificamos os parâmetros de agregação. 
 
 O algoritmo será uma solução se, na infraestrutura, reduzir o uso da \textit{CPU} por pacote na transmissão e recepção e manter a latência consideravelmente baixa.
 
-A estratégia de mesclagem pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend} como foi dita na seção de mesclagem e virtualização de rede no capítulo de conceitos.
-Se pensarmos em mesclar as interrupções na recepção dos três \textit{drivers} ao mesmo tempo, o comportamento final da rede pode ser um pouco mais complexo de se prever em relação a mesclar apenas um dos \textit{drivers}.
+A estratégia de agregação pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend} como foi dita na seção de agregação e virtualização de rede no capítulo de conceitos.
+Se pensarmos em agregar as interrupções na recepção dos três \textit{drivers} ao mesmo tempo, o comportamento final da rede pode ser um pouco mais complexo de se prever em relação a agregar apenas um dos \textit{drivers}.
 Isso porque cada \textit{driver} depende tanto dos próprios parâmetros de previsão de chegada de pacotes como também depende dos parâmetros dos \textit{drivers} em que o tráfego de pacotes já passou.
  
 O \textit{driver} virtual de \textit{frontend} como exemplo, recebe pacotes que passaram pelo \textit{driver} virtual de \textit{backend}. Sabendo que o \textit{driver} de \textit{backend} espera X pacotes para gerar uma interrupção, esperar receber mais que X pacotes no \textit{frontend} poderia fazer o \textit{driver} ficar esperando demais por pacotes.
 
-Na mesclagem de interrupções na transmissão não foram encontrados experimentos, mas \cite{Corbet:2005:LDD:1209083} mostra que a quantidade de interrupção devido a transmissão de pacotes é equivalente as interrupções de recepção na virtualização de rede do \textit{XEN}. 
+Na agregação de interrupções na transmissão não foram encontrados experimentos, mas \cite{Corbet:2005:LDD:1209083} mostra que a quantidade de interrupção devido a transmissão de pacotes é equivalente as interrupções de recepção na virtualização de rede do \textit{XEN}. 
 
-Ainda não foi encontrado nenhum artigo que analisa a mesclagem desses três \textit{drivers} ao mesmo tempo.
+Ainda não foi encontrado nenhum artigo que analisa a agregação desses três \textit{drivers} ao mesmo tempo.
 
 Uma análise de como os parâmetros estão relacionados e como eles influenciam no tráfego de rede seria necessário antes de elaborar um algoritmo.
 
 
 \section{Questão de pesquisa}
-O algoritmo de mesclagem de interrupção proposto reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantêm a latência consideravelmente baixa em relação a infraestrutura sem o algoritmo?
+O algoritmo de agregação de interrupção proposto reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantêm a latência consideravelmente baixa em relação a infraestrutura sem o algoritmo?
 
 \section{Cronograma}
 Revisão bibliografica adicional: Julho/Agosto\newline
 
-Experimento analisando a relação entre cada parâmetro da mesclagem nos \textit{drivers}: Setembro/Outubro\newline
+Experimento analisando a relação entre cada parâmetro da agregação nos \textit{drivers}: Setembro/Outubro\newline
 
 Experimento avaliando o algoritmo proposto: Novembro/Dezembro\newline
 

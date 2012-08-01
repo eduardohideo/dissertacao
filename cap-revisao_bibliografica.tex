@@ -92,16 +92,16 @@ O resultado mostrou que nas duas, tanto a transmissão como a recepção de pacotes
 
  Uma proposta futura sugerida foi deixar o núcleo do sistema automatizar o processo de balanço e analisar os resultados, quando aparecerem bons resultados, congelar a configuração de interrupção.
 
-Eles também, no final, discutiram a possibilidade de usar a função de mesclagem existentes nos \textit{drivers} das placas de rede modernas.\newline
+Eles também, no final, discutiram a possibilidade de usar a função de agregação existentes nos \textit{drivers} das placas de rede modernas.\newline
 
-\cite{dong2011optimizing} propuseram otimizações para reduzir a carga extra na virtualização da rede. Uma das otimizações foi mesclar eficientemente as interrupções virtuais e a outra escalar o lado da recepção. A mesclagem de interrupção normalmente é usada quando a transferência de pacotes do meio físico é muito alta. Com uma transferência grande, a placa de rede passa a trabalhar intensamente sobrecarregando o processador com interrupções.
+\cite{dong2011optimizing} propuseram otimizações para reduzir a carga extra na virtualização da rede. Uma das otimizações foi agregar eficientemente as interrupções virtuais e a outra escalar o lado da recepção. A agregação de interrupção normalmente é usada quando a transferência de pacotes do meio físico é muito alta. Com uma transferência grande, a placa de rede passa a trabalhar intensamente sobrecarregando o processador com interrupções.
 Na virtualização da rede, a transferência de pacotes passa a gerar interrupções físicas e virtuais. 
 
-A mesclagem de interrupções virtuais pode ser feita no \textit{driver} virtual de \textit{backend}(na ponte dentro do \texttt{dom0}) ou no \textit{driver} virtual de \textit{frontend}(dentro de um \texttt{domU}).
+A agregação de interrupções virtuais pode ser feita no \textit{driver} virtual de \textit{backend}(na ponte dentro do \texttt{dom0}) ou no \textit{driver} virtual de \textit{frontend}(dentro de um \texttt{domU}).
 
 A ideia de escalar o lado da recepção foi baseado na ideia de paralelizar o \textit{driver} virtual de \textit{backend} tentando aproveitar melhor as propriedades de um processador multi-núcleo. Assim, foi introduzido o conceito de \textit{RSS} que balanceia a carga de trabalho eficientemente entre os processadores.
 
-O resultado no experimento de mesclagem de interrupções foi um ganho de até 76\% na largura de banda em relação a configuração padrão e na de escalar o lado da recepção foi até 2,2 vezes mais também na largura de banda.
+O resultado no experimento de agregação de interrupções foi um ganho de até 76\% na largura de banda em relação a configuração padrão e na de escalar o lado da recepção foi até 2,2 vezes mais também na largura de banda.
 
 
 \subsection{Análise das Informações}
