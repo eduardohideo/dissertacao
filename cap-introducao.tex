@@ -12,9 +12,9 @@ Apesar das máquinas virtuais ajudarem a aumentar a flexibilidade, elas ainda têm
 
 Uma das principais causas é o \textit{hypervisor} e sua arquitetura de virtualização de rede. Diferente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
 
-Para reduz o custo do processamento, uma ideia é mesclar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes \cite{apparao2006characterization} \cite{chaudhary2008comparison}.
+Para reduz o custo do processamento, uma ideia é agregar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes \cite{apparao2006characterization} \cite{chaudhary2008comparison}.
 
-Assim, essa pesquisa foca em automatizar a configuração de mesclagem de interrupções dos \textit{drivers} de rede, esta gerada pelo \textit{hypervisor}, tentando ajustar esse parâmetro dinamicamente de forma a garantir uma melhor qualidade do serviço da infraestrutura.
+Assim, essa pesquisa foca em automatizar a configuração de agregação de interrupções dos \textit{drivers} de rede, esta gerada pelo \textit{hypervisor}, tentando ajustar esse parâmetro dinamicamente de forma a garantir uma melhor qualidade do serviço da infraestrutura.
 
 %% ------------------------------------------------------------------------- %%
 \section{Considerações Preliminares}
@@ -25,7 +25,7 @@ Esse trabalho está direcionado para contribuições em específico na área de compu
 %% ------------------------------------------------------------------------- %%
 \section{Objetivos}
 \label{sec:objetivo}
-O objetivo dessa pesquisa é demostrar que o algoritmo de mesclagem de interrupções reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantém a latência consideravelmente baixa.
+O objetivo dessa pesquisa é demostrar que o algoritmo de agregação de interrupções reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantém a latência consideravelmente baixa.
 
 %% ------------------------------------------------------------------------- %%
 \section{Contribuições}
@@ -37,7 +37,7 @@ As principais contribuições desse trabalho são:
   \item 
    Fornecer um algoritmo capaz de garantir uma melhor qualidade na infraestrutura de nuvem para diferentes tipos de aplicações.
   \item 
-   Automatizar as configurações de mesclagem de interrupções do \textit{driver} da placa de rede física e virtual de acordo com a transmissão e recepção de pacotes.
+   Automatizar as configurações de agregação de interrupções do \textit{driver} da placa de rede física e virtual de acordo com a transmissão e recepção de pacotes.
 
 \end{itemize}
 
@@ -45,7 +45,7 @@ As principais contribuições desse trabalho são:
 \section{Organização do Trabalho}
 \label{sec:organizacao_trabalho}
 
-No Capítulo~\ref{cap:conceitos}, apresentamos os conceitos de Virtualização de servidores, Virtualização de E/S, Virtualização de rede, Mesclagem de interrupções e Computação em nuvem.
+No Capítulo~\ref{cap:conceitos}, apresentamos os conceitos de virtualização de servidores, virtualização de E/S, virtualização de rede, agregação de interrupções e computação em nuvem.
 No Capítulo~\ref{cap:revisao_bibliografica}, apresentamos uma revisão bibliográfica na área de virtualização de rede.
 Finalmente, no Capítulo~\ref{cap:proposta}, apresentamos uma proposta na área de virtualização de rede.
 
