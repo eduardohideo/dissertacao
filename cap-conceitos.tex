@@ -145,16 +145,16 @@ Na recepção, o \textit{netfront} informa as possíveis páginas da memória que pod
 Quando o tráfego de pacotes é muito rápido no meio físico, a quantidade de interrupções devido a chegada de pacotes é muito grande podendo sobrecarregar o processamento \cite{dong2011optimizing}.
 Isso ocorre porque as interrupções têm prioridade absoluta sobre todas as outras tarefas e se a taxa de interrupções é suficientemente elevada, o sistema gastará todo seu tempo para respondê-la e o rendimento do sistema cairá para zero. \cite{salah2007coalesce}.
 
-A mesclagem de interrupções é uma das propostas da literatura para resolver esse problema \cite{salah2007coalesce}.
+A agregação de interrupções é uma das propostas da literatura para resolver esse problema \cite{salah2007coalesce}.
 Ela pode ser feita através de um conjunto de parâmetros do \textit{driver} de redes se este o suportar.
 O objetivo dela é reduzir a quantidade de interrupções na transmissão/recepção de pacotes dentro de um intervalo de tempo ou número de pacotes em troca de aumentar a latência da rede. 
 
 Para isso é possível manipular 4 parâmetros: \texttt{tx-frames},\texttt{rx-frames},\texttt{tx-usecs},\texttt{rx-usecs}. A descrição de cada parâmetro está na tabela \ref{funcoes}.
 
-Como pode-se notar a mesclagem de interrupções depende do tamanho do \textit{buffer} de transmissão e recepção.
+Como pode-se notar a agregação de interrupções depende do tamanho do \textit{buffer} de transmissão e recepção.
 O \textit{buffer} pode ser tanto um espaço de memória da máquina(usando \textit{DMA}, um mecanismo que permite a um dispositivo de E/S usar a memória do sistema como \textit{buffer}) como uma memória interna da placa de rede. Caso este seja pequeno, vários pacotes serão descartados durante o tráfego de pacotes por falta de espaço, caso seja grande, pode aumentar a latência por ter muitos pacotes esperando serem lidos dentro dele.
 
-O NAPI(New API) \cite{Corbet:2005:LDD:1209083} é uma interface para usar técnicas de mesclagem de interrupções para dispositivos de rede no núcleo do Linux. O objetivo dele é reduzir a carga extra do processamento na recepção de pacotes de vários dispositivos.
+O NAPI(New API) \cite{Corbet:2005:LDD:1209083} é uma interface para usar técnicas de agregação de interrupções para dispositivos de rede no núcleo do Linux. O objetivo dele é reduzir a carga extra do processamento na recepção de pacotes de vários dispositivos.
 Para isso, no momento em que há uma grande quantidade de tráfego em vários dispositivos de rede, ao invés do \textit{drivers} gerar uma interrupção para cada pacote que recebe, o núcleo desabilita as interrupções e passa a checar continuamente a chegada de pacotes em cada dispositivo. Caso o sistema não dê conta de manipular os pacotes, ele passa a jogá-los fora antes de levá-los ao núcleo.
 Esse processo é chamado de \textit{polling}. 
 Como nem sempre se tem um tráfego grande de pacotes, usar essa estratégia o tempo todo pode acabar gerando um atraso considerável na rede. Assim, o modo de interrupção por pacote padrão e o modo de \textit{polling} ficam se alternando de acordo com o tráfego.
@@ -163,7 +163,7 @@ O controle de quando ele deve entra ou sair no modo de \textit{polling} e quanto
 
 {
 \begin{table}[ht!]
-\caption{Parâmetros para mesclagem de interrupções}
+\caption{Parâmetros para agregação de interrupções}
 \label{funcoes}
 \begin{center}
 	\begin{tabular}{| cp{3.0cm} | l|}
@@ -192,41 +192,41 @@ Com a segmentação sendo feita fora do sistema, isso permite então enganar o \tex
 
 Fingindo ter uma \textit{MTU} alta, o pacote é segmentado em pedaços grandes e em menor quantidade quando o sistema manda transmití-lo. Com menos pacotes a quantidade de interrupções por pacote é reduzida. 
 
-Na recepção, o \textit{LRO}(large receive offload) e o \textit{GRO}(generic receive offload) \cite{gro} são soluções baseadas no \textit{GSO} onde os pacotes são mesclados quando recebidos. O \textit{LRO} agrega todos os pacotes \textit{TCP} que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a mesclagem dos pacotes pelos cabeçalhos oque não traz perdas e além disso o \textit{GRO} não é limitado ao \textit{TCP}. Apesar de conseguir uma mesclagem dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes oque força a ter que usar uma técnica de mesclagem de interrupção como o \textit{NAPI} para conseguir resegmentar os pacotes.
+Na recepção, o \textit{LRO}(large receive offload) e o \textit{GRO}(generic receive offload) \cite{gro} são soluções baseadas no \textit{GSO} onde os pacotes são mesclados quando recebidos. O \textit{LRO} agrega todos os pacotes \textit{TCP} que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a agregação dos pacotes pelos cabeçalhos oque não traz perdas e além disso o \textit{GRO} não é limitado ao \textit{TCP}. Apesar de conseguir uma agregação dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes oque força a ter que usar uma técnica de agregação de interrupção como o \textit{NAPI} para conseguir resegmentar os pacotes.
 
 \section{Mesclagem e Virtualização de Rede}
 No contexto da virtualização de rede, como foi possível observar na arquitetura da virtualização da rede no \textit{XEN}, muitos passos extras são feitos durante recepção e transmissão de pacotes, fazendo aumentar o número de interrupções. 
 
 Na virtualização de rede do \textit{XEN}, dois \textit{drivers} virtuais(\textit{frontend},\textit{backend}) são criados pelo próprio \textit{XEN} para ligar o \texttt{dom0} com um \texttt{domU}.
 
-A estratégia de mesclagem então pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend}.
+A estratégia de agregação então pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend}.
 
-\cite{dong2011optimizing} propuseram uma otimização por mesclagem de interrupções na recepção dentro dos \textit{drivers} virtuais. 
+\cite{dong2011optimizing} propuseram uma otimização por agregação de interrupções na recepção dentro dos \textit{drivers} virtuais. 
 Os autores perceberam que o pacote passa por duas camadas de \textit{drivers} virtuais de rede antes de chegar no destino. O primeiro é o \textit{driver} de \textit{backend} que fica na ponte e o outro é o \textit{driver} de \textit{frontend} que está dentro da máquina virtual. 
-Considerando estas duas camadas, a combinação de mesclagem de interrupções nas duas causaria um atraso adicional no envio. Nessa pesquisa eles focaram em otimizar os \textit{drivers} virtuais, deixando de fora o \textit{driver} físico e analisaram apenas o intervalo para gerar as interrupções e não a quantidade de pacotes para gerar as interrupções.
+Considerando estas duas camadas, a combinação de agregação de interrupções nas duas causaria um atraso adicional no envio. Nessa pesquisa eles focaram em otimizar os \textit{drivers} virtuais, deixando de fora o \textit{driver} físico e analisaram apenas o intervalo para gerar as interrupções e não a quantidade de pacotes para gerar as interrupções.
 
 Mesclar as interrupções em cada dispositivo tem certas diferenças que devem ser consideradas.
 
 \subsection{Driver do Dispositivo}
-A mesclagem no \textit{driver} do dispositivo físico é complexa já que afeta o tráfego de pacotes em todas máquinas virtuais e, consequentemente, em todas as aplicações que usam a rede.
-Também necessita que a placa de rede tenha suporte a mesclagem. 
+A agregação no \textit{driver} do dispositivo físico é complexa já que afeta o tráfego de pacotes em todas máquinas virtuais e, consequentemente, em todas as aplicações que usam a rede.
+Também necessita que a placa de rede tenha suporte a agregação. 
 Quando modificamos o \textit{driver} físico, os requisitos de várias aplicações podem tanto serem satisfeitos como deixarem de ser.
 
 Como exemplo, podemos ter duas aplicação as quais uma requer uma baixa latência e baixa largura de banda, e a outra requer muito processamento e alta largura de banda. 
-Enquanto não mesclar as interrupções a primeira aplicação funcionará bem, pois nenhum pacote precisa esperar para ser enviado enquanto que a segunda funcionará mal porque a rede irá precisar de muito processamento e a aplicação também.  
-Quando mesclar, a primeira funcionará mal pois a mesclagem irá provocar um atraso considerável na rede e a segunda funcionará bem porque a mesclagem reduziu o processamento da rede liberando processamento para a aplicação. 
+Enquanto não agregar as interrupções a primeira aplicação funcionará bem, pois nenhum pacote precisa esperar para ser enviado enquanto que a segunda funcionará mal porque a rede irá precisar de muito processamento e a aplicação também.  
+Quando agregar, a primeira funcionará mal pois a agregação irá provocar um atraso considerável na rede e a segunda funcionará bem porque a agregação reduziu o processamento da rede liberando processamento para a aplicação. 
 
 Uma possível solução para conseguir satisfazer os requisitos seria forçar todas as aplicações da infraestrutura a terem os mesmos requisitos realocando as máquinas com requisitos de aplicações diferentes para outras infraestruturas.
 
 \subsection{Netback}
-A mesclagem no \textit{netback}, diferente do \textit{driver} do dispositivo físico afeta apenas as aplicações de uma determinada máquina virtual. 
+A agregação no \textit{netback}, diferente do \textit{driver} do dispositivo físico afeta apenas as aplicações de uma determinada máquina virtual. 
 Pelo \textit{netback} estar no domínio do \textit{driver} consumindo processamento junto com vários outros \textit{netbacks}, reduzir as interrupções dele aliviaria o processamento da rede por máquina virtual do domínio do \textit{driver} e poderia permitir que mais máquinas virtuais usem a rede.
 
-Seria necessário analisar os requisitos de aplicação de cada máquina virtual para definir os parâmetros da mesclagem de cada \textit{netback}.
-Pelo \textit{netback} e \textit{netfront} serem virtuais e desacoplados da lógica do \textit{driver} de rede físico, eles podem usar técnicas de mesclagem se tiverem suporte independente do \textit{driver} de rede físico.
+Seria necessário analisar os requisitos de aplicação de cada máquina virtual para definir os parâmetros da agregação de cada \textit{netback}.
+Pelo \textit{netback} e \textit{netfront} serem virtuais e desacoplados da lógica do \textit{driver} de rede físico, eles podem usar técnicas de agregação se tiverem suporte independente do \textit{driver} de rede físico.
 
 \subsection{Netfront}
-A mesclagem no \textit{netfront} como o \textit{netback} depende das aplicações da máquina virtual que a pertence. 
+A agregação no \textit{netfront} como o \textit{netback} depende das aplicações da máquina virtual que a pertence. 
 O ganho pode ser menor em relação ao \textit{netback} já que irá reduzir a interrupção no núcleo da máquina virtual que é isolada das outras.
 
 
