@@ -140,7 +140,7 @@ Na recepção, o \textit{netfront} informa as possíveis páginas da memória que pod
 
 %% ------------------------------------------------------------------------- %%
 
-\section{Mesclagem de Interrupções na Recepção}\index{Mesclagem de interrupções}
+\section{Agregação de Interrupções na Recepção}\index{Mesclagem de interrupções}
 
 Quando o tráfego de pacotes é muito rápido no meio físico, a quantidade de interrupções devido a chegada de pacotes é muito grande podendo sobrecarregar o processamento \cite{dong2011optimizing}.
 Isso ocorre porque as interrupções têm prioridade absoluta sobre todas as outras tarefas e se a taxa de interrupções é suficientemente elevada, o sistema gastará todo seu tempo para respondê-la e o rendimento do sistema cairá para zero. \cite{salah2007coalesce}.
@@ -178,7 +178,7 @@ O controle de quando ele deve entra ou sair no modo de \textit{polling} e quanto
 \end{table}
 }
 
-\section{Mesclagem de Interrupções na Transmissão}
+\section{Agregação de Interrupções na Transmissão}
 Tanto a transmissão e a recepção de pacotes podem gerar interrupções com uma frequência grande \cite{menon2006optimizing}.
 A transmissão gera uma interrupção quando um pacote é transmitido com sucesso e a recepção gera uma interrupção quando um pacote é recebido \cite{Corbet:2005:LDD:1209083}.
 A diferença entre elas é que enquanto a transmissão pode ser controlar os pacotes que são enviados pelo sistema, a recepção não consegue controlar os pacotes que chegam.
@@ -194,7 +194,7 @@ Fingindo ter uma \textit{MTU} alta, o pacote é segmentado em pedaços grandes e e
 
 Na recepção, o \textit{LRO}(large receive offload) e o \textit{GRO}(generic receive offload) \cite{gro} são soluções baseadas no \textit{GSO} onde os pacotes são agregados quando recebidos. O \textit{LRO} agrega todos os pacotes \textit{TCP} que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a agregação dos pacotes pelos cabeçalhos oque não traz perdas e além disso o \textit{GRO} não é limitado ao \textit{TCP}. Apesar de conseguir uma agregação dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes oque força a ter que usar uma técnica de agregação de interrupção como o \textit{NAPI} para conseguir resegmentar os pacotes.
 
-\section{Mesclagem e Virtualização de Rede}
+\section{Agregação e Virtualização de Rede}
 No contexto da virtualização de rede, como foi possível observar na arquitetura da virtualização da rede no \textit{XEN}, muitos passos extras são feitos durante recepção e transmissão de pacotes, fazendo aumentar o número de interrupções. 
 
 Na virtualização de rede do \textit{XEN}, dois \textit{drivers} virtuais(\textit{frontend},\textit{backend}) são criados pelo próprio \textit{XEN} para ligar o \texttt{dom0} com um \texttt{domU}.
