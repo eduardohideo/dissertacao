@@ -1,20 +1,20 @@
 %% ------------------------------------------------------------------------- %%
 \chapter{Introdução}
 \label{cap:introducao}
-Numa infraestrutura de nuvem, os recursos são controlados pelo fornecedor e alocados de maneira elástica de acordo com a necessidade do consumidor \cite{goncalvesresource}. 
+Em infraestruturas de nuvem, recursos computacionais são controlados pelo fornecedor e alocados de maneira elástica de acordo com a necessidade do consumidor \cite{goncalvesresource}. 
 Para obter essa `elasticidade', normalmente, a nuvem adotada uma tecnologia chamada virtualização.
 
 A virtualização divide um recurso poderoso em recursos menores chamados de máquinas virtuais \cite{barham2003xen}.
 Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
-
+Por exemplo, uma empresa de comércio eletrônico pode alugar $x/2$ processadores de uma máquina física na véspera do natal, afim de garantir que todos os clientes terão sucesso nas compras, e reduzir esse aluguel para $x/16$ após a data festiva, já que a quantidade esperada de acessos tende a cair.
 Apesar das máquinas virtuais ajudarem a aumentar a flexibilidade, elas ainda têm um desempenho abaixo da máquina pura quando executamos aplicações que usam muito a rede
  \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. 
 
-Uma das principais causas é o \textit{hypervisor} e sua arquitetura de virtualização de rede. Diferente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
+Uma das principais causas é o \textit{hypervisor}, um módulo necessário para a gerência das máquinas virtuais, e sua arquitetura de virtualização de rede. Diferente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
 
-Para reduz o custo do processamento, uma ideia é agregar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes \cite{apparao2006characterization} \cite{chaudhary2008comparison}.
+Para reduzir o custo do processamento, uma ideia é agregar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes \cite{apparao2006characterization} \cite{chaudhary2008comparison}.
 
-Assim, essa pesquisa foca em automatizar a configuração de agregação de interrupções dos \textit{drivers} de rede, esta gerada pelo \textit{hypervisor}, tentando ajustar esse parâmetro dinamicamente de forma a garantir uma melhor qualidade do serviço da infraestrutura.
+Essa pesquisa foca em propor algoritmos que automatizem a configuração de agregação de interrupções realizada pelo \textit{hypervisor}, tentando ajustar esse parâmetro dinamicamente de forma a garantir os requisitos de Qualidade de Serviço(QoS) de aplicaçõesem nuvem que façam uso intensivo dos enlaces de rede.
 
 %% ------------------------------------------------------------------------- %%
 \section{Considerações Preliminares}
@@ -25,7 +25,7 @@ Esse trabalho está direcionado para contribuições em específico na área de compu
 %% ------------------------------------------------------------------------- %%
 \section{Objetivos}
 \label{sec:objetivo}
-O objetivo dessa pesquisa é demostrar que o algoritmo de agregação de interrupções reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantém a latência consideravelmente baixa.
+O objetivo dessa pesquisa é demostrar que os algoritmos de agregação de interrupções reduzem o uso da \textit{CPU} por pacote na transmissão e recepção e mantém a latência consideravelmente baixa, dentro dos requisitos das aplicações.
 
 %% ------------------------------------------------------------------------- %%
 \section{Contribuições}
@@ -35,17 +35,19 @@ As principais contribuições desse trabalho são:
 
 \begin{itemize}
   \item 
-   Fornecer um algoritmo capaz de garantir uma melhor qualidade na infraestrutura de nuvem para diferentes tipos de aplicações.
+   Fornecer um algoritmo capaz de garantir uma melhor utilização dos recursos de processamento e de comunicação na infraestrutura de nuvem para aplicações que façam uso intenso da rede.
   \item 
-   Automatizar as configurações de agregação de interrupções do \textit{driver} da placa de rede física e virtual de acordo com a transmissão e recepção de pacotes.
-
+   Automatizar as configurações de agregação de interrupções do \textit{hypervisor} de acordo com a transmissão e recepção de pacotes.
+  \item
+    Desenvolver um módulo para simulações de nuvens que dê suporte a avaliação de desempenho de diferentes algoritmos de agregação de interrupções da placa de rede.
 \end{itemize}
 
 %% ------------------------------------------------------------------------- %%
 \section{Organização do Trabalho}
 \label{sec:organizacao_trabalho}
 
-No Capítulo~\ref{cap:conceitos}, apresentamos os conceitos de virtualização de servidores, virtualização de E/S, virtualização de rede, agregação de interrupções e computação em nuvem.
-No Capítulo~\ref{cap:revisao_bibliografica}, apresentamos uma revisão bibliográfica na área de virtualização de rede.
-Finalmente, no Capítulo~\ref{cap:proposta}, apresentamos uma proposta na área de virtualização de rede.
+Este texto está organizado da seguinte forma: no Capítulo~\ref{cap:conceitos}, são apresentados os conceitos de virtualização de servidores, virtualização de E/S, virtualização de rede, agregação de interrupções e computação em nuvem.
+No Capítulo~\ref{cap:revisao_bibliografica} é apresentada uma revisão bibliográfica na área de virtualização de rede.
+Finalmente, no Capítulo~\ref{cap:proposta} é apresentada a proposta de um algoritmo para a agregação das interrupções da placa de rede, de um mecanismo para automatização dos parâmetros do algoritmo e de um módulo para simulação de transferência de dados entre máquinas virtuais em nuvens que permite estudos relacionados com a gerência de interrupções das placas de rede.
+
 

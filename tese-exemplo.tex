@@ -102,7 +102,7 @@ framexrightmargin=10pt
 \thispagestyle{empty}
 \begin{center}
     \vspace*{2.3cm}
-    \textbf{\Large{Otimização da Agregação de Interrupções para Infraestruturas em Nuvem}}\\
+    \textbf{\Large{Agregação de Interrupções de placas de rede para Infraestruturas em Nuvem}}\\
     
     \vspace*{1.2cm}
     \Large{Eduardo Hideo Kuroda}
@@ -128,7 +128,7 @@ framexrightmargin=10pt
     financeiro da Comissão Européia e da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior}
     
     \vskip 0.5cm
-    \normalsize{São Paulo, julho de 2012}
+    \normalsize{São Paulo, agosto de 2012}
 \end{center}
 
 % ---------------------------------------------------------------------------- %
@@ -141,7 +141,7 @@ framexrightmargin=10pt
 \thispagestyle{empty}
     \begin{center}
         \vspace*{2.3 cm}
-        \textbf{\Large{Otimização da Agregação de Interrupções para Infraestruturas em Nuvem}}\\
+        \textbf{\Large{Agregação de Interrupções de placas de rede para Infraestruturas em Nuvem}}\\
         \vspace*{2 cm}
     \end{center}
 
@@ -166,13 +166,10 @@ Mestre em Ciência da Computação.
 % ---------------------------------------------------------------------------- %
 % Resumo
 \chapter*{Resumo}
-As infraestruturas em nuvem se comportam com um desempenho baixo se comparadas com infraestruturas sem virtualização, principalmente quando pensamos em implantar aplicações intensivas de rede. 
-
-Uma das principais causas é a arquitetura da virtualização de rede. Diferente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação dentro de uma máquina virtual o que implicam em um custo adicional tanto na memória como no processamento.
-
-Para reduz o custo do processamento, uma ideia é agregar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes, mas também aumentaria a latência. Essa estratégia é chamada agregação de interrupções.
-
-Nessa pesquisa criaremos um algoritmo para otimizar a agregação de interrupções tentando garantir uma melhor qualidade dos serviços dentro da infraestrutura.
+As infraestruturas em nuvem se comportam com um desempenho baixo se comparadas com infraestruturas sem virtualização, em cenários onde há utilização intensiva da rede. 
+Uma das principais causas é a arquitetura da virtualização de rede. Diferente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação dentro de uma máquina virtual o que implica em um custo adicional tanto na gerência de memória como no processamento.
+Para reduzir o custo do processamento, pode-se agregar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes, mas também aumentaria a latência. Essa estratégia é chamada agregação de interrupções.
+Nessa pesquisa criaremos um algoritmo para otimizar a agregação de interrupções com o objetivo de garantir requisitos de qualidade dos serviços de aplicações que fazem uso intensivo de rede em nuvens.
 
 
 \noindent \textbf{Palavras-chave:} computação em nuvem, virtualização de rede, agregação de interrupções
@@ -180,13 +177,7 @@ Nessa pesquisa criaremos um algoritmo para otimizar a agregação de interrupções 
 % ---------------------------------------------------------------------------- %
 % Abstract
 \chapter*{Abstract}
-The cloud infrastructure behaves underperforming compared to infrastructures without virtualization, especially when we think of deploying network-intensive applications.
-
-One major cause is the architecture of network virtualization. Unlike the standard network architecture, there are some additional steps to transmit and receive a packet of information within a virtual machine, which imply an additional cost in both memory and the processing.
-
-To reduce the cost of processing, one idea is coalesce multiple interrupts generated when a packet is sent or received. This would reduce the amount of processing a packet, but also increase the latency. This strategy is called coalescing interruption.
-
-This research will create an algorithm to optimize the interruption coalescing trying to ensure a better quality of services within the infrastructure.
+TODO
 
 \noindent \textbf{Keywords:} cloud computing, network virtualization, interrupt coalesing
 
