@@ -177,13 +177,13 @@ Nessa pesquisa criaremos um algoritmo para otimizar a agregação de interrupções 
 % ---------------------------------------------------------------------------- %
 % Abstract
 \chapter*{Abstract}
-The cloud infrastructures behave underperforming compared to infrastructures without virtualization in scenarios where there is network's intensive use.
-A main cause is the network virtualization's architecture. 
-Different from the standard network architecture, there are some extra steps to transmit and receive a packet of information inside of a virtual machine which implies an additional cost in both memory management and processing.
-To reduce processing cost, can be coalesed various interrupts generated when a packet is sent or received. This would reduce the amount of processing per packet, but also increase the latency. This strategy is called interrupt coalesing.
-In this research, we will create an algorithm to optimize the interrupt coalesing in order to ensure quality of service applications' requirements that make intensive use of network cloud.
+Cloud infrastructures behave with low performance when compared to infrastructures without virtualization in scenarios where there is intensive use of network.
+One of the main reasons is the network virtualization's architecture.
+Different from the standard network architecture, there are some extra steps to transmit and receive a packet of information inside of a virtual machine, which implies an additional cost in both memory management and processing.
+To reduce processing cost, various interrupts can be coalesced when a packet is sent or received. This would reduce the amount of processing per packet, but also increase the latency.
+ This strategy is called interrupt coalescence. In this research, we will create an algorithm to optimize the interrupt coalescence in order to ensure the requirements of quality of service of cloud applications that use network intensively. 
 
-\noindent \textbf{Keywords:} cloud computing, network virtualization, interrupt coalesing
+\noindent \textbf{Keywords:} cloud computing, network virtualization, interrupt coalescence
 
 % ---------------------------------------------------------------------------- %
 % Sumário
@@ -204,11 +204,11 @@ In this research, we will create an algorithm to optimize the interrupt coalesin
 	IRQ	& pedido de interrupção (\emph{interrupt request line})\\
 	MTU	& unidade máxima de transmissão (\emph{maximum transmission unit})\\
 	SR-IOV	& virtualização de E/S de raiz única (\emph{single root I/O virtualization})\\
-	SaaS	& software como um serviço(\emph{software as a service})\\
-	PaaS	& platforma como um serviço(\emph{platform as a service})\\
+	SaaS	& software como um serviço (\emph{software as a service})\\
+	PaaS	& plataforma como um serviço (\emph{platform as a service})\\
 	IaaS	& infraestrutura como um serviço (\emph{Infrastructure as a service})\\
 	IP	& protocolo de Internet (\emph{Internet Protocol})\\
-	QoS	& qualidade de serviço(\emph{quality of service})\\
+	QoS	& qualidade de serviço (\emph{quality of service})\\
 \end{tabular}
 
 % ---------------------------------------------------------------------------- %

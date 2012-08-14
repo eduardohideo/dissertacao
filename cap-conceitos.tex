@@ -8,9 +8,9 @@
 A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de hardware e software dos CPDs (Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
 
 Como o termo nuvem é muito abrangente, ele foi dividido em várias classificações \cite{armbrust2009above}, entre elas, o tipo de serviço o qual fornecem. 
-Seguindo essa classificação existem as nuvens que fornecem \textit{softwares} como serviço(SaaS -- \textit{Software As A Service}), 
-plataformas como serviço(PaaS -- \textit{Platform As A Service}), 
-e infraestruturas como serviços(IaaS -- \textit{Infrastructure as a Service}).
+Seguindo essa classificação existem as nuvens que fornecem \textit{softwares} como serviço (SaaS -- \textit{Software As A Service}), 
+plataformas como serviço (PaaS -- \textit{Platform As A Service}), 
+e infraestruturas como serviços (IaaS -- \textit{Infrastructure as a Service}).
 Nuvens que fornecem \textit{SaaS} são utilizadas por exemplo pelo \textit{Google Docs}\footnote[1]{http://docs.google.com} que fornece um \textit{software} para edição de documentos como serviço.
 Nuvens que fornecem PaaS são utilizadas em casos como o \textit{Google App Engine}\footnote[2]{http://developers.google.com/appengine/} e o \textit{Windows Azure}\footnote[3]{http://www.windowsazure.com/en-us/} onde é oferecido uma plataforma para implantar aplicações
  e nuvens que fornecem \textit{IaaS} são utilizadas em casos como o \textit{Amazon EC2}\footnote[4]{http://aws.amazon.com/ec2/} que fornece uma infraestrutura que emula um computador.
@@ -21,7 +21,7 @@ Para que isso seja possível, a infraestrutura de nuvem contém vários nós, os qua
 %% ------------------------------------------------------------------------- %%
 \section{Virtualização}\index{virtualização!fundamentos}
 \label{sec:virtualizacao}
-Na computação em nuvem, em particular quando se é fornecido uma infraestrutura para implantar aplicações(\textit{IaaS}), a adoção da virtualização melhora a utilização dos recursos e protege o servidor de problemas que os softwares dos clientes possam causar em relação a servidores com máquinas puras \cite{chaudhary2008comparison}.
+Na computação em nuvem, em particular quando se é fornecido uma infraestrutura para implantar aplicações (\textit{IaaS}), a adoção da virtualização melhora a utilização dos recursos e protege o servidor de problemas que os softwares dos clientes possam causar em relação a servidores com máquinas puras \cite{chaudhary2008comparison}.
 Por exemplo, em um cenário com máquinas puras sem virtualização, um erro de programação que cause um laço infinito pode consumir toda a CPU do computador atrapalhando todos os usuários daquela máquina.
 Em um cenário virtualizado, a única máquina afetada seria a máquina virtual utilizada por aquele programador, já que apenas uma parte do processamento total é reservada e não é possível expandir a quantidade dos recursos sem permissão do administrador da nuvem.
 
@@ -94,7 +94,7 @@ No \textit{XEN}, para todas as máquinas conseguirem acessar o dispositivo de red
 Ambas as configurações seguem os conceitos dos equipamentos de mesmo nome que existem na interconexão de redes de computadores. Todos os dois tipos encaminham pacotes entre domínios baseados nas informações que os próprios pacotes contêm, porém, a ponte se fundamenta nos dados da camada de enlace enquanto que o roteador se fundamenta nos dados da camada de rede \cite{bradner1999rfc}. 
 Podendo trafegar pacotes entre domínios, os \texttt{domUs} conseguem enviar e receber pacotes do dispositivo de rede com o \texttt{dom0} como intermediário.
 
-\cite{xenenv} descrevem a implementação da configuração de ponte na qual uma ponte virtual(\texttt{xenbr0}) é criada dentro do \texttt{dom0} como é possível ver na Figura \ref{ponte}.
+\cite{xenenv} descrevem a implementação da configuração de ponte na qual uma ponte virtual (\texttt{xenbr0}) é criada dentro do \texttt{dom0} como é possível ver na Figura \ref{ponte}.
 Essa ponte está ligada na interface de rede física pela porta \texttt{peth0}. A porta \texttt{vif0.0} está sendo usada para tráfegos de/para \texttt{dom0} e as portas \texttt{vifX.0}, onde X é um valor maior que 0, estão sendo usadas para tráfegos de/para algum \texttt{domU}.
 Como é possível observar, todo pacote que é recebido ou transmitido para alguma máquina virtual tem que passa pela ponte dentro do \texttt{dom0}.
 
@@ -122,13 +122,13 @@ Nessa pesquisa focaremos na configuração de ponte pela maioria dos trabalhos rel
 
 
 Na Figura \ref{arq} vemos a arquitetura da virtualização da rede usando ponte no \textit{XEN} segundo \cite{Santos:2008:BGS:1404014.1404017}.
-Para transmitir/receber um pacote no domínio hospedeiro(\texttt{domU}) é usado o canal de E/S(\textit{I/O channel}).
+Para transmitir/receber um pacote no domínio hospedeiro (\texttt{domU}) é usado o canal de E/S (\textit{I/O channel}).
 Esse canal evita que cada pacote tenha que ser copiado de um domínio a outro. Para tal, o \texttt{domU} compartilha algumas páginas de sua memória e informa a referência delas por esse canal para o outro domínio mapeá-las em seu espaço de endereço. Quando algum domínio coloca algum pacote nessas páginas uma notificação é enviada para o outro domínio.
 
 O canal de E/S consiste de notificações de evento e um \textit{buffer} de descrição em anel. 
 A notificação de evento avisa que alguém de um domínio escreveu no \textit{buffer} de E/S. Isso é feito através de uma interrupção virtual no outro domínio.
-O \textit{buffer} de descrição em anel guarda os detalhes de requisições entre o \textit{driver} de \textit{frontend}(\textit{netfront}) que fica no domínio que controla os \textit{drivers}(domínio do \textit{driver}) e o \textit{driver} de \textit{backend}(\textit{netback}) que fica dentro de um \texttt{domU}.
-O domínio que controla os \textit{drivers}(domínio do \textit{driver}) por padrão é o \textit{dom0}. Porém, em alguns casos o \textit{driver} pode sobrecarregar o processamento do \textit{dom0}, então, às vezes, ele é separado em um domínio exclusivo.
+O \textit{buffer} de descrição em anel guarda os detalhes de requisições entre o \textit{driver} de \textit{frontend} (\textit{netfront}) que fica no domínio que controla os \textit{drivers} (domínio do \textit{driver}) e o \textit{driver} de \textit{backend} (\textit{netback}) que fica dentro de um \texttt{domU}.
+O domínio que controla os \textit{drivers} (domínio do \textit{driver}) por padrão é o \textit{dom0}. Porém, em alguns casos o \textit{driver} pode sobrecarregar o processamento do \textit{dom0}, então, às vezes, ele é separado em um domínio exclusivo.
 
 \begin{figure}[h!]
 \begin{center}
@@ -162,9 +162,9 @@ O objetivo dela é reduzir a quantidade de interrupções na transmissão/recepção d
 
 Para isso é possível manipular 4 parâmetros: \texttt{tx-frames},\texttt{rx-frames},\texttt{tx-usecs},\texttt{rx-usecs} (A descrição de cada parâmetro está na tabela \ref{funcoes}).
 Como pode-se notar na tabela \ref{funcoes} a agregação de interrupções depende do tamanho do \textit{buffer} de transmissão e recepção.
-O \textit{buffer} pode ser tanto um espaço de memória da máquina(usando \textit{DMA}, um mecanismo que permite a um dispositivo de E/S usar a memória do sistema como \textit{buffer}) como uma memória interna da placa de rede. Caso este seja pequeno, vários pacotes serão descartados durante o tráfego de pacotes por falta de espaço, caso seja grande, pode aumentar a latência por ter muitos pacotes esperando serem lidos dentro dele.
+O \textit{buffer} pode ser tanto um espaço de memória da máquina (usando \textit{DMA}, um mecanismo que permite a um dispositivo de E/S usar a memória do sistema como \textit{buffer}) como uma memória interna da placa de rede. Caso este seja pequeno, vários pacotes serão descartados durante o tráfego de pacotes por falta de espaço, caso seja grande, pode aumentar a latência por ter muitos pacotes esperando serem lidos dentro dele.
 
-O NAPI(New API) \cite{Corbet:2005:LDD:1209083} é uma interface para usar técnicas de agregação de interrupções para dispositivos de rede no núcleo do Linux. O objetivo dele é reduzir a carga extra do processamento na recepção de pacotes de vários dispositivos.
+O NAPI (New API) \cite{Corbet:2005:LDD:1209083} é uma interface para usar técnicas de agregação de interrupções para dispositivos de rede no núcleo do Linux. O objetivo dele é reduzir a carga extra do processamento na recepção de pacotes de vários dispositivos.
 Para isso, no momento em que há uma grande quantidade de tráfego em vários dispositivos de rede, ao invés do \textit{drivers} gerar uma interrupção para cada pacote que recebe, o núcleo desabilita as interrupções e passa a checar continuamente a chegada de pacotes em cada dispositivo. Caso o sistema não dê conta de manipular os pacotes, ele passa a descartá-los antes de levá-los ao núcleo.
 Esse processo é chamado de \textit{polling}. 
 Como nem sempre se tem um tráfego grande de pacotes, usar essa estratégia o tempo todo pode gerar um atraso considerável na rede. Assim, o modo de interrupção por pacote padrão e o modo de \textit{polling} ficam se alternando de acordo com o tráfego.
@@ -192,7 +192,7 @@ O controle de quando o sistema deve entra ou sair no modo de \textit{polling} e 
 Tanto a transmissão quanto a recepção de pacotes podem gerar interrupções com uma frequência grande \cite{menon2006optimizing}.
 A transmissão gera uma interrupção quando um pacote é transmitido com sucesso e a recepção gera uma interrupção quando um pacote é recebido \cite{Corbet:2005:LDD:1209083}.
 A diferença entre elas é que enquanto a transmissão pode controlar os pacotes que são enviados pelo sistema, a recepção não consegue controlar os pacotes que chegam.
-Assim, na transmissão podemos reduzir de outras formas a quantidade de interrupções. Uma das principais propostas da literatura é o \textit{GSO} \cite{gro}. O \textit{GSO}(\textit{Generic segmentation offload}) permite ao \textit{driver} de rede segmentar os pacotes, uma tarefa que normalmente é feita pelo sistema operacional.
+Assim, na transmissão podemos reduzir de outras formas a quantidade de interrupções. Uma das principais propostas da literatura é o \textit{GSO} \cite{gro}. O \textit{GSO} (\textit{Generic segmentation offload}) permite ao \textit{driver} de rede segmentar os pacotes, uma tarefa que normalmente é feita pelo sistema operacional.
 
 Atualmente, o tamanho do pacote é limitado pela \textit{MTU}. No protocolo \textit{Ethernet} ela tem como valor padrão 1500 \textit{bytes}. Esse valor acabou sendo adotado na época do crescimento da Internet pelos limites de \textit{hardware} da época e infelizmente continua até hoje. Assim, não é possível enviar pacotes maiores que 1500 \textit{bytes} pela Internet, oque força o sistema operacional a segmentar seus dados em pacotes pequenos para conseguir enviá-los. Isso sobrecarrega o processador tanto para segmentar os dados, como para enviar e receber esses pacotes.
 
@@ -200,12 +200,12 @@ Com a segmentação sendo feita fora do sistema, pode-se ``enganar'' o \textit{MTU
 
 Fingindo ter uma \textit{MTU} alta, o pacote é segmentado em pedaços grandes e em menor quantidade quando o sistema manda transmití-lo. Com menos pacotes a quantidade de interrupções por pacote é reduzida. 
 
-Na recepção, o \textit{LRO}(large receive offload) e o \textit{GRO}(generic receive offload) \cite{gro} são soluções baseadas no \textit{GSO} onde os pacotes são agregados quando recebidos. O \textit{LRO} agrega todos os pacotes \textit{TCP} que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a agregação dos pacotes pelos cabeçalhos, o que não traz perdas e além disso o \textit{GRO} não é limitado ao \textit{TCP}. Apesar de conseguir uma agregação dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes o que força a utilização de uma técnica de agregação de interrupção como o \textit{NAPI} para conseguir resegmentar os pacotes.
+Na recepção, o \textit{LRO} (large receive offload) e o \textit{GRO} (generic receive offload) \cite{gro} são soluções baseadas no \textit{GSO} onde os pacotes são agregados quando recebidos. O \textit{LRO} agrega todos os pacotes \textit{TCP} que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a agregação dos pacotes pelos cabeçalhos, o que não traz perdas e além disso o \textit{GRO} não é limitado ao \textit{TCP}. Apesar de conseguir uma agregação dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes o que força a utilização de uma técnica de agregação de interrupção como o \textit{NAPI} para conseguir resegmentar os pacotes.
 
 \section{Agregação e Virtualização de Rede}
 No contexto da virtualização de rede, como foi possível observar na arquitetura da virtualização da rede no \textit{XEN}, muitos passos extras são feitos durante recepção e transmissão de pacotes, fazendo aumentar o número de interrupções. 
 
-Na virtualização de rede do \textit{XEN}, dois \textit{drivers} virtuais(\textit{frontend},\textit{backend}) são criados pelo próprio \textit{XEN} para ligar o \texttt{dom0} com um \texttt{domU}.
+Na virtualização de rede do \textit{XEN}, dois \textit{drivers} virtuais (\textit{frontend},\textit{backend}) são criados pelo próprio \textit{XEN} para ligar o \texttt{dom0} com um \texttt{domU}.
 
 A estratégia de agregação então pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend}.
 

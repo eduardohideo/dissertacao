@@ -70,7 +70,7 @@ Já o \textit{SR-IOV} (single root I/O virtualization) teve um desempenho próximo
 
 \cite{Santos:2008:BGS:1404014.1404017} propôs modificar a arquitetura do \textit{driver} de E/S do \textit{XEN} para conseguir melhorar o uso da \textit{CPU}.  Dentro dos problemas que ele encontrou está o excesso de cópias de dados, a fragmentação de pacotes no \textit{socket}, a falta de alinhamento do cache e o filtro de rede da ponte. Com algumas modificações ele conseguiu uma economia de 56\% no uso do processador.\newline
 
-\cite{oi2009performance} analisou o desempenho de um sistema virtualizado com \textit{XEN} aplicando a estratégia \textit{LRO(large receive offload)} onde ainda dentro do \textit{driver} da placa de rede são recebidos e reunidos os pacotes de informações que tiveram que ser segmentados. Nesse experimento foram medidos a vazão da rede variando o tamanho da mensagem e o tamanho da \textit{MTU}(unidade máxima de transmissão). Os resultados mostraram um ganho de 8\% a 14\% na vazão da rede.\newline
+\cite{oi2009performance} analisou o desempenho de um sistema virtualizado com \textit{XEN} aplicando a estratégia \textit{LRO (large receive offload)} onde ainda dentro do \textit{driver} da placa de rede são recebidos e reunidos os pacotes de informações que tiveram que ser segmentados. Nesse experimento foram medidos a vazão da rede variando o tamanho da mensagem e o tamanho da \textit{MTU} (unidade máxima de transmissão). Os resultados mostraram um ganho de 8\% a 14\% na vazão da rede.\newline
 
 \cite{xenbestpractices} sugere algumas práticas para tentar evitar um baixo desempenho em aplicações intensivas de rede/disco no \textit{XEN} como dedicar exclusivamente um núcleo de processador ou uma quantidade de memória para o \texttt{dom0}.\newline
 
@@ -93,7 +93,7 @@ Eles também, no final, discutiram a possibilidade de usar a função de agregação 
 \cite{dong2011optimizing} propuseram otimizações para reduzir a carga extra na virtualização da rede. Uma das otimizações foi agregar eficientemente as interrupções virtuais e a outra escalar o lado da recepção. A agregação de interrupção normalmente é usada quando a transferência de pacotes do meio físico é muito alta. Com uma transferência grande, a placa de rede passa a trabalhar intensamente sobrecarregando o processador com interrupções.
 Na virtualização da rede, a transferência de pacotes passa a gerar interrupções físicas e virtuais. 
 
-A agregação de interrupções virtuais pode ser feita no \textit{driver} virtual de \textit{backend}(na ponte dentro do \texttt{dom0}) ou no \textit{driver} virtual de \textit{frontend}(dentro de um \texttt{domU}).
+A agregação de interrupções virtuais pode ser feita no \textit{driver} virtual de \textit{backend} (na ponte dentro do \texttt{dom0}) ou no \textit{driver} virtual de \textit{frontend} (dentro de um \texttt{domU}).
 
 A ideia de escalar o lado da recepção foi baseado na ideia de paralelizar o \textit{driver} virtual de \textit{backend} tentando aproveitar melhor as propriedades de um processador multi-núcleo. Assim, foi introduzido o conceito de \textit{RSS} que balanceia a carga de trabalho eficientemente entre os processadores.
 
