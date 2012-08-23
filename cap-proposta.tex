@@ -9,7 +9,7 @@ Essa pesquisa tem como tema técnicas de otimização na virtualização de rede em i
 
 O problema a ser tratado nessa pesquisa é o desempenho baixo nas infraestruturas em nuvem que utilizam técnicas de virtualização com \textit{hypervisores} em relação a infraestruturas que virtualizam sem o uso de \textit{hypervisores}, como a virtualização em nível de sistema operacional, ou não virtualizam quando executam aplicações que usam intensamente a rede.
 
-\section{Evidências do problema}
+\section{Evidências do Problema}
 
 Para ter evidências que o problema existe, foi feita uma revisão bibliográfica.
 Nela diversos autores falam sobre problemas na arquitetura da virtualização de rede que é usada pelos \textit{hypervisores} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592} \cite{Santos:2008:BGS:1404014.1404017} \cite{oi2009performance} \cite{xenbestpractices}. 
@@ -22,7 +22,7 @@ Na revisão bibliográfica foram encontrados vários autores que propuseram técnica
 
 Uma especificação para dispositivos PCIe chamada \textit{SR-IOV} foi criada apenas para tentar resolver esse problema \cite{SRIOV} e fabricantes de placas de rede como a Intel\cite{intel_SRIOV} e a Cisco\cite{cisco_SRIOV} passaram a fabricar e vender placas de rede com essa especificação para servidores que usam \textit{XEN} ou \textit{KVM}.
 
-\section{Proposta de pesquisa}
+\section{Proposta de Pesquisa}
 
 Na revisão bibliográfica apresentada no Capítulo~\ref{cap:revisao_bibliografica} foram descobertos vários artigos que modificam diferentes partes de uma infraestrutura de nuvem para conseguir um ganho de desempenho. 
 Resolvemos direcionar essa proposta para as estratégias de agregação de interrupções por parecer uma estratégia ainda pouco pesquisada e que pode trazer uma redução grande de interrupções as quais, consequentemente, poderia melhorar o desempenho da infraestrutura de nuvem.
@@ -45,7 +45,7 @@ Ainda não foi encontrado nenhum artigo que analisa a agregação desses três \text
 Uma análise de como os parâmetros estão relacionados e como eles influenciam no tráfego de rede será necessário antes de elaborar um algoritmo.
 
 
-\section{Questão de pesquisa}
+\section{Questão de Pesquisa}
 O algoritmo de agregação de interrupção proposto reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantêm a latência consideravelmente baixa em relação a infraestrutura sem o algoritmo?
 
 \section{Cronograma}
