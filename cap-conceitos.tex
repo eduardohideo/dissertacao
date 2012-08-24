@@ -1,6 +1,28 @@
  ------------------------------------------------------------------------- %%
 \chapter{Conceitos}
 \label{cap:conceitos}
+
+\section{Módulo de E/S}\index{Dispositivos de E/S}
+\label{sec:dispositivosDeES}
+\uline{
+Um módulo de E/S é necessário para o processador conseguir se comunicar com um ou mais dispositivos externos de E/S. 
+Cada dispositivo possui vários métodos de operação, diferentes formatos e comprimento de palavras e velocidade de transferência o que faz cada módulo ter uma lógica diferente.
+Quando o módulo oferece uma interface de alto nível do dispositivo ao processador, ele é chamado de canal de E/S. Já se o módulo oferece uma interface primitiva e requer um controle detalhado, ele é chamado de  controlador de E/S.
+}
+
+\uline{
+Existem três técnicas possíveis para operações de E/S: E/S programada, interrupção dirigida à E/S e \textit{DMA} (acesso direto a memória).
+Com a E/S Programada, dados são trocados entre o processador e o módulo de E/S. O processador executa um programa e dá a este controle direto das operações de E/S.
+Na Interrupção dirigida à E/S um programa emite um comando de E/S e continua executando outras instruções. Ele é interrompido pelo modulo de E/S quando o ultimo terminar seu trabalho.
+No \textit{DMA} um processador especializado em E/S toma controle das operações de E/S para mover um grande bloco de dados usando a memória principal.
+}
+
+\uline{
+A interrupção dirigida à E/S resolve o problema da E/S programada em que o processador tem que esperar um longo tempo para o módulo de E/S estar pronto para recepção ou transmissão dos dados prejudicando o sistema.
+Um problema da interrupção dirigida e da E/S Programada é que ambos usam o processador o que pode adicionar uma carga extra no processador. 
+No \textit{DMA}, o modulo tem acesso direto a memória, este pode agora mover blocos de dados para ou da memória sem envolver a \textit{CPU} excetuando no começo e fim da transferência.
+}
+
 %% ------------------------------------------------------------------------- %%
 \section{Computação em Nuvem}\index{Computação em nuvem!fundamentos}
 \label{sec:computacaoEmNuvem}
@@ -41,7 +63,7 @@ Na virtualização completa também conhecida como emulação de hardware, um ou vári
 O \textit{hypervisor}, chamado também de gerenciador de máquinas virtuais, fornece uma plataforma para os sistemas operacionais das máquinas virtuais e gerencia a execução delas.
 
 No \textit{hypervisor} da virtualização completa, é feita a interceptação, tradução e execução das instruções sob demanda dos sistemas operacionais das máquinas virtuais.
-Nessa estratégia, o núcleo do sistema operacional que roda o \textit{hypervisor} não necessita de modificações. Dentro dessa categoria de \textit{hypervisores} estão o \textit{KVM}\footnote[1]{http://www.linux-kvm.org/}, o \textit{XEN}\footnote[2]{http://xen.org/}, o \textit{VMWare}\footnote[3]{http://www.vmware.com/} e o \textit{VirtualBox}\footnote[4]{http://www.virtualbox.org/}.
+Nessa estratégia, o núcleo do sistema operacional que roda o \textit{hypervisor} não necessita de modificações. Dentro dessa categoria de \textit{hypervisors} estão o \textit{KVM}\footnote[1]{http://www.linux-kvm.org/}, o \textit{XEN}\footnote[2]{http://xen.org/}, o \textit{VMWare}\footnote[3]{http://www.vmware.com/} e o \textit{VirtualBox}\footnote[4]{http://www.virtualbox.org/}.
 
 Diferente da virtualização completa, a para-virtualização exige uma modificação do núcleo para poder executar o \textit{hypervisor}. Assim, caso não exista o código-fonte do sistema, não é possível usar essa estratégia. Na para-virtualização, o hardware virtual consegue conversar diretamente com o dispositivo emulado. Isso garante uma carga extra mínima em relação a tentar emular o dispositivo real. Nessa categoria estão incluídos o \textit{XEN} e o \textit{VMWare}.
 
@@ -54,6 +76,8 @@ As virtualizações completa e nativa têm uma grande vantagem em relação às outras
 
 
 %% ------------------------------------------------------------------------- %%
+
+
 
 \subsection{Virtualização de Dispositivos de E/S}\index{virtualização!virtualização de dispositivos de E/S}
 
@@ -69,7 +93,7 @@ Quando pensamos em escalar o número de MVs, o custo da virtualização privada cre
 Normalmente, a melhor opção é que o dispositivo físico seja compartilhado entre as máquinas, tanto pela possibilidade de escalar como pelo custo. Porém, disponibilizar de maneira compartilhada o acesso a dispositivos físicos pode trazer muitos problemas de segurança, dificultar o monitoramento das informações e a migração de máquinas virtuais \cite{Santos:2008:BGS:1404014.1404017}.
 Problemas de segurança surgem porque o usuário de uma máquina virtual pode tentar acesso a uma outra máquina virtual justamente através do recurso que está sendo compartilhado \cite{Rixner:2008:NVB:1348583.1348592}. O monitoramento é dificultado porque certas ferramentas só fazem medições do dispositivo físico e como ele está associado a várias máquinas virtuais, fica difícil separar as informações específicas de cada uma dentro do agregado \cite{goncalvesresource}. Já a migração é dificultada porque uma máquina virtual só poderá ser migrada para uma máquina física que possua o mesmo \textit{hardware} onde a máquina virtual está executando (a migração permite que uma máquina virtual seja movida de um recurso físico para outro de forma transparente para o usuário sem perda de conectividade)\cite{alkmim2009soluccao}.
 
-Para contornar esse problema, normalmente, \textit{hypervisores} como \textit{XEN}, \textit{KVM} e \textit{VMWare} restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa, por exemplo \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.\\
+Para contornar esse problema, normalmente, \textit{hypervisors} como \textit{XEN}, \textit{KVM} e \textit{VMWare} restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa, por exemplo \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.\\
 
 
 \cite{Waldspurger:2012:IV:2063176.2063194} faz algumas menções sobre o uso de técnicas de virtualização de E/S que desacoplam a implementação física do dispositivo lógico. Dentre as vantagens, ele cita a melhor utilização dos recursos e a economia de custos em relação a sistemas que estão com a implementação física acoplada com o dispositivo lógico, pois vários sistemas podem aproveitar o mesmo recurso. Em relação a flexibilidade, é possível mapear os dispositivos lógicos com as implementações físicas, garantindo uma maior portabilidade. Esse mapeamento pode também trazer novas funcionalidades ao recurso como: balanceamento da carga de trabalho e mascaramento das falhas. 
@@ -142,14 +166,16 @@ O domínio que controla os \textit{drivers} (domínio do \textit{driver}) por padr
 Para o domínio do \textit{driver} ter acesso às páginas da memória do \textit{domU} é necessário um mecanismo de permissão. Neste, o \textit{domU} fornece páginas vazias da sua memória para serem usadas como \textit{buffer} de E/S. Essas páginas são passadas como referência na descrição da requisição.
 
 Na transmissão, o \texttt{domU} coloca o pacote no \textit{buffer} de E/S, as suas páginas de referência no \textit{buffer} de descrição e notifica o domínio do \textit{driver}. 
-Este por sua vez, lê o \textit{buffer} de descrição, mapeia as páginas recebidas no seu espaço de endereços e pede para transmití-las através da ponte. 
+Este por sua vez, lê o \textit{buffer} de descrição, mapeia as páginas recebidas no seu espaço de endereços e pede para transmiti-las através da ponte. 
 Quando o dispositivo físico confirmar a transmissão, o \texttt{domU} libera as páginas do \textit{buffer} de E/S.
 
 Na recepção, o \textit{netfront} informa as possíveis páginas da memória que podem ser usadas como \textit{buffer} de E/S  ao \textit{netback}.
  Quando algum pacote chega pelo dispositivo físico, este envia uma interrupção de chegada de pacote à ponte dentro do domínio do \textit{driver}.
  A ponte então avisa o \textit{netback} correto sobre a chegada de pacotes.  O \texttt{netback} o copia para uma página da memória que foi fornecida pelo \textit{netfront} e envia uma notificação para o mesmo. Quando o \texttt{netfront} recebe a notificação, ele pega o conteúdo que está no \textit{buffer}, envia para o seu sistema e libera as páginas fornecidas.
-A arquitetura de virtualização de rede do XEN apresentada nesta subseção é utilizada por outros hypevisores como por exemplo o KVM e o VMWare \cite{Santos:2008:BGS:1404014.1404017}.
+A arquitetura de virtualização de rede do XEN apresentada nesta subseção é utilizada por outros \textit{hypervisors} como por exemplo o KVM e o VMWare \cite{Santos:2008:BGS:1404014.1404017}.
 % ------------------------------------------------------------------------- %%
+
+
 
 \section{Agregação de Interrupções na Recepção}\index{Mesclagem de interrupções}
 
@@ -198,9 +224,9 @@ Atualmente, o tamanho do pacote é limitado pela \textit{MTU}. No protocolo \text
 
 Com a segmentação sendo feita fora do sistema, pode-se ``enganar'' o \textit{MTU} na interface de rede do sistema. 
 
-Fingindo ter uma \textit{MTU} alta, o pacote é segmentado em pedaços grandes e em menor quantidade quando o sistema manda transmití-lo. Com menos pacotes a quantidade de interrupções por pacote é reduzida. 
+Fingindo ter uma \textit{MTU} alta, o pacote é segmentado em pedaços grandes e em menor quantidade quando o sistema manda transmiti-lo. Com menos pacotes a quantidade de interrupções por pacote é reduzida. 
 
-Na recepção, o \textit{LRO} (large receive offload) e o \textit{GRO} (generic receive offload) \cite{gro} são soluções baseadas no \textit{GSO} onde os pacotes são agregados quando recebidos. O \textit{LRO} agrega todos os pacotes \textit{TCP} que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a agregação dos pacotes pelos cabeçalhos, o que não traz perdas e além disso o \textit{GRO} não é limitado ao \textit{TCP}. Apesar de conseguir uma agregação dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes o que força a utilização de uma técnica de agregação de interrupção como o \textit{NAPI} para conseguir resegmentar os pacotes.
+Na recepção, o \textit{LRO} (large receive offload) e o \textit{GRO} (generic receive offload) \cite{gro} são soluções baseadas no \textit{GSO} onde os pacotes são agregados quando recebidos. O \textit{LRO} agrega todos os pacotes \textit{TCP} que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a agregação dos pacotes pelos cabeçalhos, o que não traz perdas e além disso o \textit{GRO} não é limitado ao \textit{TCP}. Apesar de conseguir uma agregação dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes o que força a utilização de uma técnica de agregação de interrupção como o \textit{NAPI} para conseguir montar os pacotes.
 
 \section{Agregação e Virtualização de Rede}
 No contexto da virtualização de rede, como foi possível observar na arquitetura da virtualização da rede no \textit{XEN}, muitos passos extras são feitos durante recepção e transmissão de pacotes, fazendo aumentar o número de interrupções. 
