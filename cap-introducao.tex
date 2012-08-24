@@ -10,13 +10,24 @@ Por exemplo, uma empresa de comércio eletrônico pode alugar uma quantidade $x$ d
 Apesar das máquinas virtuais ajudarem a aumentar a flexibilidade, elas ainda têm um desempenho abaixo da máquina pura quando executamos aplicações que usam muito a rede
  \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. 
 
-Uma das principais causas é o \textit{hypervisor}, um módulo necessário para a gerência das máquinas virtuais, e sua arquitetura de virtualização de rede. Diferentemente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
+Uma das principais causas é o \textit{hypervisor}, um módulo necessário para a gerência das máquinas virtuais, e sua arquitetura de virtualização de rede. 
+Diferentemente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
 
-Para reduzir o custo do processamento, uma proposta é usar uma estratégia para gerenciar a agregação de interrupções.
-A agregação de interrupções faz o \textit{driver} da placa de rede não gerar interrupções no sistema quando um pacote é recebido ou é transmitido com sucesso.
-Ao invés disso, uma interrupção é gerada depois de um intervalo de tempo que um pacote é recebido ou transmitido ou é gerada quando uma quantidade de pacotes é transmitida/recebida. 
 
-Essa pesquisa foca em propor algoritmos que automatizem a configuração de agregação de interrupções realizada pelo \textit{hypervisor}, tentando ajustar esse parâmetro dinamicamente de forma a garantir os requisitos de Qualidade de Serviço (\textit{QoS}) de aplicações em nuvem que façam uso intensivo dos enlaces de rede.
+Para reduzir o custo do processamento, uma proposta é usar uma estratégia para gerenciar a agregação de interrupções \cite{salah2007coalesce}, \cite{dong2011optimizing}.
+Na agregação de interrupções, o \textit{driver} da placa de rede não gera interrupções no sistema quando um pacote é recebido ou é transmitido com sucesso.
+Ao invés disso, uma interrupção é gerada depois de um intervalo de tempo que um pacote é recebido ou transmitido ou é gerada quando uma quantidade de pacotes é transmitida/recebida, reduzindo então, a quantidade de interrupções por pacote. 
+
+As interrupções têm prioridade em serem realizadas pelo sistema em relação a outras tarefas.
+ Quando o sistema é sobrecarregado de interrupções, este gasta todo seu tempo tentando resolve-la, impossibilitando que outras tarefas sejam executadas. Essa situação é chamada de ``\textit{livelock}'' \cite{salah2007coalesce}.
+
+Na recepção de pacotes pode ocorrer um \textit{livelock} quando a tranferência de pacotes é em torno de Gigabits e
+vários pacotes são recebidos enquanto um outro ainda está sendo processado. Nesse cenário, o sistema passa a ter que manipular cada uma das interrupções geradas pelos pacotes que chegam e nunca consegue processar um pacote ou então começa a descartar pacotes.
+
+Considerando outros dipositivos de E/S, as redes gigabits transferem com um taxa 10x maior que os discos rígidos \cite{stallings1986computer}.
+
+Essa pesquisa foca em propor algoritmos que automatizem a configuração de agregação de interrupções realizada pelo \textit{hypervisor}.
+Esses algoritmos tentam ajustar os parâmetro de agregação de interrupções dinamicamente de forma a garantir os requisitos de Qualidade de Serviço (\textit{QoS}) de aplicações em nuvem que façam uso intensivo dos enlaces de rede.
 
 
 %% ------------------------------------------------------------------------- %%
