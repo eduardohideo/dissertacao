@@ -19,12 +19,12 @@ Na agregação de interrupções, o \textit{driver} da placa de rede não gera interr
 Ao invés disso, uma interrupção é gerada depois de um intervalo de tempo que um pacote é recebido ou transmitido ou é gerada quando uma quantidade de pacotes é transmitida/recebida, reduzindo então, a quantidade de interrupções por pacote. 
 
 As interrupções têm prioridade em serem realizadas pelo sistema em relação a outras tarefas.
- Quando o sistema é sobrecarregado de interrupções, este gasta todo seu tempo tentando resolve-la, impossibilitando que outras tarefas sejam executadas. Essa situação é chamada de ``\textit{livelock}'' \cite{salah2007coalesce}.
+ Quando o sistema é sobrecarregado de interrupções, este gasta todo seu tempo tentando resolvê-la, impossibilitando que outras tarefas sejam executadas. Essa situação é chamada de ``\textit{livelock}'' \cite{salah2007coalesce}.
 
-Na recepção de pacotes pode ocorrer um \textit{livelock} quando a tranferência de pacotes é em torno de Gigabits e
+Na recepção de pacotes pode ocorrer um \textit{livelock} quando a transferência de pacotes é em torno de Gigabits e
 vários pacotes são recebidos enquanto um outro ainda está sendo processado. Nesse cenário, o sistema passa a ter que manipular cada uma das interrupções geradas pelos pacotes que chegam e nunca consegue processar um pacote ou então começa a descartar pacotes.
 
-Considerando outros dipositivos de E/S, as redes gigabits transferem com um taxa 10x maior que os discos rígidos \cite{stallings1986computer}.
+Considerando outros dispositivos de E/S, as redes gigabits transferem com um taxa 10x maior que os discos rígidos \cite{stallings1986computer}.
 
 Essa pesquisa foca em propor algoritmos que automatizem a configuração de agregação de interrupções realizada pelo \textit{hypervisor}.
 Esses algoritmos tentam ajustar os parâmetro de agregação de interrupções dinamicamente de forma a garantir os requisitos de Qualidade de Serviço (\textit{QoS}) de aplicações em nuvem que façam uso intensivo dos enlaces de rede.
