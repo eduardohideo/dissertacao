@@ -3,7 +3,7 @@
 
 \section{Tema de Pesquisa}
 
-Essa pesquisa tem como tema técnicas de otimização na virtualização de rede em infraestruturas em nuvem.
+Essa pesquisa tem como tema técnicas de otimização \sout{na} \uline{da} virtualização de rede em infraestruturas em nuvem.
 
 \section{Problema de Pesquisa}
 
@@ -13,10 +13,14 @@ O problema a ser tratado nessa pesquisa é o desempenho baixo nas infraestruturas
 
 Para ter evidências que o problema existe, foi feita uma revisão bibliográfica.
 Nela diversos autores falam sobre problemas na arquitetura da virtualização de rede que é usada pelos \textit{hypervisores} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592} \cite{Santos:2008:BGS:1404014.1404017} \cite{oi2009performance} \cite{xenbestpractices}. 
-Por exemplo, em \cite{ekanayake2010high} foram realizados experimentos com infraestruturas usando \textit{XEN} e infraestruturas sem virtualização. O resultado foi que as infraestruturas usando \textit{XEN} tiveram um desempenho muito inferior causado pela alta latência e muito uso do processador.
+Experimentos foram realizados com infraestruturas usando \textit{XEN} e infraestruturas sem virtualização. O resultado foi que as infraestruturas usando \textit{XEN} tiveram um desempenho muito inferior causado pela alta latência e muito uso do processador \cite{ekanayake2010high}.
 
 \section{Relevância do problema}
-Muitas organizações tem investido em computação em nuvem, mais de 150 empresas tem entrado na indústria como fornecedoras de nuvem \cite{cloudexpo}. No lado dos consumidores de nuvem, uma recente pesquisa com mais de 600 companhias pelo InformationWeek revelou que o número de companhias usando computação em nuvem aumentou de 18\% em fevereiro de 2009 para 30\% em outubro de 2010 \cite{goncalvesresource}.
+\sout{Muitas organizações tem investido em computação em nuvem, mais de 150 empresas tem entrado na indústria como fornecedoras de nuvem \cite{cloudexpo}. No lado dos consumidores de nuvem, uma recente pesquisa com mais de 600 companhias pelo InformationWeek revelou que o número de companhias usando computação em nuvem aumentou de 18\% em fevereiro de 2009 para 30\% em outubro de 2010 \cite{goncalvesresource}.
+}
+\uline{
+Muitas organizações tem investido em computação em nuvem, até 2009, mais de 150 empresas tornaram-se fornecedoras na indústria de nuvem \cite{cloudexpo}. No lado dos consumidores de nuvem, uma pesquisa com mais de 600 companhias pelo InformationWeek revelou que o número de companhias usando computação em nuvem aumentou de 18\% em fevereiro de 2009 para 30\% em outubro de 2010 \cite{goncalvesresource}.
+}
 
 Na revisão bibliográfica foram encontrados vários autores que propuseram técnicas para tentar resolver o problema da má utilização dos recursos compartilhados quando há aplicações que fazem uso intenso de rede nas nuvens. \cite{Rixner:2008:NVB:1348583.1348592} \cite{Santos:2008:BGS:1404014.1404017} \cite{oi2009performance} \cite{Liao:2008:STI:1477942.1477971} \cite{apparao2006characterization} \cite{jang2011low} \cite{fortuna2012improving} \cite{dong2011optimizing}. 
 
@@ -24,29 +28,56 @@ Uma especificação para dispositivos PCIe chamada \textit{SR-IOV} foi criada apen
 
 \section{Proposta de Pesquisa}
 
-Na revisão bibliográfica apresentada no Capítulo~\ref{cap:revisao_bibliografica} foram descobertos vários artigos que modificam diferentes partes de uma infraestrutura de nuvem para conseguir um ganho de desempenho. 
+\sout{Na revisão bibliográfica apresentada no Capítulo~\ref{cap:revisao_bibliografica} foram descobertos vários artigos que modificam diferentes partes de uma infraestrutura de nuvem para conseguir um ganho de desempenho. 
 Resolvemos direcionar essa proposta para as estratégias de agregação de interrupções por parecer uma estratégia ainda pouco pesquisada e que pode trazer uma redução grande de interrupções as quais, consequentemente, poderia melhorar o desempenho da infraestrutura de nuvem.
+}
+
+\uline{Na revisão bibliográfica apresentada no Capítulo~\ref{cap:revisao_bibliografica} foram descobertos vários artigos que modificam diferentes partes de uma infraestrutura de nuvem para conseguir um ganho de desempenho. 
+Resolvemos direcionar essa proposta para as estratégias de agregação de interrupções por parecer uma estratégia ainda pouco pesquisada e que pode melhorar o desempenho da infraestrutura de nuvem reduzindo a quantidade de interrupções por pacote.
+}
 
 Apesar de não garantir que essa estratégia irá ser melhor que as outras, podemos unir diferentes estratégias para tentar conseguir um ganho ainda maior já que cada estratégia pode modificar uma diferente parte da mesma infraestrutura.
 
-Nessa pesquisa, propomos um algoritmo para agregação de interrupções dos \textit{drivers} das placas de rede virtuais e física tentando ajustar os parâmetros de agregação dinamicamente de forma a garantir uma melhor qualidade dos serviços da infraestrutura de nuvem que utilizam a rede.
-A qualidade a qual estamos focando está em atributos de desempenho, em específico, a latência e o uso do processador. Estes variam quando modificamos os parâmetros de agregação. 
+Nessa pesquisa, propomos um algoritmo para agregação de interrupções dos \textit{drivers} das placas de rede virtuais e física tentando ajustar os parâmetros de agregação dinamicamente de forma a garantir uma melhor qualidade dos serviços da aplicação na infraestrutura de nuvem.
+A qualidade a qual estamos focando está em atributos de desempenho, em específico, a latência, a banda e o uso do processador. Estes variam quando modificamos os parâmetros de agregação. 
 O algoritmo será uma solução se, na infraestrutura, reduzir o uso da \textit{CPU} por pacote na transmissão e recepção e manter a latência consideravelmente baixa.
 
-A estratégia de agregação pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend} como foi apresentado na seção 2.5.
+A estratégia de agregação pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend} como foi apresentado na Seção 2.5.
 Se pensarmos em agregar as interrupções na recepção dos três \textit{drivers} ao mesmo tempo, o comportamento final da rede pode ser um pouco mais complexo de se prever em relação a agregar apenas um dos \textit{drivers}.
 Isso porque cada \textit{driver} depende tanto dos próprios parâmetros de previsão de chegada de pacotes como também depende dos parâmetros dos \textit{drivers} em que o tráfego de pacotes já passou.
  
-O \textit{driver} virtual de \textit{frontend} como exemplo, recebe pacotes que passaram pelo \textit{driver} virtual de \textit{backend}. Sabendo que o \textit{driver} de \textit{backend} espera X pacotes para gerar uma interrupção, esperar receber mais que X pacotes no \textit{frontend} poderia fazer o \textit{driver} ficar esperando demais por pacotes.
+O \textit{driver} virtual de \textit{frontend} recebe pacotes que passaram pelo \textit{driver} virtual de \textit{backend}. Sabendo que o \textit{driver} de \textit{backend} espera X pacotes para gerar uma interrupção, esperar receber mais que X pacotes no \textit{frontend} poderia fazer o \textit{driver} ficar esperando demais por pacotes.
 
 Na agregação de interrupções na transmissão não foram encontrados experimentos, mas \cite{Corbet:2005:LDD:1209083} mostra que a quantidade de interrupções devido a transmissão de pacotes é equivalente às interrupções de recepção na virtualização de rede do \textit{XEN}. 
 
 Ainda não foi encontrado nenhum artigo que analisa a agregação desses três \textit{drivers} ao mesmo tempo.
 Uma análise de como os parâmetros estão relacionados e como eles influenciam no tráfego de rede será necessário antes de elaborar um algoritmo.
+\subsection{Algoritmo}
+\uline{
+Na primeira proposta de algoritmo, separaremos as aplicações que estão dentro da nuvem em classes de serviços e de acordo com os dados obtidos nessa classificação, iremos variar os parâmetros de agregação de interrupções.
+A classe de serviços é divida em A, B e C. Na classe A a aplicação exige a menor latência possível. na classe B a aplicação exige uma latência de X ms. Enquanto que a classe C não exige latência.
+}
+
+\uline{
+1. Analisar os requisitos de latência de todas as aplicações
+}
+
+\uline{
+2. Classificar as aplicações de acordo com esses requisitos
+}
+
+\uline{
+3. Os parâmetros de agregação da placa de rede física serão baseados no requisito de aplicação que exigir a menor latência
+}
+
+\uline{
+4. Os parâmetros de agregação da placa de rede virtual de \textit{backend} e \textit{frontend} serão baseados no requisito da aplicação dentro da máquina virtual que exigir a menor latência.
+}
 
 
 \section{Questão de Pesquisa}
 O algoritmo de agregação de interrupção proposto reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantêm a latência consideravelmente baixa em relação a infraestrutura sem o algoritmo?
+
 
 \section{Cronograma}
 Revisão bibliográfica adicional: Agosto\newline

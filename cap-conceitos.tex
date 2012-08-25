@@ -2,25 +2,26 @@
 \chapter{Conceitos}
 \label{cap:conceitos}
 
-\section{Módulo de E/S}\index{Dispositivos de E/S}
+\section{Arquitetura de E/S em Computadores}\index{Dispositivos de E/S}
 \label{sec:dispositivosDeES}
 \uline{
-Um módulo de E/S é necessário para o processador conseguir se comunicar com um ou mais dispositivos externos de E/S. 
-Cada dispositivo possui vários métodos de operação, diferentes formatos, comprimento de palavras e velocidade de transferência o que faz cada módulo ter uma lógica diferente.
+A arquitetura de E/S dos computadores é controlada por um módulo específico para E/S.
+Este módulo de E/S é necessário para o processador conseguir se comunicar com um ou mais dispositivos externos de E/S. 
+Cada dispositivo possui vários métodos de operação, diferentes formatos, comprimento de palavras e velocidade de transferência, o que faz cada módulo ter uma lógica específica para um determinado dispositivo.
 Quando o módulo oferece uma interface de alto nível do dispositivo ao processador, ele é chamado de canal de E/S. Já se o módulo oferece uma interface primitiva e requer um controle detalhado, ele é chamado de  controlador de E/S.
 }
 
 \uline{
 Existem três técnicas possíveis para operações de E/S: E/S programada, interrupção dirigida à E/S e \textit{DMA} (acesso direto a memória).
-Com a E/S Programada, dados são trocados entre o processador e o módulo de E/S. O processador executa um programa e dá a este controle direto das operações de E/S.
-Na Interrupção dirigida à E/S um programa emite um comando de E/S e continua executando outras instruções. Ele é interrompido pelo modulo de E/S quando o ultimo terminar seu trabalho.
+Com a E/S programada, dados são transferidos entre o processador e o módulo de E/S. O processador executa um programa e fornece a este, controle direto das operações de E/S.
+Na interrupção dirigida à E/S um programa emite um comando de E/S e continua executando outras instruções. Ele é interrompido pelo módulo de E/S quando o último terminar seu trabalho.
 No \textit{DMA} um processador especializado em E/S toma controle das operações de E/S para mover um grande bloco de dados usando a memória principal.
 }
 
 \uline{
 A interrupção dirigida à E/S resolve o problema da E/S programada em que o processador tem que esperar um longo tempo para o módulo de E/S estar pronto para recepção ou transmissão dos dados prejudicando o sistema.
-Um problema da interrupção dirigida e da E/S Programada é que ambos usam o processador o que pode adicionar uma carga extra no processador. 
-No \textit{DMA}, o modulo tem acesso direto a memória, este pode agora mover blocos de dados para ou da memória sem envolver a \textit{CPU} excetuando no começo e fim da transferência.
+Um problema da interrupção dirigida e da E/S programada é que ambos usam o processador, o que pode adicionar uma carga extra no processador. 
+No \textit{DMA}, o módulo tem acesso direto a memória, podendo agora, mover blocos de dados para ou da memória sem envolver a \textit{CPU}, excetuando no começo e fim da transferência.
 }
 
 %% ------------------------------------------------------------------------- %%
