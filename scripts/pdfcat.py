@@ -12,6 +12,9 @@ def main(argv = None):
     output = PdfFileWriter()
     input = PdfFileReader(file(argv[0],"rb"))
     output.addPage(input.getPage(int(argv[2])))
+    if len(argv) >= 4:
+	for i in range(int(argv[2]),int(argv[3])):
+	    output.addPage(input.getPage(i))
     output.write(file(argv[1],"wb"))
 
 
