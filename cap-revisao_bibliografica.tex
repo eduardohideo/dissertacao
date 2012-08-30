@@ -3,7 +3,7 @@
 
 \section{Objetivo}
 O objetivo dessa revisão foi analisar e estudar as maneiras já existentes de otimizar a utilização dos recursos da rede em infraestruturas de máquinas virtuais utilizadas para a criação de nuvens e os problemas em aberto. 
-Cada estratégia sugerida pode atender bem a um cenário, porém, em outros casos, essa mesma estratégia pode ser pouco eficiente devido a dinamicidade da rede e os diferentes requisitos de QoS de um usuário.
+Cada estratégia sugerida pode atender bem a um cenário, porém, em outros casos, essa mesma estratégia pode ser pouco eficiente devido a dinamicidade da rede e os diferentes requisitos de \textit{QoS} de um usuário.
 
 \section{Critérios de Seleção}
 Para seleção das referências, em cada artigo encontrado pela estratégia de busca foi lido o seu resumo e classificado manualmente em três categorias de acordo com sua relevância: alta, média, baixa.
@@ -40,33 +40,33 @@ Os artigos de relevância alta foram lidos por completo e resumidos. Os artigos d
 }
 
 \subsection{Resumo Sintetizado}
-Em \cite{chaudhary2008comparison} o autor fez uma comparação entre o XEN, VMWare e OpenVZ.
-A partir dos experimentos foi concluído que o \textit{hypervisor} XEN tem um desempenho baixo em termos de atraso na rede, porém alto em termos de largura de banda em relação a um ambiente com OpenVZ e um ambiente sem virtualização, enquanto que o OpenVZ tem uma perda em largura de banda, mas um atraso pequeno. Quanto ao VMWare, ele teve um desempenho baixo tanto em atraso quanto em largura de banda. Os autores não entram em detalhes sobre os motivos dos resultados terem sido esses.\newline
+Em \cite{chaudhary2008comparison} o autor fez uma comparação entre o \textit{XEN}, \textit{VMWare} e \textit{OpenVZ}.
+A partir dos experimentos foi concluído que o \textit{hypervisor} \textit{XEN} tem um desempenho baixo em termos de atraso na rede, porém alto em termos de largura de banda em relação a um ambiente com \textit{OpenVZ} e um ambiente sem virtualização, enquanto que o \textit{OpenVZ} tem uma perda em largura de banda, mas um atraso pequeno. Quanto ao \textit{VMWare}, ele teve um desempenho baixo tanto em atraso quanto em largura de banda. Os autores não entram em detalhes sobre os motivos dos resultados terem sido esses.\newline
 
  \cite{ekanayake2010high} estudou a relação entre o número de núcleos e o número de MVs usando \textit{XEN} e \textit{Eucalyptus} como infraestrutura de nuvem. Foi concluído que a virtualização funciona bem para aplicações que não se comunicam muito,
- enquanto que em aplicações que são sensíveis a latência, houve uma perda de desempenho em relação a um ambiente não virtualizado. Outra conclusão foi que quanto maior o número de máquinas virtuais, maior a sobrecarga na CPU. A explicação para isso, segundo o autor, está na forma como foi implementada a virtualização da rede. O hardware físico só pode ser controlado por um sistema (\texttt{dom0}), enquanto que os outros (\texttt{domUs}) para conseguirem fazer alguma operação de E/S pela rede, devem passar por esse sistema através de um canal. Isso forma um gargalo no \texttt{dom0}.\newline
+ enquanto que em aplicações que são sensíveis a latência, houve uma perda de desempenho em relação a um ambiente não virtualizado. Outra conclusão foi que quanto maior o número de máquinas virtuais, maior a sobrecarga na \textit{CPU}. A explicação para isso, segundo o autor, está na forma como foi implementada a virtualização da rede. O hardware físico só pode ser controlado por um sistema (\texttt{dom0}), enquanto que os outros (\texttt{domUs}) para conseguirem fazer alguma operação de E/S pela rede, devem passar por esse sistema através de um canal. Isso forma um gargalo no \texttt{dom0}.\newline
 
 \cite{Rixner:2008:NVB:1348583.1348592} fez uma revisão sobre a virtualização de rede.
 No texto o autor cita que a virtualização de rede impacta diretamente no número de servidores que podem ser diretamente consolidados dentro de uma única máquina física. Porém, as técnicas modernas de virtualização têm gargalos significantes, o que limita o desempenho da rede.
 Ele sugere um ganho de desempenho fazendo o dispositivo ter a capacidade de ler e escrever diretamente na memória da MV ao invés do processador da máquina virtual gerar interrupções cada vez que alguma informação entra ou sai pelo dispositivo. Essa funcionalidade é chamada acesso direto a memória (\textit{DMA}).
 Apesar disso, o dispositivo pode escrever em uma posição da memória que não pertence a MV, podendo assim, causar problemas em outros processos da máquina física. Assim, foi criado a unidade de gerenciamento de E/S da memória (\textit{IOMMU}). No \textit{IOMMU} a memória é restrita para o dispositivo de acordo com a máquina virtual que controla esse dispositivo.
-Como atualmente um processador possui vários núcleos, pode-se aproveitar esses núcleos para criar multi-filas nas interfaces de rede. O autor cita que pesquisadores do laboratório da HP e Citrix eliminaram a ponte no domínio de E/S para associar as máquinas virtuais diretamente com o \textit{driver} de \textit{backend} através das multi-filas, evitando a necessidade de sincronização das mensagens e multiplexação/demultiplexação da rede. Como benefícios do uso da multi-fila se teve: a redução da carga extra na fila e a eliminação de cópias entre o domínio de E/S e a máquina virtual, pois, a multiplexação não é feita. Por outro lado, é necessário que cada informação seja enviada para a fila correta e que a CPU consiga aguentar a carga extra gerada pelas múltiplas filas.
+Como atualmente um processador possui vários núcleos, pode-se aproveitar esses núcleos para criar multi-filas nas interfaces de rede. O autor cita que pesquisadores do laboratório da HP e \textit{Citrix} eliminaram a ponte no domínio de E/S para associar as máquinas virtuais diretamente com o \textit{driver} de \textit{backend} através das multi-filas, evitando a necessidade de sincronização das mensagens e multiplexação/demultiplexação da rede. Como benefícios do uso da multi-fila se teve: a redução da carga extra na fila e a eliminação de cópias entre o domínio de E/S e a máquina virtual, pois, a multiplexação não é feita. Por outro lado, é necessário que cada informação seja enviada para a fila correta e que a \textit{CPU} consiga aguentar a carga extra gerada pelas múltiplas filas.
 
 Ainda em \cite{Rixner:2008:NVB:1348583.1348592}, na arquitetura de virtualização de rede CDNA (\textit{acesso direto a memória concorrente}) foi empregada a proposta de multi-filas, em adição foi removido o domínio de E/S. Sem o responsável por controlar as filas, o \textit{hypervisor} passa a considerar cada conjunto de fila como uma interface de rede física e associa o controlador a uma MV. Assim, cada MV consegue enviar ou receber informações diretamente da rede sem nenhuma intervenção do domínio de E/S. Como consequência, a carga extra é reduzida pelo número reduzido de interrupções (antes era necessário interromper tanto o domínio de E/S como as MVs em cada transmissão/recepção).
 Pela MV poder acessar diretamente a interface de rede, ela também pode acessar algum local indevido da memória por \textit{DMA}. Para contornar esse problema o autor sugeriu o uso de \textit{IOMMU}.\newline
 
 \cite{Waldspurger:2012:IV:2063176.2063194}  cita diversos desafios e problemas na área de virtualização de E/S: a carga extra no \textit{hypervisor}, a complexidade em gerenciar recursos (escalonamento e prioridades) e a dificuldade de dar uma semântica ao hardware virtual.\newline
 
-\cite{liu2010evaluating} fez diversos experimentos com virtualização de E/S baseados em \textit{software} (\textit{virtio}) e em hardware (\textit{SR-IOV}) usando o \textit{hypervisor} KVM.
-O virtio é um padrão do Linux para drivers de rede e disco que estão rodando em um ambiente virtual cooperado com um \textit{hypervisor}. Apesar de diferentes, ele tem o mesmo padrão arquitetural que a virtualização de rede do XEN. 
-Já o SR-IOV é uma especificação que permite a dispositivos pci-Express fornecerem interfaces extras com funcionalidades reduzidas para serem usadas pelas máquinas virtuais diretamente.
+\cite{liu2010evaluating} fez diversos experimentos com virtualização de E/S baseados em \textit{software} (\textit{virtio}) e em hardware (\textit{SR-IOV}) usando o \textit{hypervisor} \textit{KVM}.
+O \textit{virtio} é um padrão do Linux para \textit{drivers} de rede e disco que estão rodando em um ambiente virtual cooperado com um \textit{hypervisor}. Apesar de diferentes, ele tem o mesmo padrão arquitetural que a virtualização de rede do \textit{XEN}. 
+Já o \textit{SR-IOV} é uma especificação que permite a dispositivos \textit{pci-express} fornecerem interfaces extras com funcionalidades reduzidas para serem usadas pelas máquinas virtuais diretamente.
 
 Foram analisadas diversas métricas: a largura de banda, a latência e uso do processador.
- Na latência, o \textit{virtio} teve um desempenho muito baixo. A explicação, provada desabilitando a função de mitigação na transmissão, é que o hospedeiro atrasa o envio do pacotes para ser enviado em rajadas, mas mesmo assim, seu desempenho sem mitigação ainda perdeu próximo de 20 microsegundo em relação a máquina pura.
-Quando a opção de mitigação é desabilitada, isso provoca uma perda de desempenho pois cada pacote que é transmitido gera uma carga de trabalho no CPU. Com a mitigação a carga por pacote é reduzida.  
+ Na latência, o \textit{virtio} teve um desempenho muito baixo. A explicação, provada desabilitando a função de mitigação na transmissão, é que o hospedeiro atrasa o envio do pacotes para ser enviado em rajadas, mas mesmo assim, seu desempenho sem mitigação ainda perdeu próximo de 20 microssegundo em relação a máquina pura.
+Quando a opção de mitigação é desabilitada, isso provoca uma perda de desempenho pois cada pacote que é transmitido gera uma carga de trabalho no \textit{CPU}. Com a mitigação a carga por pacote é reduzida.  
 Já o \textit{SR-IOV} (single root I/O virtualization) teve um desempenho próximo da máquina pura perdendo apenas alguns microssegundos devido a virtualização da interrupção.
 
- Na largura de banda, a transmissão em todas as configurações pareceu ter o mesmo desempenho. Já na recepção o \textit{SR-IOV}se aproximou da máquina pura, mas o uso da sua CPU foi muito maior que as demais. No \textit{virtio}, ele não conseguiu um bom desempenho, mas o uso de sua CPU foi baixa. No experimento de uso da memória na recepção, o \textit{SR-IOV} teve um uso muito menor que o \textit{virtio}, assim, o autor concluiu que o mal uso da largura de banda na recepção do virtio foi pelo uso excessivo da memória, o que explica também o baixo uso da CPU.\newline
+ Na largura de banda, a transmissão em todas as configurações pareceu ter o mesmo desempenho. Já na recepção o \textit{SR-IOV} se aproximou da máquina pura, mas o uso da sua \textit{CPU} foi muito maior que as demais. No \textit{virtio}, ele não conseguiu um bom desempenho, mas o uso de sua \textit{CPU} foi baixa. No experimento de uso da memória na recepção, o \textit{SR-IOV} teve um uso muito menor que o \textit{virtio}, assim, o autor concluiu que o mal uso da largura de banda na recepção do \textit{virtio} foi pelo uso excessivo da memória, o que explica também o baixo uso da \textit{CPU}.\newline
 
 \cite{Santos:2008:BGS:1404014.1404017} propôs modificar a arquitetura do \textit{driver} de E/S do \textit{XEN} para conseguir melhorar o uso da \textit{CPU}.  Dentro dos problemas que ele encontrou está o excesso de cópias de dados, a fragmentação de pacotes no \textit{socket}, a falta de alinhamento do cache e o filtro de rede da ponte. Com algumas modificações ele conseguiu uma economia de 56\% no uso do processador.\newline
 
@@ -100,12 +100,71 @@ A ideia de escalar o lado da recepção foi baseado na ideia de paralelizar o \tex
 O resultado no experimento de agregação de interrupções foi um ganho de até 76\% na largura de banda em relação a configuração padrão e no experimento de escalar o lado da recepção foi até 2,2 vezes mais, também na largura de banda.
 
 
+\subsubsection{Evaluating System Performance in Gigabit Networks \cite{salah2005analysis}}
+
+O artigo faz uma análise e simulação sobre o impacto da sobrecarga de interrupções no desempenho do sistema operacional em redes de alta velocidade. 
+O principal problema que eles exploraram é a grande quantidade de interrupções gerada na recepção de pacotes. Como a interrupção tem prioridade máxima em relação a outras tarefas, ele acaba consumindo todo tempo de processamento impedindo outras tarefas de serem realizadas. Isso reduz o rendimento do sistema a 0. Essa situação é conhecida como \textit{``livelock''}.
+
+Para explicar melhor o \textit{livelock}, na Figura \ref{livelock}, é mostrado um gráfico de carga do sistema por rendimento.
+Na curva ideal, conforme a carga do sistema aumenta, o rendimento passa a aumentar proporcionalmente, ou seja, quanto maior a velocidade de chegada dos pacotes, maior a quantidade de pacotes processada.
+Porém, como praticamente todo sistema tem uma capacidade finita de processamento, ele não recebe e processa pacotes além de sua velocidade máxima. Essa velocidade é chamada de \textit{MLFRR} (máxima velocidade de recepção livre de perdas).
+Na curva aceitável, quando o sistema chega ao \textit{MLFRR}, ela passa a não ter ganhos no rendimento pelo limite de processamento, e depois disso, a curva se comporta praticamente como uma constante.
+Por outro lado, se a rede for sobrecarregada na entrada, as interrupções geradas na chegada do pacote irão impedir que o pacote seja processado e o rendimento do sistema cairá para 0 como é possível ver na curva \textit{livelock}.
+
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics{./img/livelock.png}
+\caption{Livelock na recepção de pacotes \cite{salah2005analysis}}
+\label{livelock}
+\end{center}
+\end{figure}
+
+
+Para analisar a situação de sobrecarga de interrupções, podemos modelar o sistema como uma fila M/M/1/B com chegada de pacotes em \textit{Poisson} de velocidade $\lambda$ e média efetiva de tempo de serviço de $1/\mu$ que tem uma distribuição geral. 
+
+O sistema pode usar ou não um mecanismo chamado \textit{DMA} (acesso direto a memória) que permite a placa de rede acessar diretamente a memória principal do computador.
+Sem \textit{DMA}, processador gerencia a recepção de pacotes. Quando o processador é interrompido enquanto está processando um pacote pela chegada de um outro pacote, o tempo para processar é estendido para realizar uma copia individual do outro pacote que chegou para a memória do sistema.
+Com \textit{DMA}, a placa de rede tem acesso direto a memória. Quando um ou mais pacotes chegam durante o processo de um outro pacote o tempo para processar todos os pacotes irá ser o tempo para servir um único pacote sem nenhum tempo extra introduzido.
+
+Foram feito experimentos analisando o sistema ideal, \textit{DMA} habilitado e \textit{DMA} desabilitado. Com uma baixa chegada de pacotes, o rendimento de todos foi o mesmo. 
+Já com uma alta chegada de pacotes, o rendimento do sistema com o \textit{DMA} habilitado teve uma queda de rendimento menor que o sistema sem o \textit{DMA} habilitado e o sistema ideal se apresentou com rendimento constante.
+
+
+\subsubsection{Interrupt Moderation Using Intel GbE Controllers \cite{intel_interrupt}}
+
+O artigo cita o problema da grande quantidade de interrupções gerada na transmissão e recepção de pacotes. Para resolvê-lo, eles propuseram o uso de temporizadores internos da placa de rede para moderar a quantidade de interrupções geradas.
+Os temporizadores são divididos em temporizador absoluto, temporizador de pacote e temporizador mestre.
+O temporizador absoluto faz a contagem regressiva quando o primeiro pacote chega ou é enviado. Quando ele chega a zero é gerado uma interrupção. Isso é eficiente quando se tem muito tráfego no enlace, por reduzir a quantidade de interrupções geradas, porém, pouco eficiente quando há pouco tráfego, pois.
+O temporizador de pacotes também faz a contagem regressiva quando o primeiro pacote chega ou é enviado e também gera uma interrupção quando chega a zero, mas ele é reiniciado quando um novo pacote chega. Isso reduz a latência quando há pouco tráfego no enlace, mas quando há muito tráfego, ele pode nunca gerar a interrupção, pois o temporizador estará sempre sendo reinicializado.
+O temporizador mestre é usado para otimizar os outros temporizadores.
+Tanto o temporizador absoluto como o temporizador de pacotes podem ser combinados para chegar a um bom resultado.
+
+Além dos temporizadores já citados, existe outro mecanismo chamado limitador de interrupções que ajuda a reduzir o número de interrupções por pacotes. Esse mecanismo também é um temporizador de contagem regressiva e limita o número de interrupções por segundo.
+Ele inicia a contagem e começa a contar o número de interrupções que foi gerado. Quando a contagem chega a zero, o contador de interrupções também é zerado.
+Se o número de interrupções ultrapassar o limite estabelecido, as interrupções geradas são adiadas até o contador ser reinicializado.
+
+Um algoritmo foi proposto para moderação de interrupções que ajusta dinamicamente o valor do limitador de interrupções. 
+De acordo com o padrão de E/S, é usado um valor no limitador.
+O padrão de E/S é categorizado em: baixíssima latência, onde o tráfego é mínimo e predomina os pacotes pequenos, baixa latência, onde o tráfego também é minimo e há um significante percentual de pacotes pequenos, e intermediário, onde há muito tráfego de pacotes medianos.
+Não foi possível entender como os autores chegaram a esses valores e porque eles resolveram dividir o padrão de E/S dessa forma.
+
+\subsubsection{To Coalesce or Not To Coalesce}
+
+O artigo é continuação do artigo \cite{salah2005analysis}.
+Nele é analisado o desempenho de duas técnicas de agregação de interrupções: baseada em contagem e baseada em tempo. Na técnica baseada em tempo, o  \textit{driver} da placa de rede não gera interrupções no sistema quando um pacote é recebido.
+Ao invés disso, uma interrupção é gerada depois de um intervalo de tempo que um pacote é recebido.
+Já na técnica baseada em contagem, também não gera interrupções quando chega um pacote, mas gera  quando uma quantidade de pacotes é recebida, reduzindo então, a quantidade de interrupções por pacote. 
+
+A conclusão tirada nos modelos analíticos é que a agregação funciona melhor que o modelo de interrupção comum quando se tem um grande tráfego na rede. Porém, para um tráfego pequeno, a interrupção comum superou a agregação. O autor sugere monitorar o tráfego e fazer a troca entre a interrupção comum e a agregação de interrupções. O artigo também cita um momento que pode ser usado para indicar a condição de sobrecarga. Este momento pode ser usado para a troca. 
+Outras importantes conclusões são que na agregação é necessário valores altos de parâmetros em tráfegos intensivos, que para tráfegos tolerantes a latência o uso de agregação é interessante independente do tráfego e para tráfegos de tempo não-real é interessante usar a agregação baseada em tempo ao invés da baseada em contagem por impor um limite de atraso na agregação.
+
 \subsection{Análise das Informações}
 Nessa revisão foram encontrados diversos artigos com propostas que modificam diferentes partes da infraestrutura: \textit{driver} de rede, placa de rede física, arquitetura da virtualização da rede e núcleo do sistema operacional.
 Essa variação dificultou um pouco a correlação entre os artigos.
 
 Nos experimentos todos parecem ter feito medições em infraestruturas reais usando o \textit{hypervisor} \textit{XEN} e alguma distribuição \textit{Linux} como sistema operacional. 
-Isso talvez ocorreu por eles terem o código aberto e o XEN suportar diferentes sistemas operacionais.
+Isso talvez ocorreu por eles terem o código aberto e o \textit{XEN} suportar diferentes sistemas operacionais.
 
 Todos que propuseram alguma estratégia as validaram através de medições em infraestruturas reais.
 Uma possível causa seria a facilidade e o baixo custo em montar uma infraestrutura com virtualização e controlar todo o processo do experimento.
