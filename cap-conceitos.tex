@@ -1,35 +1,60 @@
  %%------------------------------------------------------------------------- %%
 \chapter{Conceitos}
 \label{cap:conceitos}
+\uline{ 
+O objetivo desse capítulo é dar ao leitor o conhecimento necessário para entender o tema de pesquisa e o problema que deverá ser solucionado nessa monografia.
+Ele está organizado da seguinte forma: A Seção \ref{sec:dispositivosDeES} apresenta os conceitos em arquitetura de E/S em computadores, a Seção \ref{sec:computacaoEmNuvem} apresenta uma visão geral de computação em nuvem, a Seção \ref{sec:virtualizacao} explica a importância da virtualização na computação em nuvem e depois foca na virtualização em computadores, dispositivos de E/S e redes.
+As Seções \ref{sec:agrec} e \ref{sec:agtrans} explicam o funcionamento da estratégia de agregação de interrupções na recepção e transmissão de pacotes respectivamente. Por fim, a Seção \ref{sec:agvirt} analisa a aplicação das técnicas de agregação de interrupções nos problemas de virtualização de rede.
+}
 
 \section{Arquitetura de E/S em Computadores}\index{Dispositivos de E/S}
 \label{sec:dispositivosDeES}
-\uline{
+\sout{
 A arquitetura de E/S dos computadores é controlada por um módulo específico para E/S.
-Este módulo de E/S é necessário para o processador conseguir se comunicar com um ou mais dispositivos externos de E/S. 
-Cada dispositivo possui vários métodos de operação, diferentes formatos, comprimento de palavras e velocidade de transferência, o que faz cada módulo ter uma lógica específica para um determinado dispositivo.
-Quando o módulo oferece uma interface de alto nível do dispositivo ao processador, ele é chamado de canal de E/S. Já se o módulo oferece uma interface primitiva e requer um controle detalhado, ele é chamado de  controlador de E/S.
 }
-
 \uline{
-Existem três técnicas possíveis para operações de E/S: E/S programada, interrupção dirigida à E/S e \textit{DMA} (acesso direto a memória). 
-Com a E/S programada, dados são transferidos entre o processador e o módulo de E/S. O processador executa um programa e fornece a este, controle direto das operações de E/S.
-Na interrupção dirigida à E/S um programa emite um comando de E/S e continua executando outras instruções. Ele é interrompido pelo módulo de E/S quando o último terminar seu trabalho.
-No \textit{DMA} um processador especializado em E/S toma controle das operações de E/S para mover um grande bloco de dados usando a memória principal.
-Na Figura \ref{leitura} vemos as três técnicas sendo aplicadas para receber um bloco de dados de um dipositivo de E/S.
-}
-
+Um computador, segundo o modelo de Von Neumann \cite{stallings1986computer}, é formado por uma memória principal, uma unidade central de processamento e dispositivos de E/S como mostra a Figura \ref{arqvon}.
+Cada dispositivo de E/S do computador é controlado} por um módulo para E/S.
+Este módulo de E/S é necessário para que o processador possa se comunicar com um ou mais dispositivos de E/S.
+Os dispositivo de E/S possuem vários métodos de operação, diferentes formatos, comprimento de palavras e velocidade de transferência, o que faz cada módulo ter uma lógica específica para um dispositivo.
+Quando o módulo oferece uma interface de alto nível do dispositivo ao processador, ele é chamado de canal de E/S.
+Já se o módulo oferece uma interface primitiva e requer um controle detalhado, ele é chamado de  controlador de E/S. \uline{Os canais de E/S são normalmente usados em \textit{mainframes}, computadores de grande porte, enquanto que controladores de E/S são usados por microcomputadores.
+} 
 
 \begin{figure}[h!]
 \begin{center}
-  \includegraphics[width=416pt,height=278pt]{./img/leitura.eps}
-\caption{três técnicas para operações de E/S \cite{stallings1986computer}}
+  \includegraphics[width=350pt,height=232pt]{./img/diagramavon.eps}
+\caption{Estrutura de um computador baseada no modelo de Von Neumann traduzida de \cite{stallings1986computer}}
+\label{arqvon}
+\end{center}
+\end{figure}
+
+Existem três técnicas possíveis para operações de E/S: E/S programada, interrupção dirigida à E/S e DMA (do inglês \textit{direct memory access} -- acesso direto a memória).
+Na E/S programada, dados são transferidos entre o processador e o módulo de E/S.
+O processador executa um programa e fornece a este, controle direto das operações de E/S.
+\uline{Um problema com essa estratégia é o tempo que o processador tem que esperar para o dispositivo de E/S estar pronto para ser usado. Durante esse intervalo, muitas instruções poderiam ser processadas.}
+
+Na interrupção dirigida à E/S um programa emite um comando de E/S e continua executando outras instruções. 
+Ele é interrompido pelo módulo de E/S quando o último terminar seu trabalho.
+\uline{Como a interrupção dirigida à E/S não espera o dispositivo estar pronto, como na E/S programada,
+ ele consegue processar uma quantidade de instruções maior que o último quando usa algum dispositivo de E/S.}
+No \textit{DMA}, um processador especializado em E/S toma controle das operações de E/S para mover um grande bloco de dados usando a memória principal.
+\uline{Nota-se que o processador não participa ativamente nessa técnica, como nas técnicas anteriores, reduzindo o seu uso.
+}
+Na Figura \ref{leitura} vemos as três técnicas sendo aplicadas para receber um bloco de dados de um dipositivo de E/S.
+\uline{Tanto na E/S programada como na interrupção dirigida a E/S, percebe-se que o processador participa de todo processo, enquanto que no \textit{DMA}, ele participa apenas na requisição de leitura e no fim recebendo uma interrupção do modulo de \textit{DMA} avisando que o bloco de dados foi copiado. 
+}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=450pt,height=300pt]{./img/leitura.eps}
+\caption{três técnicas para operações de E/S traduzida de \cite{stallings1986computer}}
 \label{leitura}
 \end{center}
 \end{figure}
 
-\uline{
-A interrupção dirigida à E/S resolve o problema da E/S programada em que o processador tem que esperar um longo tempo para o módulo de E/S estar pronto para recepção ou transmissão dos dados prejudicando o sistema.
+
+\sout{A interrupção dirigida à E/S resolve o problema da E/S programada em que o processador tem que esperar um longo tempo para o módulo de E/S estar pronto para recepção ou transmissão dos dados prejudicando o sistema.
 Um problema da interrupção dirigida e da E/S programada é que ambos usam o processador, o que pode adicionar uma carga extra no processador. 
 No \textit{DMA}, o módulo tem acesso direto a memória, podendo agora, mover blocos de dados para ou da memória sem envolver a \textit{CPU}, excetuando no começo e fim da transferência.
 }
@@ -189,7 +214,7 @@ A arquitetura de virtualização de rede do XEN apresentada nesta subseção é utili
 
 
 \section{Agregação de Interrupções na Recepção}\index{Mesclagem de interrupções}
-
+\label{sec:agrec}
 Quando o tráfego de pacotes possui uma taxa de transmissão da ordem de Gbps no meio físico, a quantidade de interrupções devido a chegada de pacotes é muito grande podendo sobrecarregar o processamento \cite{dong2011optimizing}.
 Isso ocorre porque as interrupções têm prioridade absoluta sobre todas as outras tarefas e se a taxa de interrupções é suficientemente elevada, o sistema gastará todo seu tempo para respondê-la e o rendimento do sistema cairá para zero. \cite{salah2007coalesce}.
 
@@ -226,6 +251,7 @@ O controle de quando o sistema deve entra ou sair no modo de \textit{polling} e 
 }
 
 \section{Agregação de Interrupções na Transmissão}
+\label{sec:agtrans}
 Tanto a transmissão quanto a recepção de pacotes podem gerar interrupções com uma frequência grande \cite{menon2006optimizing}.
 A transmissão gera uma interrupção quando um pacote é transmitido com sucesso e a recepção gera uma interrupção quando um pacote é recebido \cite{Corbet:2005:LDD:1209083}.
 A diferença entre elas é que enquanto a transmissão pode controlar os pacotes que são enviados pelo sistema, a recepção não consegue controlar os pacotes que chegam.
@@ -240,6 +266,7 @@ Fingindo ter uma \textit{MTU} alta, o pacote é segmentado em pedaços grandes e e
 Na recepção, o \textit{LRO} (large receive offload) e o \textit{GRO} (generic receive offload) \cite{gro} são soluções baseadas no \textit{GSO} onde os pacotes são agregados quando recebidos. O \textit{LRO} agrega todos os pacotes \textit{TCP} que chegam, mas com possíveis perdas na transformação se por exemplo existe uma diferença nos cabeçalhos no pacote. Já o \textit{GRO} restringe a agregação dos pacotes pelos cabeçalhos, o que não traz perdas e além disso o \textit{GRO} não é limitado ao \textit{TCP}. Apesar de conseguir uma agregação dos pacotes, como já foi dito, a recepção não pode controlar a chegada dos pacotes o que força a utilização de uma técnica de agregação de interrupção como o \textit{NAPI} para conseguir montar os pacotes.
 
 \section{Agregação e Virtualização de Rede}
+\label{sec:agvirt}
 No contexto da virtualização de rede, como foi possível observar na arquitetura da virtualização da rede no \textit{XEN}, muitos passos extras são feitos durante recepção e transmissão de pacotes, fazendo aumentar o número de interrupções. 
 
 Na virtualização de rede do \textit{XEN}, dois \textit{drivers} virtuais (\textit{frontend},\textit{backend}) são criados pelo próprio \textit{XEN} para ligar o \texttt{dom0} com um \texttt{domU}.
