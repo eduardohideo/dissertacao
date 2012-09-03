@@ -29,7 +29,7 @@ Já se o módulo oferece uma interface primitiva e requer um controle detalhado, e
 \end{center}
 \end{figure}
 
-Existem três técnicas possíveis para operações de E/S: E/S programada, interrupção dirigida à E/S e DMA (do inglês \textit{direct memory access} -- acesso direto a memória).
+Existem três técnicas possíveis para operações de E/S: E/S programada, interrupção dirigida à E/S e \textit{DMA} (do inglês \textit{direct memory access} -- acesso direto a memória).
 Na E/S programada, dados são transferidos entre o processador e o módulo de E/S.
 O processador executa um programa e fornece a este, controle direto das operações de E/S.
 \uline{Um problema com essa estratégia é o tempo que o processador tem que esperar para o dispositivo de E/S estar pronto para ser usado. Durante esse intervalo, muitas instruções poderiam ser processadas.}
@@ -41,7 +41,7 @@ Ele é interrompido pelo módulo de E/S quando o último terminar seu trabalho.
 No \textit{DMA}, um processador especializado em E/S toma controle das operações de E/S para mover um grande bloco de dados usando a memória principal.
 \uline{Nota-se que o processador não participa ativamente nessa técnica, como nas técnicas anteriores, reduzindo o seu uso.
 }
-Na Figura \ref{leitura} vemos as três técnicas sendo aplicadas para receber um bloco de dados de um dipositivo de E/S.
+Na Figura \ref{leitura} vemos as três técnicas sendo aplicadas para receber um bloco de dados de um dispositivo de E/S.
 \uline{Tanto na E/S programada como na interrupção dirigida a E/S, percebe-se que o processador participa de todo processo, enquanto que no \textit{DMA}, ele participa apenas na requisição de leitura e no fim recebendo uma interrupção do modulo de \textit{DMA} avisando que o bloco de dados foi copiado. 
 }
 

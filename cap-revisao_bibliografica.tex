@@ -125,7 +125,7 @@ Para analisar a situação de sobrecarga de interrupções, foi modelado o sistema c
 
 O sistema pode usar ou não \textit{DMA}.
 Sem \textit{DMA}, o processador gerencia a recepção de pacotes. Quando o processador é interrompido enquanto está processando um pacote pela chegada de um outro pacote, o tempo para processar é estendido para realizar uma cópia individual do outro pacote que chegou para a memória do sistema.
-Com \textit{DMA}, a placa de rede tem acesso direto a memória. Quando um ou mais pacotes chegam enquanto que o sistema está ainda processando um outro pacote, todos são processados sem extender o tempo de processar. 
+Com \textit{DMA}, a placa de rede tem acesso direto a memória. Quando um ou mais pacotes chegam enquanto que o sistema está ainda processando um outro pacote, todos são processados sem estender o tempo de processar. 
 
 Foram feitos experimentos analisando o sistema ideal, \textit{DMA} habilitado e \textit{DMA} desabilitado. Com pouco tráfego de pacotes, a taxa de transferência de todos foi a mesma. 
 Já com muito tráfego de pacotes, a taxa de transferência do sistema com o \textit{DMA} habilitado teve uma queda menor que o sistema sem o \textit{DMA} habilitado e o sistema ideal se apresentou com taxa de transferência constante.
