@@ -2,9 +2,9 @@
 \chapter{Conceitos}
 \label{cap:conceitos}
 
-O objetivo desse capítulo é \sout{dar} \uline{fornecer} ao leitor o conhecimento necessário  \sout{para entender o tema de pesquisa e o problema que deverá ser solucionado nessa monografia.} \uline{em agregação de interrupções, computação em nuvem e virtualização de rede}.
-Ele está organizado da seguinte forma: A Seção \ref{sec:dispositivosDeES} apresenta os conceitos em arquitetura de E/S em computadores, a Seção \ref{sec:computacaoEmNuvem} apresenta uma visão geral de computação em nuvem, a Seção \ref{sec:virtualizacao} explica a importância da virtualização na computação em nuvem e depois foca na virtualização em computadores, dispositivos de E/S e redes.
-As Seções \ref{sec:agrec} e \ref{sec:agtrans} explicam o funcionamento da estratégia de agregação de interrupções na recepção e transmissão de pacotes respectivamente. Por fim, a Seção \ref{sec:agvirt} analisa \sout{a aplicação das técnicas de agregação de interrupções nos problemas de virtualização de rede} \uline{como a aplicação das técnicas de agregação de interrupções afeta a virtualização de rede}.
+O objetivo desse Capítulo é \sout{dar} \uline{fornecer} ao leitor o conhecimento necessário  \sout{para entender o tema de pesquisa e o problema que deverá ser solucionado nessa monografia.} \uline{em agregação de interrupções, computação em nuvem e virtualização de rede}.
+Ele está organizado da seguinte forma: a Seção \ref{sec:computacaoEmNuvem} apresenta uma visão geral de computação em nuvem, a Seção \ref{sec:dispositivosDeES} apresenta os conceitos em arquitetura de E/S em computadores, a Seção \ref{sec:virtualizacao} explica a importância da virtualização na computação em nuvem e depois foca na virtualização em computadores, dispositivos de E/S e redes.
+As seções \ref{sec:agrec} e \ref{sec:agtrans} explicam o funcionamento da estratégia de agregação de interrupções na recepção e transmissão de pacotes respectivamente. Por fim, a Seção \ref{sec:agvirt} analisa \sout{a aplicação das técnicas de agregação de interrupções nos problemas de virtualização de rede} \uline{como a aplicação das técnicas de agregação de interrupções afeta a virtualização de rede}.
 
 %% ------------------------------------------------------------------------- %%
 \section{Computação em Nuvem}\index{Computação em nuvem!fundamentos}
@@ -13,15 +13,15 @@ As Seções \ref{sec:agrec} e \ref{sec:agtrans} explicam o funcionamento da estrat
 A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de hardware e software dos CPDs (Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
 
 Como o termo nuvem é muito abrangente, ele foi dividido em várias classificações \cite{armbrust2009above}, entre elas, o tipo de serviço o qual fornecem. 
-Seguindo essa classificação existem as nuvens que fornecem \textit{softwares} como serviço (SaaS -- \textit{Software As A Service}), 
-plataformas como serviço (PaaS -- \textit{Platform As A Service}), 
+Seguindo essa classificação existem as nuvens que fornecem \textit{software} como serviço (SaaS -- \textit{Software as a Service}), 
+plataformas como serviço (PaaS -- \textit{Platform as a Service}), 
 e infraestruturas como serviços (IaaS -- \textit{Infrastructure as a Service}).
 Nuvens que fornecem \textit{SaaS} \sout{são utilizadas por exemplo pelo} \uline{oferecem aplicações sob demada para o cliente. Como exemplo temos o} \textit{Google Docs}\footnote[1]{http://docs.google.com} que fornece um \textit{software} para edição de documentos como serviço.
-Nuvens que fornecem PaaS \uline{oferecem plataformas nas quais o cliente pode criar e implantar suas aplicações,}
- são utilizadas em casos como o \textit{Google App Engine}\footnote[2]{http://developers.google.com/appengine/} e o \textit{Windows Azure}\footnote[3]{http://www.windowsazure.com/en-us/} \sout{onde é oferecido uma plataforma para implantar aplicações}
- e nuvens que fornecem \textit{IaaS} \uline{oferecem infraestruturas computacionais ao cliente,} são utilizadas em casos como o \textit{Amazon EC2}\footnote[4]{http://aws.amazon.com/ec2/} que fornece uma infraestrutura que emula um computador.
+Nuvens que fornecem PaaS \uline{oferecem plataformas nas quais o cliente pode criar e implantar suas aplicações.}
+O \textit{Google App Engine}\footnote[2]{http://developers.google.com/appengine/} e o \textit{Windows Azure}\footnote[3]{http://www.windowsazure.com/en-us/} \uline{são exemplos desse tipo de nuvem} \sout{onde é oferecido uma plataforma para implantar aplicações}.
+Nuvens que fornecem \textit{IaaS} \uline{oferecem infraestruturas computacionais ao cliente.} Um exemplo desse tipo de nuvem é o \textit{Amazon EC2}\footnote[4]{http://aws.amazon.com/ec2/} que fornece uma infraestrutura a qual emula um computador.
 
-Nesse texto, quando falamos de nuvem, estaremos nos referindo a serviços que fornecem uma infraestrutura (\textit{IaaS}). Cada infraestrutura pode receber várias requisições de hospedar programas de desenvolvedores e, nesse caso, terá que implantá-los em algum local no interior dela. Quando um cliente, em algum momento, faz uma requisição para executar esse programa, a nuvem executa o programa internamente e repassa o resultado ao cliente.
+Nesse texto iremos nos focar em fornecer infraestruturas, em específico, servidores como serviço. Cada serviço pode receber várias requisições para hospedar programas de desenvolvedores e, nesse caso, terá que implantá-los na infraestrutura. Quando um cliente, em algum momento, faz uma requisição para executar esse programa, a nuvem executa o programa internamente e repassa o resultado ao cliente.
 Para que isso seja possível, a infraestrutura de nuvem contém vários nós, os quais são recursos físicos, como computadores ou mesmo CPDs inteiros, que contêm e controlam várias máquinas virtuais (MVs) usando alguma técnica de virtualização. Cada requisição para implantar ou executar um programa é feita oferecendo as máquinas virtuais as quais estão dentro de um nó da infraestrutura.
 
 %% ------------------------------------------------------------------------- %%
@@ -30,7 +30,7 @@ Para que isso seja possível, a infraestrutura de nuvem contém vários nós, os qua
 Um computador, segundo o modelo de Von Neumann \cite{stallings1986computer}, é formado por uma memória principal, uma unidade central de processamento e dispositivos de E/S como mostra a Figura \ref{arqvon}.
 Cada dispositivo de E/S do computador é controlado por um módulo para E/S.
 Este módulo de E/S é necessário para que o processador possa se comunicar com um ou mais dispositivos de E/S.
-Os dispositivo de E/S possuem vários métodos de operação, diferentes formatos, comprimento de palavras e velocidade de transferência, o que faz cada módulo ter uma lógica específica para um dispositivo.
+Os dispositivos de E/S possuem vários métodos de operação, diferentes formatos, comprimento de palavras e velocidade de transferência, o que faz cada módulo ter uma lógica específica para um dispositivo.
 
 \sout{Quando o módulo oferece uma interface de alto nível do dispositivo ao processador, ele é chamado de canal de E/S.
 Já se o módulo oferece uma interface primitiva e requer um controle detalhado, ele é chamado de  controlador de E/S. Os canais de E/S são normalmente usados em \textit{mainframes}, computadores de grande porte, enquanto que controladores de E/S são usados por microcomputadores.
@@ -71,20 +71,23 @@ Tanto na E/S programada como na interrupção dirigida a E/S, percebe-se que o pro
 %% ------------------------------------------------------------------------- %%
 \section{Virtualização}\index{virtualização!fundamentos}
 \label{sec:virtualizacao}
-Na computação em nuvem, em particular quando se é fornecido uma infraestrutura para implantar aplicações (\textit{IaaS}), a adoção da virtualização melhora a utilização dos recursos e protege o servidor de problemas que os softwares dos clientes possam causar em relação a servidores com máquinas puras \cite{chaudhary2008comparison}.
+Na computação em nuvem, em particular quando se é fornecida uma infraestrutura para implantar aplicações (\textit{IaaS}), a adoção da virtualização melhora a utilização dos recursos e protege o servidor de problemas que os software dos clientes possam causar em relação a servidores com máquinas puras \cite{chaudhary2008comparison}.
 Por exemplo, em um cenário com máquinas puras sem virtualização, um erro de programação que cause um laço infinito pode consumir toda a CPU do computador atrapalhando todos os usuários daquela máquina.
-Em um cenário virtualizado, a única máquina afetada seria a máquina virtual utilizada por aquele programador, já que apenas uma parte do processamento total é reservada e não é possível expandir a quantidade dos recursos sem permissão do administrador da nuvem.
+\uline{Em um cenário virtualizado, temos um isolamento entre os recursos das máquinas virtuais o qual impede uma máquina virtual de usar recursos de outra máquina, assim, a única máquina afetada no cenário é aquela utilizada pelo programador. Além disso, não é possível expandir a quantidade dos recursos sem permissão do administrador da nuvem, dando mais segurança na infraestrutura em relação a infraestruturas sem virtualização.}
+
+\sout{Em um cenário virtualizado, a única máquina afetada seria a máquina virtual utilizada por aquele programador, já que apenas uma parte do processamento total é reservada.
+ e não é possível expandir a quantidade dos recursos sem permissão do administrador da nuvem.}
 
 Além da segurança, outra consequência da virtualização é que ela permite um novo modelo de negócio chamado ``pague somente quando usa'', onde o cliente paga somente pelo tempo que o recurso é usado. 
-Além disso, o cliente tem a impressão de estar utilizando um ambiente com recursos infinitos, já que a configuração de uma máquina virtual pode ser ampliada sem interrupção do serviço e, mais máquinas podem ser agregadas para prover o serviço \cite{armbrust2009above}. 
+Além disso, o cliente tem a impressão de estar utilizando um ambiente com recursos infinitos, já que podemos aumentar os recursos de uma máquina virtual sem interrupção do serviço e, mais máquinas podem ser agregadas para prover o serviço \cite{armbrust2009above}. 
 
 Essas características beneficiam o lado do servidor, que não precisará fornecer um recurso físico inteiro para cada cliente e terá maior segurança e tolerância a falhas, já que cada sistema é independente. Do lado do cliente, ele irá economizar dinheiro pelo novo modelo de negócio e terá recursos sob demanda.
 
-\subsection{Virtualização de Servidores}
+\subsection{Virtualização de Computadores}
 As nuvens normalmente são constituídas de CPDs que estão ligados de alguma forma por uma rede.
-A virtualização de servidores divide um computador, geralmente com grande capacidade de processamento, em recursos menores chamadas de máquinas virtuais de modo que cada uma age como se fosse um computador separado, podendo ter inclusive, diferentes sistemas operacionais \cite{barham2003xen}.
+A virtualização de servidores divide um computador, geralmente com grande capacidade de processamento, em recursos menores chamados de máquinas virtuais de modo que cada uma age como se fosse um computador separado, podendo ter inclusive, diferentes sistemas operacionais \cite{barham2003xen}.
 
-Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
+Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e caso ele necessite de mais recursos, é possível alocá-los sob demanda \cite{armbrust2009above}.
 Segundo \cite{chaudhary2008comparison}, as estratégias de virtualização podem ser divididas em 4 grandes categorias: virtualização completa, para-virtualização, virtualização em nível de sistema operacional e virtualização nativa.
 
 Na virtualização completa também conhecida como emulação de hardware, um ou vários sistemas operacionais são executados dentro de um \textit{hypervisor}.
@@ -93,14 +96,14 @@ O \textit{hypervisor}, chamado também de gerenciador de máquinas virtuais, forne
 No \textit{hypervisor} da virtualização completa, é feita a interceptação, tradução e execução das instruções sob demanda dos sistemas operacionais das máquinas virtuais.
 Nessa estratégia, o núcleo do sistema operacional que roda o \textit{hypervisor} não necessita de modificações. Dentro dessa categoria de \textit{hypervisors} estão o \textit{KVM}\footnote[1]{http://www.linux-kvm.org/}, o \textit{XEN}\footnote[2]{http://xen.org/}, o \textit{VMWare}\footnote[3]{http://www.vmware.com/} e o \textit{VirtualBox}\footnote[4]{http://www.virtualbox.org/}.
 
-Diferente da virtualização completa, a para-virtualização exige uma modificação do núcleo para poder executar o \textit{hypervisor}. Assim, caso não exista o código-fonte do sistema, não é possível usar essa estratégia. Na para-virtualização, o hardware virtual consegue conversar diretamente com o dispositivo emulado. Isso garante uma carga extra mínima em relação a tentar emular o dispositivo real. Nessa categoria estão incluídos o \textit{XEN} e o \textit{VMWare}.
+Diferentemente da virtualização completa, a para-virtualização exige uma modificação do núcleo para poder executar o \textit{hypervisor}. Assim, caso não exista o código-fonte do sistema, não é possível usar essa estratégia. Na para-virtualização, o hardware virtual consegue conversar diretamente com o dispositivo emulado. Isso garante uma sobrecarga mínima em relação a tentar emular o dispositivo real. Nessa categoria estão incluídos o \textit{XEN} e o \textit{VMWare}.
 
 A virtualização em nível de sistema operacional não tem um \textit{hypervisor}. Ela modifica o núcleo do sistema isolando múltiplas instâncias do sistema operacional dentro de uma mesma máquina física. Nesse caso, como é feito apenas um isolamento entre as instâncias, estas ficam limitadas a usarem o mesmo sistema operacional. Está incluído nessa categoria o \textit{OpenVZ}\footnote[5]{http://wiki.openvz.org/}.
 
 Por fim, a virtualização nativa é uma virtualização completa ``melhorada''. Ela aproveita o suporte de \textit{hardware} para virtualização dentro do próprio processador. Isto permite que múltiplos sistemas operacionais rodem sobre outros, sendo capazes de cada um acessar diretamente o processador do hospedeiro. Como exemplos temos o \textit{XEN}, o \textit{VMWare} e o \textit{VirtualBox}.
 
-As virtualizações completa e nativa têm uma grande vantagem em relação às outras: não é necessário alterar o núcleo do sistema operacional. Isto as tornam mais simples e mais portáveis já que sistemas operacionais com código fechados podem ser utilizados.
- A para-virtualização e a virtualização em nível de sistema operacional exigem uma modificação no núcleo, porém, são as que tem um melhor desempenho pois elas têm acesso ao hardware físico. Comparando as duas, a virtualização em nível de sistema operacional é bem mais intrusiva e não permite a mudança do sistema operacional das máquinas virtuais, mas também tem um desempenho melhor que a para-virtualização \cite{padala2007performance} \cite{chaudhary2008comparison} \cite{schmidtanalise} \cite{che2010synthetical}.
+As virtualizações completa e nativa têm uma grande vantagem em relação às outras: não é necessário alterar o núcleo do sistema operacional da máquina hospedeira. Isto as tornam mais simples e mais portáveis já que sistemas operacionais com código fechados podem ser utilizados.
+ A para-virtualização e a virtualização em nível de sistema operacional exigem uma modificação no núcleo da máquina hospedeira, porém, são as que tem um melhor desempenho pois elas têm acesso ao hardware físico. Comparando as duas, a virtualização em nível de sistema operacional é bem mais intrusiva e não permite a mudança do sistema operacional das máquinas virtuais, mas também tem um desempenho melhor que a para-virtualização \cite{padala2007performance} \cite{chaudhary2008comparison} \cite{schmidtanalise} \cite{che2010synthetical}.
 
 
 %% ------------------------------------------------------------------------- %%
@@ -109,23 +112,41 @@ As virtualizações completa e nativa têm uma grande vantagem em relação às outras
 
 \subsection{Virtualização de Dispositivos de E/S}\index{virtualização!virtualização de dispositivos de E/S}
 
-Com a virtualização de servidores, os dispositivos de E/S físicos passam a ter que sofrer modificações já que em um servidor não há apenas um único sistema operacional, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
+Com a virtualização de servidores, os dispositivos de E/S físicos sofreram melhorias já que em um servidor não há apenas um único sistema operacional, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
 
 \cite{Rixner:2008:NVB:1348583.1348592} separou a virtualização de E/S em duas categorias: privada ou compartilhada.
-Na virtualização de E/S privada, cada dispositivo físico é associado a apenas uma única MV enquanto que na virtualização de E/S compartilhada, o dispositivo é compartilhado para várias MV.
+Na virtualização de E/S privada, cada dispositivo físico é associado a apenas uma única MV enquanto que na virtualização de E/S compartilhada, o dispositivo é compartilhado por várias MV.
 
-Comparando a virtualização de E/S privada com a compartilhada há uma subutilização na virtualização privada, pois parte do tempo em que a MV não usa o dispositivo é desperdiçada. Por outro lado, o desempenho da virtualização compartilhada é pior já que divide o recurso com outras máquinas.
+Comparando a virtualização de E/S privada com a compartilhada há uma subutilização na virtualização privada, pois enquanto uma MV não utiliza o dispositivo, outra poderia necessitar do seu uso. Por outro lado, o desempenho da virtualização compartilhada é pior já que divide o recurso com outras máquinas.
 
-Quando pensamos em escalar o número de MVs, o custo da virtualização privada cresce absurdamente (com 10 MVs teríamos que ter 10 dispositivos físicos enquanto que na virtualização compartilhada, talvez até um dispositivo poderia ser o suficiente para resolver o problema).
+Quando pensamos em aumentar o número de MVs, o custo da virtualização privada cresce absurdamente (com 10 MVs teríamos que ter 10 dispositivos físicos enquanto que na virtualização compartilhada, talvez até um dispositivo poderia ser o suficiente para resolver o problema).
 
 Normalmente, a melhor opção é que o dispositivo físico seja compartilhado entre as máquinas, tanto pela possibilidade de escalar como pelo custo. Porém, disponibilizar de maneira compartilhada o acesso a dispositivos físicos pode trazer muitos problemas de segurança, dificultar o monitoramento das informações e a migração de máquinas virtuais \cite{Santos:2008:BGS:1404014.1404017}.
-Problemas de segurança surgem porque o usuário de uma máquina virtual pode tentar acesso a uma outra máquina virtual justamente através do recurso que está sendo compartilhado \cite{Rixner:2008:NVB:1348583.1348592}. O monitoramento é dificultado porque certas ferramentas só fazem medições do dispositivo físico e como ele está associado a várias máquinas virtuais, fica difícil separar as informações específicas de cada uma dentro do agregado \cite{goncalvesresource}. Já a migração é dificultada porque uma máquina virtual só poderá ser migrada para uma máquina física que possua o mesmo \textit{hardware} onde a máquina virtual está executando (a migração permite que uma máquina virtual seja movida de um recurso físico para outro de forma transparente para o usuário sem perda de conectividade)\cite{alkmim2009soluccao}.
+Problemas de segurança surgem porque o usuário de uma máquina virtual pode tentar acesso a uma outra máquina virtual justamente através do recurso que está sendo compartilhado \cite{Rixner:2008:NVB:1348583.1348592}. O monitoramento é dificultado porque certas ferramentas só fazem medições do dispositivo físico e como ele está associado a várias máquinas virtuais, fica difícil separar as informações específicas de cada uma dentro do agregado \cite{goncalvesresource}. Já a migração é dificultada porque uma máquina virtual só poderá ser migrada para uma máquina física que possua o mesmo \textit{hardware} onde a máquina virtual está executando (a migração permite que uma máquina virtual seja movida de um recurso físico para outro de forma transparente para o usuário, sem perda de conectividade)\cite{alkmim2009soluccao}.
 
-Para contornar esse problema, normalmente, \textit{hypervisors} como \textit{XEN}, \textit{KVM} e \textit{VMWare} restringem o acesso a um dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina. Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa, por exemplo \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.\\
+Para contornar esse problema, normalmente, na virtualização em nível de sistema operacional, o núcleo do sistema gerencia a utilização do dispositivos entre as máquinas virtuais como mostra a Figura \ref{IO_um}.
+Já em \textit{hypervisors} como \textit{XEN}, \textit{KVM} e \textit{VMWare}, como cada máquina possui seu próprio núcleo, não é possível fazer o núcleo do sistema gerenciar odispositivo entre as máquinas. Uma possível solução seria restringir o acesso ao dispositivo físico para apenas uma máquina virtual e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina.
+ Como é possível ver na Figura \ref{IO_varios}, a máquina virtual 0 gerencia o dispositivo de E/S enquanto que as máquinas virtuais 1 e 2 acessam o dispositivo se comunicando com o núcleo do sistema 0.
+Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa, porém, garante segurança já que é possível monitorar o trafégo de todas as máquinas através da máquina que gerencia o dispositivo, por exemplo \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.\\
 
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=330pt,height=150pt]{./img/IO_um_nucleo.eps}
+\caption{compartilhamento de um dispositivo de E/S na virtualização em nível de sistema operacional}
+\label{IO_um}
+\end{center}
+\end{figure}
 
-\cite{Waldspurger:2012:IV:2063176.2063194} faz algumas menções sobre o uso de técnicas de virtualização de E/S que desacoplam a implementação física do dispositivo lógico. Dentre as vantagens, ele cita a melhor utilização dos recursos e a economia de custos em relação a sistemas que estão com a implementação física acoplada com o dispositivo lógico, pois vários sistemas podem aproveitar o mesmo recurso. Em relação a flexibilidade, é possível mapear os dispositivos lógicos com as implementações físicas, garantindo uma maior portabilidade. Esse mapeamento pode também trazer novas funcionalidades ao recurso como: balanceamento da carga de trabalho e mascaramento das falhas. 
-A funcionalidade de suspender, migrar e resumir uma máquina virtual também é possível, pois com o dispositivo lógico desacoplado da implementação física, é possível reconectar a máquina virtual em outra máquina física com uma configuração diferente.
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=350pt,height=225pt]{./img/IO_varios_nucleo.eps}
+\caption{compartilhamento de um dispositivo de E/S na virtualização que utiliza hypervisors}
+\label{IO_varios}
+\end{center}
+\end{figure}
+
+\cite{Waldspurger:2012:IV:2063176.2063194} faz algumas menções sobre o uso de técnicas de virtualização de E/S que desacoplam o dispositivo físico do seu dispositivo lógico. Dentre as vantagens, ele cita a melhor utilização dos recursos e a economia de custos em relação a sistemas que estão com a implementação física acoplada com o dispositivo lógico, pois vários sistemas podem aproveitar o mesmo recurso. Em relação a flexibilidade, é possível mapear os dispositivos lógicos com as implementações físicas, garantindo uma maior portabilidade. Esse mapeamento pode também trazer novas funcionalidades ao recurso como: balanceamento da carga de trabalho e mascaramento das falhas. 
+A funcionalidade de suspender, migrar e continuar uma máquina virtual também é possível, pois com o dispositivo lógico desacoplado da implementação física, é possível reconectar a máquina virtual em outra máquina física com uma configuração diferente.
 Outra funcionalidade trazida com a virtualização é a interposição e transformação das requisições virtuais de E/S. Isso permite que as requisições que passam pelo dispositivo lógico sejam transformadas.
 Em um exemplo de leitura e escrita no disco, além de simplesmente ler/escrever no disco, torna-se possível guardar uma cópia da informação antiga como cópia de segurança. Outra possibilidade é criptografar a informação quando alguém escrever no disco, dificultando outras pessoas de acessarem o seu conteúdo escrito.
 
@@ -133,7 +154,7 @@ Em um exemplo de leitura e escrita no disco, além de simplesmente ler/escrever n
 \subsection{Virtualização da Rede}\index{virtualização!virtualização da rede}
 
 A virtualização de rede que também é um dispositivo de E/S tem algumas particularidades em relação a outros dispositivos.
-Segundo \cite{Rixner:2008:NVB:1348583.1348592}, Comparando a virtualização de E/S com a virtualização de rede, a complexidade de virtualizar a rede é muito maior pelo fato de não se conhecer o destino de uma informação e a necessidade de estar preparado a qualquer momento para receber e responder ao tráfego da rede, diferente da virtualização de disco em que a leitura e escrita só ocorre quando requisitada pela máquina virtual.
+Segundo \cite{Rixner:2008:NVB:1348583.1348592}, a complexidade de virtualizar a rede é muito maior pelo fato de muitas vezes não se conhecer o destino de uma informação, pois esse está fora do sistema, diferente por exemplo do disco rígido que só se comunica com o sistema. Outra dificuldade é necessidade de estar preparado a qualquer momento para receber e responder ao tráfego da rede, diferente da virtualização de disco em que a leitura e escrita só ocorre quando requisitada pela máquina virtual.
 
 %% ------------------------------------------------------------------------- %%
 \subsubsection{Virtualização da Rede no XEN}

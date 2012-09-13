@@ -21,14 +21,15 @@ Essa pesquisa foca em propor algoritmos que automatizem a configuração de agrega
 }
 
 \uline{
-Para reduzir o custo do processamento, uma proposta é usar uma estratégia para gerenciar a agregação de interrupções \cite{salah2007coalesce}, \cite{dong2011optimizing}.
+Para reduzir o custo do processamento, uma proposta é adotar uma estratégia para gerenciar a agregação de interrupções \cite{salah2007coalesce}, \cite{dong2011optimizing}.
 Na agregação de interrupções, o \textit{driver} da placa de rede não gera interrupções no sistema quando um pacote é recebido ou é transmitido com sucesso.
 }\uline{
-Ao invés disso, uma interrupção é gerada depois de um intervalo de tempo que um pacote é recebido ou transmitido ou é gerada quando uma quantidade de pacotes é transmitida/recebida, reduzindo então, a quantidade de interrupções por pacote. 
+Ao invés disso, uma interrupção é gerada depois de um intervalo de tempo que um pacote é recebido ou transmitido, ou quando uma quantidade de pacotes é transmitida/recebida.
+Como a interrupção é gerada para um agrupamento de pacotes, ao invés de ser gerada para cada pacote, isso reduz a quantidade de interrupções por pacote. 
 }
 \uline{
-As interrupções têm prioridade em serem realizadas pelo sistema em relação a outras tarefas.
-Considerando os dispositivos de E/S, as redes gigabits transferem com um taxa 10x maior que os discos rígidos e 1000x maior que os disquetes como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}.
+Embora focarmos em redes, qualquer dispositivo de E/S é capaz de gerar interrupções.
+Considerando outros dispositivos de E/S, as redes gigabits transferem com um taxa 10x maior que os discos rígidos e 1000x maior que os discos flexíveis como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}. 
 }
 \begin{figure}[h!]
 \begin{center}
@@ -39,6 +40,7 @@ Considerando os dispositivos de E/S, as redes gigabits transferem com um taxa 10
 \end{figure}
 
 \uline{
+As interrupções têm prioridade em serem realizadas pelo sistema em relação a outras tarefas. 
  Quando o sistema é sobrecarregado de interrupções, este gasta todo seu tempo tentando resolvê-la, impossibilitando que outras tarefas sejam executadas. Essa situação é chamada de ``\textit{livelock}'' \cite{salah2007coalesce}.
 Na recepção de pacotes pode ocorrer um \textit{livelock} quando a transferência de pacotes é em torno de gigabits e
 vários pacotes são recebidos enquanto um outro ainda está sendo processado. Nesse cenário, o sistema passa a ter que manipular cada uma das interrupções geradas pelos pacotes que chegam e nunca consegue processar um pacote ou então começa a descartar pacotes.
