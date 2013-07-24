@@ -29,8 +29,8 @@
 \usepackage[font=small,format=plain,labelfont=bf,up,textfont=it,up]{caption}
 \usepackage[usenames,svgnames,dvipsnames]{xcolor}
 \usepackage[a4paper,top=2.54cm,bottom=2.0cm,left=2.0cm,right=2.54cm]{geometry} % margens
-%\usepackage[pdftex,plainpages=false,pdfpagelabels,pagebackref,colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black,filecolor=black,bookmarksopen=true]{hyperref} % links em preto
-\usepackage[pdftex,plainpages=false,pdfpagelabels,pagebackref,colorlinks=true,citecolor=DarkGreen,linkcolor=NavyBlue,urlcolor=DarkRed,filecolor=green,bookmarksopen=true]{hyperref} % links coloridos
+\usepackage[pdftex,plainpages=false,pdfpagelabels,pagebackref,colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black,filecolor=black,bookmarksopen=true]{hyperref} % links em preto
+%\usepackage[pdftex,plainpages=false,pdfpagelabels,pagebackref,colorlinks=true,citecolor=DarkGreen,linkcolor=NavyBlue,urlcolor=DarkRed,filecolor=green,bookmarksopen=true]{hyperref} % links coloridos
 \usepackage[all]{hypcap}                % soluciona o problema com o hyperref e capitulos
 \usepackage[square,sort,nonamebreak,comma]{natbib}  % citação bibliográfica alpha (alpha-ime.bst)
 \fontsize{60}{62}\usefont{OT1}{cmr}{m}{n}{\selectfont}
@@ -46,7 +46,7 @@
 
 % ---------------------------------------------------------------------------- %
 \graphicspath{{./figuras/}}             % caminho das figuras (recomendável)
-\frenchspacing                          % arruma o espaço: id est (i.e.) e exempli gratia (e.g.) 
+\frenchspacing                          % arruma o espaço: id est (i.e.) e exempli gratia (e.g.)
 \urlstyle{same}                         % URL com o mesmo estilo do texto e não mono-spaced
 \makeindex                              % para o índice remissivo
 \raggedbottom                           % para não permitir espaços extra no texto
@@ -58,10 +58,10 @@
 % Opções de listing usados para o código fonte
 % Ref: http://en.wikibooks.org/wiki/LaTeX/Packages/Listings
 \lstset{ %
-language=Java,                  % choose the language of the code
+language=C,                  % choose the language of the code
 basicstyle=\footnotesize,       % the size of the fonts that are used for the code
 numbers=left,                   % where to put the line-numbers
-numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+numberstyle=\footnotesize,      % the size of the 	fonts that are used for the line-numbers
 stepnumber=1,                   % the step between two line-numbers. If it's 1 each line will be numbered
 numbersep=5pt,                  % how far the line-numbers are from the code
 showspaces=false,               % show spaces adding particular underscores
@@ -105,14 +105,16 @@ framexrightmargin=10pt
 \thispagestyle{empty}
 \begin{center}
     \vspace*{2.3cm}
-    \textbf{\Large{Agregação de Interrupções de placas de rede para Infraestruturas em Nuvem}}\\
+    \textbf{\Large{Agregação de Interrupções\\
+		    de placas de rede\\[0.25cm]
+		    para Infraestruturas em Nuvem}}\\
     
-    \vspace*{1.2cm}
+    \vspace*{1.0cm}
     \Large{Eduardo Hideo Kuroda}
     
     \vskip 2cm
     \textsc{
-    Dissertação de mestrado apresentada\\[-0.25cm] 
+    Dissertação de mestrado apresentada\\[-0.25cm]
     ao\\[-0.25cm]
     Instituto de Matemática e Estatística\\[-0.25cm]
     da\\[-0.25cm]
@@ -131,7 +133,7 @@ framexrightmargin=10pt
     financeiro da Comissão Europeia e da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior}
     
     \vskip 0.5cm
-    \normalsize{São Paulo, agosto de 2012}
+    \normalsize{São Paulo, Junho de 2013}
 \end{center}
 
 % ---------------------------------------------------------------------------- %
@@ -151,13 +153,9 @@ framexrightmargin=10pt
     \vskip 2cm
 
     \begin{flushright}
-Dissertação apresentada ao 
-
-Instituto de Matemática e Estatística da Universidade de São Paulo
-
-como requisito parcial para obtenção do grau de 
-
-Mestre em Ciência da Computação.	
+    Esta é a versão original da dissertação elaborada pelo\\
+    candidato Eduardo Hideo Kuroda, tal como \\
+    submetida à Comissão Julgadora.
     \end{flushright}
 
 \pagebreak
@@ -170,7 +168,7 @@ Mestre em Ciência da Computação.
 % Resumo
 \chapter*{Resumo}
 As infraestruturas em nuvem se comportam com um desempenho mais baixo se comparadas com infraestruturas sem virtualização, em cenários onde há utilização intensiva da rede. 
-Uma das principais causas é a arquitetura da virtualização de rede. Diferentemente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação dentro de uma máquina virtual o que implica em um custo adicional tanto na gerência de memória como no processamento.
+Uma das principais causas é a arquitetura da virtualização de rede. Diferentemente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação dentro de uma máquina virtual o que implica em um custo adicional tanto na memória como no processamento.
 Para reduzir o custo do processamento, pode-se agregar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes, mas também aumentaria a latência. Essa estratégia é chamada agregação de interrupções.
 Nessa pesquisa criaremos um algoritmo para otimizar a agregação de interrupções com o objetivo de garantir requisitos de qualidade dos serviços de aplicações que fazem uso intensivo de rede em nuvens.
 
@@ -182,7 +180,7 @@ Nessa pesquisa criaremos um algoritmo para otimizar a agregação de interrupções 
 \chapter*{Abstract}
 Cloud infrastructures shows inferior performance if compared to infrastructures without virtualization in scenarios where there is intensive use of network.
 One of the main reasons is the network virtualization's architecture.
-Differently from the standard network architecture, there are some extra steps to transmit and receive a packet of information inside of a virtual machine, which implies an additional cost in both memory management and processing.
+Differently from the standard network architecture, there are some extra steps to transmit and receive a packet of information inside of a virtual machine, which implies an additional cost in both memory and processing.
 To reduce processing cost, several interrupts can be coalesced when a packet is sent or received. This would reduce the amount of processing per packet, but also increase the latency.
  This strategy is called interrupt coalescence. In this research, we will create an algorithm to optimize the interrupt coalescence in order to ensure the requirements of quality of service of cloud applications that use network intensively. 
 
@@ -239,6 +237,7 @@ To reduce processing cost, several interrupts can be coalesced when a packet is 
 \input cap-conceitos         % associado ao arquivo: 'cap-conceitos.tex'
 \input cap-revisao_bibliografica
 \input cap-proposta
+\input cap-experimento
 %\input cap-conclusoes        % associado ao arquivo: 'cap-conclusoes.tex'
 
 % cabeçalho para os apêndices

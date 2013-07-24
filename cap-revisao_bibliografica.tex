@@ -33,6 +33,9 @@ Os artigos de relevância alta foram lidos por completo e resumidos. Os artigos d
 		\cite{jang2011low}&&alta\\
 		\cite{fortuna2012improving}&&alta\\
 		\cite{dong2011optimizing}&&alta\\
+		\cite{salah2005analysis}&&alta\\
+		\cite{salah2007coalesce}&&alta\\
+		\cite{intel_interrupt}&&alta\\
 	\end{tabular}
 \end{center}
 \end{table}
@@ -83,7 +86,7 @@ A primeira ideia é fazer com que o \texttt{domU} e o \texttt{dom0} passem a comp
 A segunda otimização foca priorizar a recepção de pacotes onde o uso do processador é alto.
 Nos experimentos comparando a estrutura padrão de virtualização e a estrutura modificada com as otimizações, foi apresentado um aumento de 96\% na largura de banda.\newline
 
-Em \cite{apparao2006characterization}, foi pesquisado as principais causas de carga extra na virtualização de E/S. No experimento eles estudaram dois modos de virtualização de E/S: o \texttt{domU} e o \texttt{dom0} na mesma \textit{CPU} e em \textit{CPUs} distintas.
+Em \cite{apparao2006characterization}, foram pesquisadas as principais causas de carga extra na virtualização de E/S. No experimento eles estudaram dois modos de virtualização de E/S: o \texttt{domU} e o \texttt{dom0} na mesma \textit{CPU} e em \textit{CPUs} distintas.
 O resultado mostrou que nos dois métodos, tanto a transmissão como a recepção de pacotes apresentaram uma perda de desempenho de mais de 50\% quando comparado com a máquina física. Também foi notado que rodar o \texttt{domU} e o \texttt{dom0} em \textit{CPUs} distintas é mais custoso que rodar elas juntas na mesma \textit{CPU}.\newline
  
 Em \cite{jang2011low}, foi estudado sacrificar o isolamento que existe entre as máquinas virtuais para conseguir reduzir a carga extra do processador. Os resultados mostram uma redução de 29\% no uso do processador e 8\% de ganho de largura de banda na transmissão de pacotes grandes. \newline
@@ -93,7 +96,10 @@ Em \cite{fortuna2012improving}, foram feitos experimentos em torno do problema d
 
 Eles também, discutiram a possibilidade de usar a função de agregação existentes nos \textit{drivers} das placas de rede modernas para um trabalho futuro.\newline
 
-Em \cite{dong2011optimizing}, foram propostas otimizações para reduzir a carga extra na virtualização da rede. Uma das otimizações foi agregar eficientemente as interrupções virtuais e a outra escalar o lado da recepção. A agregação de interrupção normalmente é usada quando a transferência de pacotes do meio físico é muito alta. Com uma transferência grande, a placa de rede passa a trabalhar intensamente sobrecarregando o processador com interrupções.
+Em \cite{dong2011optimizing}, foram propostas otimizações para reduzir a carga extra na virtualização da rede. 
+Uma das otimizações foi agregar eficientemente as interrupções virtuais e a outra escalar o lado da recepção. 
+A agregação de interrupção normalmente é usada quando a transferência de pacotes do meio físico é muito alta.
+Com uma transferência grande, a placa de rede passa a trabalhar intensamente sobrecarregando o processador com interrupções.
 Na virtualização da rede, a transferência de pacotes passa a gerar interrupções físicas e virtuais. 
 
 A agregação de interrupções virtuais pode ser feita no \textit{driver} virtual de \textit{backend} (na ponte dentro do \texttt{dom0}) ou no \textit{driver} virtual de \textit{frontend} (dentro de um \texttt{domU}).
@@ -106,14 +112,15 @@ O resultado no experimento de agregação de interrupções foi um ganho de até 76\%
 \subsubsection{Evaluating System Performance in Gigabit Networks \cite{salah2005analysis}}
 
 Em \cite{salah2005analysis}, é feita uma análise e simulação sobre o impacto da sobrecarga de interrupções no desempenho do sistema operacional em redes de alta velocidade. 
-O principal problema que eles exploraram é a grande quantidade de interrupções gerada na recepção de pacotes. Como a interrupção tem prioridade máxima em relação a outras tarefas, ela acaba consumindo todo tempo de processamento, impedindo outras tarefas de serem realizadas. Isso reduz a taxa de transferência do sistema a 0. Essa situação é conhecida como \textit{``livelock''}.
+O principal problema que eles exploraram é a grande quantidade de interrupções gerada na recepção de pacotes. 
+Como a interrupção tem prioridade máxima em relação a outras tarefas, ela acaba consumindo todo tempo de processamento, impedindo outras tarefas de serem realizadas e, consequentemente, reduzindo a taxa de transferência do sistema a 0. Essa situação é conhecida como \textit{``livelock''}.
 
 Na Figura \ref{livelock}, é mostrado um gráfico de carga do sistema por taxa de transferência.
 Na curva ideal, conforme a carga do sistema aumenta, a taxa de transferência passa a aumentar proporcionalmente, ou seja, quanto maior a velocidade de chegada dos pacotes, maior a quantidade de pacotes processada.
-Porém, como praticamente todo sistema tem uma capacidade finita de processamento, ele não recebe e processa pacotes além de sua velocidade máxima. Essa velocidade é chamada de \textit{MLFRR} (do inglês \textit{Maximum Loss-Free Receive Rate} --  máxima velocidade de recepção livre de perdas).
+Porém, como praticamente todo sistema tem uma capacidade finita de processamento, ele não recebe e processa pacotes além de sua velocidade máxima.
+Essa velocidade é chamada de \textit{MLFRR} (do inglês \textit{Maximum Loss-Free Receive Rate} --  máxima velocidade de recepção livre de perdas).
 Na curva aceitável, quando o sistema chega à \textit{MLFRR}, ele passa a não ter ganho na taxa de transferência pelo limite de processamento, e depois disso, a curva se comporta praticamente como uma constante.
 Por outro lado, se a rede for sobrecarregada na entrada, as interrupções geradas na chegada dos pacotes irão impedir que o pacote seja processado e a taxa de transferência do sistema cairá para 0 como é possível ver na curva \textit{livelock}.
-
 
 \begin{figure}[h!]
 \begin{center}
@@ -124,14 +131,22 @@ Por outro lado, se a rede for sobrecarregada na entrada, as interrupções geradas
 \end{figure}
 
 
-Para analisar a situação de sobrecarga de interrupções, foi modelado o sistema como uma fila M/M/1/B com chegada de pacotes em \textit{Poisson} de velocidade $\lambda$ e média efetiva de tempo de serviço de $1/\mu$ que tem uma distribuição geral. A justificativa dos autores para usarem \textit{Poisson} na chegada de pacotes ao invés de rajadas, como o tráfego de pacotes normalmente se comportai, é a dificuldade de estudar, modelar e resolver analiticamente um sistema com esse tipo de tráfego.
-
+Para analisar a situação de sobrecarga de interrupções, os autores modelaram o sistema como uma fila M/M/1/B com chegada de pacotes em \textit{Poisson} de velocidade $\lambda$ e média efetiva de tempo de serviço de $1/\mu$ que tem uma distribuição geral \uline{(os autores não justificam o motivo de terem modelado segundo essa distribuição)}.
 O sistema pode usar ou não \textit{DMA}.
 Sem \textit{DMA}, o processador gerencia a recepção de pacotes. Quando o processador é interrompido enquanto está processando um pacote pela chegada de um outro pacote, o tempo para processar é estendido para realizar uma cópia individual do outro pacote que chegou para a memória do sistema.
 Com \textit{DMA}, a placa de rede tem acesso direto a memória. Quando um ou mais pacotes chegam enquanto que o sistema está ainda processando um outro pacote, todos são processados sem estender o tempo de processar. 
 
 Foram feitos experimentos analisando o sistema ideal, \textit{DMA} habilitado e \textit{DMA} desabilitado. Com pouco tráfego de pacotes, a taxa de transferência de todos foi a mesma. 
-Já com muito tráfego de pacotes, a taxa de transferência do sistema com o \textit{DMA} habilitado teve uma queda menor que o sistema sem o \textit{DMA} habilitado e o sistema ideal se apresentou com taxa de transferência constante.
+Já com muito tráfego, a taxa de transferência do sistema com o \textit{DMA} habilitado teve uma queda menor na taxa de transferência que o sistema sem o \textit{DMA} habilitado e o sistema ideal se apresentou com taxa de transferência constante.
+
+\subsubsection{To Coalesce or Not To Coalesce \cite{salah2007coalesce}}
+
+Em \cite{salah2007coalesce}, continuação do artigo \cite{salah2005analysis}, é analisado o desempenho de duas técnicas de agregação de interrupções: baseada em contagem e baseada em tempo. Na técnica baseada em tempo, o  \textit{driver} da placa de rede não gera interrupções no sistema quando um pacote é recebido.
+Ao invés disso, uma interrupção é gerada depois de um intervalo de tempo que um pacote é recebido.
+Já na técnica baseada em contagem, é gerada uma interrupção  quando uma quantidade de pacotes é recebida. 
+
+A conclusão tirada nos modelos analíticos é que a agregação funciona melhor que o modelo de interrupção comum quando se tem um grande tráfego na rede. Porém, para um tráfego pequeno, a interrupção comum superou a agregação. Os autores sugerem monitorar o tráfego e fazer a troca entre a interrupção comum e a agregação de interrupções. Eles também citam um momento que pode ser usado para indicar a condição de sobrecarga. Este momento pode ser usado para a troca. 
+Outras importantes conclusões são que na agregação, são necessários valores altos de parâmetros em tráfegos intensivos, que para tráfegos tolerantes a latência, o uso de agregação é interessante independente do tráfego e que para tráfegos de tempo não-real é interessante usar a agregação baseada em tempo ao invés da baseada em contagem por impor um limite de atraso na agregação.
 
 \subsubsection{Interrupt Moderation Using Intel GbE Controllers \cite{intel_interrupt}}
 
@@ -156,23 +171,16 @@ Dependendo do padrão de E/S, é usado um valor no limitador.
 O padrão de E/S é categorizado em: baixíssima latência, onde o tráfego é mínimo e predomina os pacotes pequenos, baixa latência, onde o tráfego também é minimo e há um significante percentual de pacotes pequenos, e intermediário, onde há muito tráfego de pacotes medianos.
 Não foi possível entender como os autores chegaram a esses valores e porque eles resolveram dividir o padrão de E/S dessa forma.
 
-
-
-\subsubsection{To Coalesce or Not To Coalesce \cite{salah2007coalesce}}
-
-Em \cite{salah2007coalesce}, continuação do artigo \cite{salah2005analysis}, é analisado o desempenho de duas técnicas de agregação de interrupções: baseada em contagem e baseada em tempo. Na técnica baseada em tempo, o  \textit{driver} da placa de rede não gera interrupções no sistema quando um pacote é recebido.
-Ao invés disso, uma interrupção é gerada depois de um intervalo de tempo que um pacote é recebido.
-Já na técnica baseada em contagem, é gerada uma interrupção  quando uma quantidade de pacotes é recebida. 
-
-A conclusão tirada nos modelos analíticos é que a agregação funciona melhor que o modelo de interrupção comum quando se tem um grande tráfego na rede. Porém, para um tráfego pequeno, a interrupção comum superou a agregação. Os autores sugerem monitorar o tráfego e fazer a troca entre a interrupção comum e a agregação de interrupções. Eles também citam um momento que pode ser usado para indicar a condição de sobrecarga. Este momento pode ser usado para a troca. 
-Outras importantes conclusões são que na agregação, são necessários valores altos de parâmetros em tráfegos intensivos, que para tráfegos tolerantes a latência, o uso de agregação é interessante independente do tráfego e que para tráfegos de tempo não-real é interessante usar a agregação baseada em tempo ao invés da baseada em contagem por impor um limite de atraso na agregação.
-
 \subsection{Resumo Conclusivo}
-Nessa revisão foram encontrados diversos artigos com propostas que modificam diferentes partes da infraestrutura: \textit{driver} de rede, placa de rede física, arquitetura da virtualização da rede e núcleo do sistema operacional.
+Nessa revisão, foram encontrados diversos artigos com propostas que modificam diferentes partes da infraestrutura: \textit{driver} de rede, placa de rede física, arquitetura da virtualização da rede e núcleo do sistema operacional.
 Essa variação dificultou um pouco a correlação entre os artigos.
+Em \cite{intel_interrupt}, foi proposto um algoritmo para a moderação de interrupções de acordo com o padrão de E/S.
+Porém, não ficou claro como os autores criaram o algoritmo.
+Em \cite{salah2005analysis}, \cite{salah2007coalesce} foram criados modelos analiticos e simuladores para analisar a sobrecarga de interrupções. Entretanto, eles não avaliaram um cenário onde existem dispositivos de E/S virtualizados.
 
-Nos experimentos todos parecem ter feito medições em infraestruturas reais usando o \textit{hypervisor} \textit{XEN} e alguma distribuição \textit{Linux} como sistema operacional. 
-Isso talvez ocorreu por eles terem o código aberto e o \textit{XEN} suportar diferentes sistemas operacionais.
+Nos experimentos, percebe-se que a maioria usou o \textit{hypervisor} \textit{XEN} e alguma distribuição \textit{Linux} como sistema operacional. Uma possível explicação é que ambos têm código aberto e portabilidade.
+
+
 
 Todos que propuseram alguma estratégia as validaram através de medições em infraestruturas reais.
 Uma possível causa seria a facilidade e o baixo custo em montar uma infraestrutura com virtualização e controlar todo o processo do experimento.

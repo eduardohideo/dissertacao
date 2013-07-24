@@ -1,0 +1,233 @@
+\chapter{Experimentos}
+\label{cap:experimentos}
+
+Para analisar o desempenho da \textit{NAPI} em dispositivos de rede virtuais, foram feitos experimentos variando o parâmetro limite do \textit{driver} de rede e1000 da \textit{Intel} em vários \textit{hypervisors} diferentes.
+Esse \textit{driver} implementa \textit{NAPI} e tem o código-fonte claro e bem escrito, sendo usado por vários \textit{hypervisors} como  \textit{XEN}, \textit{VirtualBox}, \textit{VMWare} e \textit{KVM} para processar a recepção e transmissão de dados pela rede na máquina virtual. Outras soluções que os \textit{hypervisors} teriam são os \textit{drivers} de paravirtualização do \textit{XEN} e do Virtio.
+Ambos têm um desempenho superior ao e1000 por usarem paravirtualização, porém, são mais complexos porque quebram a transparência com a máquina física.
+
+Na sua implementação de recepção de pacotes, o limite define a quantidade limite de pacotes que a tarefa de recepção poderá coletar. Se a quantidade de pacotes atingir esse limite ou esgotar o tempo limite de espera de pacotes, a tarefa é recolocada na fila de \textit{polling}, caso contrário, ela é removida da fila.
+
+\section{Banda X Limite}
+Nesse primeiro experimento foi analisado o comportamento da banda em relação a variação do protocolo e a variação do limite.
+Como \textit{hypervisor} foi usado o \textit{VirtualBox} por sua instalação ser rápida e sua interface ser simples e clara. 
+A máquina física contém um processador i7-2620M de dois núcleos e quatro fluxos de execução, 8 \textit{Gigabytes} de memória \textit{RAM} e sistema operacional \textit{Mac OS X} 10.6.8 enquanto que a máquina virtual usa dois fluxos de execução, 5 \textit{Gigabytes} de memória \textit{RAM} e sistema operacional \textit{Ubuntu} 11.10 com núcleo \textit{Linux} 3.0.43.
+
+Foram analisados a largura de banda na recepção do \texttt{iperf} e a quantidade total de pacotes processada pelo \textit{driver}. O limite variou de 1 a 10 de um em um, de 10 a 100 de dez em dez e com o valor 200. A banda de transmissão foi a máxima que a máquina poderia transmitir, no \textit{TCP} dependeria do seu mecanismo de controle de fluxo e no UDP foi 800MBits/s.
+A escolha do intervalo reduzido quanto menor o limite foi feita considerando que as interrupções físicas irão reduzir significantemente nos primeiros limites e muito pouco nos próximos, sendo assim, é esperado que variações na banda ocorram com valores de limite baixos. Também foram considerados dois artigo \cite{NAPI} e \cite{salah2005analysis} que sugerem um melhor desempenho para valores baixos de limite. O maior limite sendo 200 foi definido considerando que o valor inicial é 1 e o valor padrão do \textit{driver} ser 64, sendo a diferença entre eles igual a 63 e como não é esperada encontrar muita variação entre 100 e 200, o valor escolhido foi 200. 
+A banda foi medida usando o programa \texttt{iperf} com protocolo \textit{TCP} e \textit{UDP} durante 30 segundos e a quantidade de pacotes pelo \texttt{ifconfig}.
+
+A Figura \ref{2tcp} mostra a largura de banda da recepção do \texttt{iperf} usando \textit{TCP}. Percebe-se que conforme aumenta o limite de 1 até 8, maior a largura de banda. Já entre 9 e 200, a banda varia pouco. Na Figura \ref{2tcp_packet}, é mostrada a quantidade de pacotes recebida pelo \textit{driver}. Nota-se que existe uma semelhança grande entre a Figura \ref{2tcp_packet} e \ref{2tcp}. 
+Uma correlação linear foi feita com as informações a largura de banda e a quantidade de pacotes recebida. O resultado foi de 0.9999, mostrando que a banda e a recepção de pacotes possuem uma forte correlação.
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=250pt,height=183pt]{./img/banda/core2/iperf_tcp.eps}
+\caption{Largura de banda na Recepção de pacotes com protocolo TCP}
+\label{2tcp}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=250pt,height=183pt]{./img/banda/core2/rx_packets_tcp.eps}
+\caption{Quantidade de pacotes recebida pelo driver com protocolo TCP}
+\label{2tcp_packet}
+\end{center}
+\end{figure}
+
+A Figura \ref{2udp} mostra a banda da recepção usando UDP. Percebe-se um comportamento muito diferente em relação ao \textit{TCP} visto na Figura \ref{2tcp}, enquanto no \textit{TCP}, o aumento no limite elevaria a banda, o contrário parece ocorrer no UDP, quanto menor o limite maior a banda. Nota-se também um resultado incomum, a banda do UDP apresenta resultados muito inferiores em relação ao \textit{TCP}. Em teoria, o \textit{TCP} tem mecanismos para controle de tráfego e entregas confiáveis de pacotes que deixam o processo de pacotes mais lento em relação ao UDP.
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=250pt,height=183pt]{./img/banda/core2/iperf_udp.eps}
+\caption{Largura de banda na Recepção de pacotes com protocolo UDP}
+\label{2udp}
+\end{center}
+\end{figure}
+
+Na Figura \ref{2udp_packet}, é mostrada a quantidade de pacotes recebida usando \textit{UDP}, nota-se que o gráfico se diferencia completamente em relação a Figura \ref{2udp}. A correlação linear entre elas foi de -0.9999, ou seja, quanto mais pacotes são processados no dispositivo, menor a largura de banda da recepção,  resultado totalmente contrário em relação ao \textit{TCP}.
+Existe uma provável resposta para essa diferença na correlação:
+No \textit{UDP}, os pacotes são processados em grandes quantidades no \textit{driver}, com exceção do experimento com limite igual a 1 que processa poucos pacotes. Entre a chegada no \texttt{iperf} e o processamento do pacote pelo \textit{driver} pode ocorrer um gargalo devido ao excesso de pacotes e isto faz o \texttt{iperf} perder muitos pacotes.
+No \textit{TCP}, devido a característica do protocolo de controlar o fluxo, o envio de pacotes é mais lento e o sistema não consegue um fluxo o suficiente para gargalar.
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/core2/rx_packets_udp.eps}
+\caption{Quantidade de pacotes recebida pelo driver com protocolo UDP}
+\label{2udp_packet}
+\end{center}
+\end{figure}
+
+Sendo mais específico, esse gargalo ocorreu no \textit{buffer} de recepção do \texttt{socket} criado pelo \textit{iperf}. Aumentando esse \textit{buffer}, percebermos um aumento expressivo da banda como é visto nas Figuras \ref{buffer_2udp} e \ref{buffer_2udp_packet}. A correlação linear foi de 0.9426 uma correlação um pouco abaixo do \textit{TCP}, porém ainda muito forte. Talvez seja possível achar uma configuração de buffer que se correlacione melhor, mas não é o foco da pesquisa.
+Assim, tanto com \textit{TCP} como com UDP se pode obter uma largura de banda alta com valor de limite alto e ajustes no \textit{buffer}. O próximo passo é entender melhor porque \textit{drivers} com limites altos têm uma banda de recepção maior que \textit{drivers} com limites baixos.
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/buffer/iperf_udp.eps}
+\caption{Largura de banda na Recepção de pacotes com protocolo UDP modificando o buffer de recepção}
+\label{buffer_2udp}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/buffer/rx_packets_udp.eps}
+\caption{Quantidade de pacotes recebida pelo driver com protocolo UDP modificando o buffer de recepção}
+\label{buffer_2udp_packet}
+\end{center}
+\end{figure}
+
+\clearpage
+\section{Interrupções}
+Nesse segundo experimento foram realizados experimentos com o limite em relação as interrupções de \textit{software} e \textit{hardware} com o protocolo UDP.
+Como \textit{hypervisor} foram usados o \textit{VirtualBox}, o \textit{VMware} e o \textit{Xen}.
+
+No experimento com o \textit{VirtualBox} e \textit{VMware} foram usadas as mesmas configurações que o experimento anterior.
+No \textit{XEN}, a máquina física contém um processador i7 Ivy bridge de quatro núcleos e oito fluxos de execução, 16 \textit{Gigabytes} de memória \textit{RAM} e sistema operacional \textit{Ubuntu} 12.10 enquanto que a máquina virtual usa dois fluxos de execução, 5 \textit{Gigabytes} de memória \textit{RAM} e sistema operacional \textit{Ubuntu} 11.10 com núcleo \textit{Linux} 3.0.12.
+
+Foram variados a largura de banda de transmissão de 100 até 1000 Mbits/s de cem em cem e o limite em 1, 2, 60 e 200. O Tamanho do \textit{buffer} de recepção foi definido para 8 Mbytes.
+Foram medidos a largura de banda de recepção do \texttt{iperf}, a quantidade de pacotes recebida usando o \texttt{ifconfig}, a quantidade de interrupções de hardware, o uso de \textit{CPU} total, e o uso de \textit{CPU} pelas interrupções de software usando \texttt{sar}.
+
+\subsection{VirtualBox}
+Nos experimentos com o \textit{VirtualBox}, as Figuras \ref{vbox_int}, \ref{vbox_soft}, \ref{vbox_if}, \ref{vbox_cpu} e \ref{vbox_iperf} mostram respectivamente quantidade de interrupções gerada pelo dispositivo de rede, o uso de \textit{CPU} pelas interrupções de software, a quantidade de pacotes recebida pelo \textit{driver}, o uso da \textit{CPU} e a banda de recepção.
+
+Na Figura \ref{vbox_int}, em todas as curvas vemos que a quantidade de interrupções tem um intervalo de crescimento seguido de uma queda. Quanto menor o limite, mais rápida é a queda e com menos banda ela começa a decrescer.
+Com o limite igual a 1 a queda começa com banda de 200 Mbits/s e em 500 Mbits/s o núcleo do sistema entra em \textit{pooling} ignorando todas as interrupções.
+O mesmo ocorre com limite igual a 2 iniciando a queda um pouco mais fraca com banda igual a 200 Mbits/s e nos limites de 60 e 200 com banda igual a 700 Mbits/s, mas o núcleo do sistema não entra em \textit{pooling} porque a banda de transmissão máxima é de 800 Mbits/s. 
+
+\begin{figure}[h]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/virtualbox/buffer/int.eps}
+\caption{quantidade de interrupções de hardware gerada pela placa de rede virtual no VirtualBox}
+\label{vbox_int}
+\end{center}
+\end{figure}
+
+Analisando a Figura \ref{vbox_soft}, nas curvas com limites iguais a 60 e 200, nota-se que o gráfico cresce e atinge seu máximo (aproximadamente 40\%) em 300, se mantêm constante de 300 até 700 Mbits/s, decresce rapidamente de 700 até 800 e levemente decresce de 800 até 1000.
+Com limite igual a 1, verifica-se um grande uso de \textit{CPU} em relação aos demais, chegando a 50\%, quando a banda é maior que 500 Mbits/s, coincidindo com o momento que as interrupção de \textit{hardware} chegaram a 0. Nota-se também que diferente das outras curvas que tem um decremento rápido de 700 até 800 Mbits/s, essa curva não decrementa, provavelmente porque a quantidade de interrupções se tornou mínima em 500 MBits/s.
+Por fim, a curva igual a 2 se apresenta como uma intermediária entre as curvas de limite igual 1 e 60/200, possui um comportamento semelhante as curvas 60/200 com o núcleo usando um pouco mais de \textit{CPU}. 
+
+\begin{figure}[h]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/virtualbox/buffer/soft.eps}
+\caption{uso da CPU pelas interrupções de software no VirtualBox}
+\label{vbox_soft}
+\end{center}
+\end{figure}
+
+A Figura \ref{vbox_cpu} está relacionada com o comportamento da Figura \ref{vbox_soft} e com o uso da \textit{CPU} pelo \texttt{iperf}. Nota-se que a \textit{CPU} parece não chegam ao gargalo de 2 fluxos de execução, porém, não foi considerada a sobrecarga devido a emulação que pode ser medida através da máquina física.
+
+\begin{figure}[h]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/virtualbox/buffer/cpu.eps}
+\caption{uso da CPU no VirtualBox}
+\label{vbox_cpu}
+\end{center}
+\end{figure}
+
+Na Figura \ref{vbox_if}, percebe-se que todas as curvas começam crescente e num determinado momento, elas ficam constantes limitada por algum fator. A curva com limite igual a 1 passa a ficar constante quando a banda é maior que 500 MBits/s, exatamente onde as interrupções chegam próximas de 0 e as interrupções de software chegam ao máximo. Já as outras curvas passam a ficar constantes somente em 800 Mbits/s que é o limite da banda de transmissão, nesse caso, o \textit{driver} conseguiu processar todos os pacotes.
+
+\begin{figure}[h]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/virtualbox/buffer/ifconfig.eps}
+\caption{Quantidade de pacotes recebida pelo driver no VirtualBox}
+\label{vbox_if}
+\end{center}
+\end{figure}
+
+
+Na última Figura \ref{vbox_iperf}, a curva com limite igual a 1, 
+
+\begin{figure}[h]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/virtualbox/buffer/iperf.eps}
+\caption{Largura de banda de recepção no VirtualBox}
+\label{vbox_iperf}
+\end{center}
+\end{figure}
+
+\clearpage
+\subsection{VMware}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/vmware/buffer/iperf.eps}
+\caption{Largura de banda de recepção no VMware}
+\label{vmware_iperf}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/vmware/buffer/ifconfig.eps}
+\caption{Quantidade de pacotes recebida pelo driver no VMware}
+\label{vmware_if}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/vmware/buffer/cpu.eps}
+\caption{uso da CPU no VMware}
+\label{vmware_cpu}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/vmware/buffer/soft.eps}
+\caption{uso da CPU pelas interrupções de software no VMware}
+\label{vmware_soft}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/vmware/buffer/int.eps}
+\caption{quantidade de interrupções de hardware gerada pela placa de rede virtual no VMware}
+\label{vmware_int}
+\end{center}
+\end{figure}
+
+\clearpage
+\subsection{Xen}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/xen/buffer/iperf.eps}
+\caption{Largura de banda de recepção no Xen}
+\label{xen_iperf}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/xen/buffer/ifconfig.eps}
+\caption{Quantidade de pacotes recebida pelo driver no Xen}
+\label{xen_if}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/xen/buffer/cpu.eps}
+\caption{uso da CPU no Xen}
+\label{xen_cpu}
+\end{center}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/xen/buffer/soft.eps}
+\caption{uso da CPU pelas interrupções de software no Xen}
+\label{xen_soft}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/banda/vmware/buffer/int.eps}
+\caption{quantidade de interrupções de hardware gerada pela placa de rede virtual no Xen}
+\label{xen_int}
+\end{center}
+\end{figure}

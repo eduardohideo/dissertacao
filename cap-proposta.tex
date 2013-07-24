@@ -1,3 +1,118 @@
+\chapter{Motivação}
+\label{cap:motivacao}
+
+\section{NAPI}
+A \textit{NAPI} (\textit{New API}) \cite{Corbet:2005:LDD:1209083} é um conjunto de interfaces oferecido pelo núcleo do Linux que os \textit{drivers} dos dispositivos de rede usam para agregar interrupções. 
+O objetivo dela é reduzir a carga extra do processamento na recepção de uma grande quantidade de pacotes em um ou mais dispositivos de rede.
+Para isso, no momento que uma grande quantidade de pacotes for enviada para o dispositivo de rede, ao invés do dispositivo enviar uma interrupção ao \textit{driver} para cada pacote que chega, o \textit{driver} desabilita as interrupções na chegada do primeiro pacote e processa continuamente próximos pacotes.
+
+No processo dos pacotes, o \textit{driver} envia uma tarefa de recepção de pacotes na fila de \textit{polling} do núcleo do sistema\cite{NAPI}.
+Cada tarefa da fila de \textit{polling} é processada pelo núcleo do sistema e a quantidade de pacotes que essa tarefa poderá processar é definida por uma variável peso.
+Quanto maior o peso, mais pacotes poderão ser processados, mas não existe uma relação clara entre os pacotes e o peso, pois cada \textit{driver} faz uma implementação diferente da recepção de pacotes.
+Durante o processo de recepção, é verificada a quantidade de pacotes recebida, se uma estimada quantidade não for recebida, a tarefa é retirada da fila de \textit{polling}, a interrupção é reativada e será necessária a chegada de outro pacote para a tarefa retornar a fila, já se essa quantidade é processada, a tarefa é encerrada e recolocada na fila \cite{NAPI}.
+
+Comparando a \textit{NAPI} com a estratégia comum de interrupção, a \textit{NAPI} têm como vantagem a quantidade reduzida de interrupções geradas pelo dispositivo já que a interrupção é desabilitada durante o processo de pacotes, isso influência diretamente no desempenho da largura de banda de tráfegos intensivos.
+
+\section{Experimento}
+Para analisar o desempenho da \textit{NAPI} em dispositivos de rede virtuais, foram feitos experimentos variando o parâmetro peso do \textit{driver} de rede e1000 da \textit{Intel}.
+Esse \textit{driver} implementa \textit{NAPI} e tem o código-fonte claro e bem escrito, sendo usado por vários \textit{hypervisors} como  \textit{XEN}, \textit{VirtualBox}, \textit{VMWare} e \textit{KVM} para processar a recepção e envio de dados pela rede na máquina virtual.
+Na sua implementação de recepção de pacotes, o peso define a quantidade limite de pacotes que a tarefa de recepção poderá coletar. Se a quantidade de pacotes atingir esse limite, a tarefa é recolocada na fila de \textit{polling}, caso contrário, ela é removida da fila.
+
+Como \textit{hypervisor} foi usado o \textit{VirtualBox} por sua instalação ser rápida e sua interface ser simples e clara. 
+A máquina física contém um processador i7-2620M de dois núcleos e quatro fluxos de execução, 8 \textit{Gigabytes} de memória \textit{RAM} e sistema operacional \textit{Mac OS X} 10.6.8. 
+A máquina virtual usa dois fluxos de execução, 5 \textit{Gigabytes} de memória \textit{RAM} e sistema operacional \textit{Ubuntu} 11.10 com núcleo \textit{Linux} 3.0.43.
+
+O desempenho foi analisado verificando a largura de banda, o processamento da máquina física e virtual, a quantidade de interrupções gerada pela recepção e transmissão de pacotes e a quantidade de pacotes processada por ciclo de \textit{pooling}.
+A banda foi medida usando o programa \texttt{iperf} com protocolo \textit{TCP} e \textit{UDP} durante 30 segundos, o processamento usando o programa \texttt{top}, a quantidade de interrupções usando \texttt{itop} e a quantidade de pacotes por ciclo de \textit{pooling} através do \texttt{dmesg}, um comando do \textit{Linux} para imprimir as mensagens do núcleo de sistema na saída padrão.
+Como a quantidade total de pacotes processada durante o experimento pode ultrapassar 1 milhão, o \textit{buffer} pode encher rapidamente e, consequentemente, descartar informações. Assim, foi necessário aumentar o comprimento do \textit{buffer} de mensagens do núcleo alterando o parâmetro \texttt{LOG\_BUF\_LEN} do núcleo do sistema. 
+
+Em todos os experimentos, o processamento da máquina virtual chegou ao seu limite de processamento sendo o gargalo nos experimentos. Já no processamento da máquina física os experimentos não passaram de 50\% de uso.
+
+Na Figura \ref{receiv}, é mostrada a largura de banda processada para diferentes valores de pesos e protocolos.
+Com protocolo \textit{TCP}, comparando o peso com valor igual a 2 e a 64, a largura de banda é maior com 64, pois cada tarefa de recepção processa mais pacotes, e assim, necessita de executar menos tarefas de recepção para a mesma quantidade de pacotes com peso igual a 2.
+Percebe-se que a quantidade de interrupções por segundo, na Figura \ref{receiv_int}, foi praticamente a mesma com peso igual a 2 e 64.
+
+Na Figura \ref{histograma2tcp}, vemos frequência de pacotes processados por ciclo de \textit{polling} com peso igual a 2 e protocolo TCP, nota-se que o sistema processa muitas vezes 2 ou nenhum pacote.
+Observando os dados de quantidade de pacotes processada no ciclo de polling com peso igual a 2, percebemos uma alternância nos valores 0 e 2 o que dificulta o sistema se manter em \textit{polling}. 
+Esse comportamento é devido ao \textit{TCP} que obriga o sistema a responder ao remetente do pacote para receber o próximo pacote, e assim, atrasar o processo de envio.
+Nesse cenário, o sistema não consegue entrar em \textit{polling} por um período longo pois o processador atinge seu limite antes.
+Na Figura \ref{histograma64tcp}, vemos que o sistema dificilmente se manteria em \textit{polling} pois raramente processa 64 pacotes.
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt,height=220pt]{./img/receiv_br.eps}
+\caption{Largura de banda na Recepção de pacotes}
+\label{receiv}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt]{./img/receiv_int.eps}
+\caption{Quantidade de interrupções por segundo no dipositivo de rede virtual durante a recepção de pacotes}
+\label{receiv_int}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt]{./img/histograma-2tcp.eps}
+\caption{Frequência de pacotes processados no ciclo de polling com peso igual a 2 e protocolo TCP}
+\label{histograma2tcp}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt]{./img/histograma-64tcp.eps}
+\caption{Frequência de pacotes processados no ciclo de polling com peso igual a 64 e protocolo TCP}
+\label{histograma64tcp}
+\end{center}
+\end{figure}
+
+Continuando a análise da Figura \ref{receiv}, com protocolo \textit{UDP} e banda de envio de 1 Gbits/s e 2 Gbits/s, percebemos que a largura de banda recebida é maior com peso igual 2, isso acontece pois o sistema entra em \textit{polling} e passa a processar os pacotes que chegam sem interrupções como é possível ver pela quantidade de interrupções geradas na Figura \ref{receiv_int}. Em adição, como o protocolo \textit{UDP} obriga apenas a recepção de pacotes, diferente do {TCP} que obriga também a responder ao remetente, todo o processo é gasto na recepção de pacotes o que faz o sistema entrar e se manter em \textit{pooling} antes do processador chegar ao limite.
+
+Já com peso igual a 64, o sistema não consegue pacotes o suficiente para se manter em \textit{polling} e passa a ter que entrar/sair da fila de \textit{polling} gerando muitas interrupções e reduzindo seu desempenho. 
+Nota-se que nos experimentos com 1GBits/s e 2Gbits/s, o primeiro teve um desempenho um pouco superior em relação ao último, isso é devido ao processador estar no seu limite da sua carga e por causa da chegada de mais pacotes, este passa a ter que rejeitar os que chegam gastando mais processamento.
+
+Na Figura \ref{histograma64udp}, vemos que a quantidade de pacotes processada por ciclo de \textit{polling} com peso igual a 64 e protocolo UDP raramente atinge 64, e assim, a recepção nunca entra em \textit{polling}. Por outro lado, na Figura \ref{histograma2udp}, onde mostra o mesmo gráfico com peso igual a 2, vemos que o sistema processa, com frequência a quantidade máxima de pacotes, e, como consequência, entra em longos períodos de \textit{pooling}.
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt]{./img/histograma-2udp.eps}
+\caption{Frequência de pacotes processados no ciclo de polling com peso igual a 2 e protocolo UDP com banda de transferência de 1Gbit/s}
+\label{histograma2udp}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt]{./img/histograma-64udp.eps}
+\caption{Frequência de pacotes processados no ciclo de polling com peso igual a 64 e protocolo UDP com banda de transferência de 1Gbit/s}
+\label{histograma64udp}
+\end{center}
+\end{figure}
+
+Na Figura \ref{trans}, é mostrada a largura de banda transferida.
+É notado que a variação no peso não afeta a banda transferida, pois a \textit{NAPI} é usada apenas na recepção de pacotes. Nota-se que apesar do \textit{TCP} ser mais complexo que o\textit{UDP}, a forma como é feita a transmissão de pacotes no \textit{iperf} faz o sistema com \textit{UDP} gerar mais interrupções que o com \textit{TCP} como é possível ver na Figura \ref{trans_int}, consequentemente, o sistema com \textit{TCP} tem um desempenho melhor na transmissão.
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt]{./img/trans_br.eps}
+\caption{Largura de banda na Transmissão de pacotes}
+\label{trans}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[h!]
+\begin{center}
+  \includegraphics[width=300pt]{./img/trans_int.eps}
+\caption{Quantidade de interrupções por segundo no dispositivo de rede virtual durante a transmissão}
+\label{trans_int}
+\end{center}
+\end{figure}
+
 \chapter{Proposta}
 \label{cap:proposta}
 

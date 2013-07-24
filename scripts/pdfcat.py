@@ -5,7 +5,7 @@ def main(argv = None):
     """
     funcao para pegar uma pagina de um pdf
     argumentos:
-	nome_do_arquivo_de_entrada nome_do_arquivo_de_saida numero_da_pagina
+	nome_do_arquivo_de_entrada nome_do_arquivo_de_saida numero_da_pagina_inicial [numero_da_pagina_final]
     """
     if argv is None:
 	argv = sys.argv[1:]
