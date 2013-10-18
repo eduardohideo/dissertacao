@@ -23,7 +23,10 @@
 \usepackage{type1cm}                    % fontes realmente escaláveis
 \usepackage{listings}                   % para formatar código-fonte (ex. em Java)
 \usepackage{titletoc}
+%pacote para sublinhar
 \usepackage{ulem} 
+
+\usepackage{verbatim}
 %\usepackage[bf,small,compact]{titlesec} % cabeçalhos dos títulos: menores e compactos
 \usepackage[fixlanguage]{babelbib}
 \usepackage[font=small,format=plain,labelfont=bf,up,textfont=it,up]{caption}
@@ -34,7 +37,11 @@
 \usepackage[all]{hypcap}                % soluciona o problema com o hyperref e capitulos
 \usepackage[square,sort,nonamebreak,comma]{natbib}  % citação bibliográfica alpha (alpha-ime.bst)
 \fontsize{60}{62}\usefont{OT1}{cmr}{m}{n}{\selectfont}
+%para usar align* (centraliza formulas)
+\usepackage{amsmath}
 
+%importa pdfs
+\usepackage{pdfpages}
 % ---------------------------------------------------------------------------- %
 % Cabeçalhos similares ao TAOCP de Donald E. Knuth
 \usepackage{fancyhdr}
@@ -105,9 +112,9 @@ framexrightmargin=10pt
 \thispagestyle{empty}
 \begin{center}
     \vspace*{2.3cm}
-    \textbf{\Large{Agregação de Interrupções\\
-		    de placas de rede\\[0.25cm]
-		    para Infraestruturas em Nuvem}}\\
+    \textbf{\Large{ Análise de Desempenho de\\
+		    Interfaces de Rede Virtualizadas\\[0.25cm]
+		    com NAPI}}\\
     
     \vspace*{1.0cm}
     \Large{Eduardo Hideo Kuroda}
@@ -130,10 +137,10 @@ framexrightmargin=10pt
 
    	\vskip 1cm
     \normalsize{Durante o desenvolvimento deste trabalho o autor recebeu auxílio
-    financeiro da Comissão Europeia e da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior}
+    financeiro da Comissão Européia e da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior}
     
     \vskip 0.5cm
-    \normalsize{São Paulo, Junho de 2013}
+    \normalsize{São Paulo, setembro de 2013}
 \end{center}
 
 % ---------------------------------------------------------------------------- %
@@ -146,7 +153,7 @@ framexrightmargin=10pt
 \thispagestyle{empty}
     \begin{center}
         \vspace*{2.3 cm}
-        \textbf{\Large{Agregação de Interrupções de placas de rede para Infraestruturas em Nuvem}}\\
+        \textbf{\Large{Análise de Desempenho de Interfaces de Rede Virtualizadas com NAPI}}\\
         \vspace*{2 cm}
     \end{center}
 
@@ -167,56 +174,42 @@ framexrightmargin=10pt
 % ---------------------------------------------------------------------------- %
 % Resumo
 \chapter*{Resumo}
-As infraestruturas em nuvem se comportam com um desempenho mais baixo se comparadas com infraestruturas sem virtualização, em cenários onde há utilização intensiva da rede. 
-Uma das principais causas é a arquitetura da virtualização de rede. Diferentemente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação dentro de uma máquina virtual o que implica em um custo adicional tanto na memória como no processamento.
-Para reduzir o custo do processamento, pode-se agregar várias interrupções geradas quando um pacote é enviado ou recebido. Isso reduziria a quantidade de processamento por pacotes, mas também aumentaria a latência. Essa estratégia é chamada agregação de interrupções.
-Nessa pesquisa criaremos um algoritmo para otimizar a agregação de interrupções com o objetivo de garantir requisitos de qualidade dos serviços de aplicações que fazem uso intensivo de rede em nuvens.
+Em ambientes virtualizados, como nuvens computacionais, a
+capacidade efetiva de transmissão de dados via rede tende a ser
+inferior do que em ambientes não virtualizados quando aplicações que
+fazem uso intensivo da rede são executadas. Uma das principais causas
+para essa diferença na capacidade de transmissão é a arquitetura da
+virtualização de rede, que adiciona passos para o sistema
+operacional transmitir e receber um pacote. Esses passos adicionais
+acarretam em mais utilização de memória e de processamento. Em
+ambientes virtualizados com o sistema operacional GNU/Linux, a
+\textit{New Application Programming Interface} (NAPI) é utilizada para
+reduzir os impactos negativos da virtualização por meio de agregação
+de interrupções. 
+Nesta dissertação de mestrado, estudamos mecanismos que modificam a
+configuração da NAPI. Experimentos mostraram que esses mecanismos afetam o
+desempenho de máquinas virtuais e tem consequências diretas nas
+aplicações que fazem uso intensivo de rede e que são executadas em
+ambientes com os softwares de virtualização Xen, VMware e VirtualBox.
 
-
-\noindent \textbf{Palavras-chave:} computação em nuvem, virtualização de rede, agregação de interrupções
+\noindent \textbf{Palavras-chave:} computação em nuvem, virtualização de rede, agregação de interrupções, NAPI
 
 % ---------------------------------------------------------------------------- %
 % Abstract
 \chapter*{Abstract}
 Cloud infrastructures shows inferior performance if compared to infrastructures without virtualization in scenarios where there is intensive use of network.
 One of the main reasons is the network virtualization's architecture.
-Differently from the standard network architecture, there are some extra steps to transmit and receive a packet of information inside of a virtual machine, which implies an additional cost in both memory and processing.
-To reduce processing cost, several interrupts can be coalesced when a packet is sent or received. This would reduce the amount of processing per packet, but also increase the latency.
- This strategy is called interrupt coalescence. In this research, we will create an algorithm to optimize the interrupt coalescence in order to ensure the requirements of quality of service of cloud applications that use network intensively. 
+Differently from the standard network architecture, there are some extra steps to transmit and receive a packet of information within a virtual machine, which implies an additional cost in both memory and processing.
+To reduce the processing cost, a modern solution is the NAPI.
+NAPI is a set of interfaces provided by the Linux kernel that the drivers of network devices use to coalesce interruptions. To control the amount of interruptions coalesced, there is a param called budget.
+In this master's thesis, we study a mechanism to improve the bandwidth and CPU usage performance choosing a value to budget.
+Results showed that budgets with high values have better performance than low values on Xen, VMware, VirtualBox not requiring changes in the budget's value default.
 
 \noindent \textbf{Keywords:} cloud computing, network virtualization, interrupt coalescence
 
 % ---------------------------------------------------------------------------- %
 % Sumário
 \tableofcontents    % imprime o sumário
-
-% ---------------------------------------------------------------------------- %
-\chapter{Lista de Abreviaturas}
-\begin{tabular}{ll}
-         MV         & máquina virtual (\emph{virtual machine})\\
-	CPD		& centro de processamento de dados (\emph{datacenter})\\
-	CPU	& unidade central de processamento (\emph{central processing unit})\\
-	E/S	& entrada/saída (\emph{In/Out})\\
-	DMA	& acesso direto a memória (\emph{direct memory acess})\\	
-	IOMMU	& unidade de gerenciamento de E/S da memória (\emph{input/output memory management unit})\\
-	dom0	& domínio 0 (\emph{domain zero})\\	
-	domU	& domínio do usuário (\emph{user domain})\\
-	CDNA	& acesso direto a memória concorrente (\emph{concurrent direct network access})\\
-	IRQ	& pedido de interrupção (\emph{interrupt request line})\\
-	MTU	& unidade máxima de transmissão (\emph{maximum transmission unit})\\
-	SR-IOV	& virtualização de E/S de raiz única (\emph{single root I/O virtualization})\\
-	SaaS	& software como um serviço (\emph{software as a service})\\
-	PaaS	& plataforma como um serviço (\emph{platform as a service})\\
-	IaaS	& infraestrutura como um serviço (\emph{Infrastructure as a service})\\
-	IP	& protocolo de Internet (\emph{Internet Protocol})\\
-	QoS	& qualidade de serviço (\emph{quality of service})\\
-\end{tabular}
-
-% ---------------------------------------------------------------------------- %
-\chapter{Lista de Símbolos}
-\begin{tabular}{ll}
-
-\end{tabular}
 
 % ---------------------------------------------------------------------------- %
 % Listas de figuras e tabelas criadas automaticamente
@@ -236,9 +229,8 @@ To reduce processing cost, several interrupts can be coalesced when a packet is 
 \input cap-introducao        % associado ao arquivo: 'cap-introducao.tex'
 \input cap-conceitos         % associado ao arquivo: 'cap-conceitos.tex'
 \input cap-revisao_bibliografica
-\input cap-proposta
 \input cap-experimento
-%\input cap-conclusoes        % associado ao arquivo: 'cap-conclusoes.tex'
+\input cap-conclusoes        % associado ao arquivo: 'cap-conclusoes.tex'
 
 % cabeçalho para os apêndices
 %\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{\appendixname\ \thechapter}} {\MakeUppercase{#1}} }

@@ -41,16 +41,20 @@
 	Title = {Dynamic resource allocation and power management in virtualized data centers},
 	Year = {2010}}
 
-@article{armbrust2009above,
-	Author = {Armbrust, M. and Fox, A. and Griffith, R. and Joseph, A.D. and Katz, R.H. and Konwinski, A. and Lee, G. and Patterson, D.A. and Rabkin, A. and Stoica, I. and others},
-	Journal = {EECS Department, University of California, Berkeley, Tech. Rep. UCB/EECS-2009-28},
-	Publisher = {Citeseer},
-	Title = {Above the clouds: A berkeley view of cloud computing},
-	Year = {2009}}
+@techreport{armbrust2009above,
+	    Author = {Armbrust, M. and Fox, A. and Griffith, R. and Joseph, A.D. and Katz, R.H. and Konwinski, A. and Lee, G. and Patterson, D.A. and Rabkin, A. and Stoica, I. and Zaharia, M.},
+	    Title = {Above the Clouds: A Berkeley View of Cloud Computing},
+	    Institution = {EECS Department, University of California, Berkeley},
+	    Year = {2009},
+	    Month = {Feb},
+	    URL = {http://www.eecs.berkeley.edu/Pubs/TechRpts/2009/EECS-2009-28.html},
+	    Number = {UCB/EECS-2009-28},
+	    Abstract = {Provided certain obstacles are overcome, we believe Cloud Computing has the potential to transform a large part of the IT industry, making software even more attractive as a service and shaping the way IT hardware is designed and purchased.  Developers with innovative ideas for new interactive Internet services no longer require the large capital outlays in hardware to deploy their service or the human expense to operate it. They need not be concerned about over-provisioning for a service whose popularity does not meet their predictions, thus wasting costly resources, or under-provisioning for one that becomes wildly popular, thus missing potential customers and revenue. Moreover, companies with large batch-oriented tasks can get their results as quickly as their programs can scale, since using 1000 servers for one hour costs no more than using one server for 1000 hours. This elasticity of resources, without paying a premium for large scale, is unprecedented in the history of IT.  The economies of scale of very large-scale datacenters combined with  ``pay-as-you-go'' resource usage has heralded the rise of Cloud Computing. It is now attractive to deploy an innovative new Internet service on a third party's Internet Datacenter rather than your own infrastructure, and to gracefully scale its resources as it grows or declines in popularity and revenue. Expanding and shrinking daily in response to normal diurnal patterns could lower costs even further. Cloud Computing transfers the risks of over-provisioning or under-provisioning to the Cloud Computing provider, who mitigates that risk by statistical multiplexing over a much larger set of users and who offers relatively low prices due better utilization and from the economy of purchasing at a larger scale. We define terms, present an economic model that quantifies the key buy vs. pay-as-you-go decision, offer a spectrum to classify Cloud Computing providers, and give our view of the top 10 obstacles and opportunities to the growth of Cloud Computing.}
+	}
 
 @inproceedings{houidi2008distributed,
 	Author = {Houidi, I. and Louati, W. and Zeghlache, D.},
-	Booktitle = {Communications, 2008. ICC'08. IEEE International Conference on},
+	Booktitle = {IEEE International Conference on Communications, 2008. (ICC'08)},
 	Organization = {IEEE},
 	Pages = {5634--5640},
 	Title = {A distributed virtual network mapping algorithm},
@@ -74,7 +78,7 @@
 	Volume = {30},
 	Year = {2004}}
 
-@book{papadimitriou1998combinatorial,
+@inbook{papadimitriou1998combinatorial,
 	Author = {Papadimitriou, C.H. and Steiglitz, K.},
 	Pages = {363-366},
 	Publisher = {Dover Pubns},
@@ -131,28 +135,40 @@
 @inproceedings{sivasubramanian2004replicating,
   title={Replicating web applications on-demand},
   author={Sivasubramanian, S. and Pierre, G. and van Steen, M.},
-  booktitle={Services Computing, 2004.(SCC 2004). Proceedings. 2004 IEEE International Conference on},
+  booktitle={IEEE International Conference on Services Computing, 2004. (SCC 2004)},
   pages={227--236},
   year={2004},
   organization={IEEE}
 }
-    
+
 @inproceedings{chaudhary2008comparison,
-  title={A comparison of virtualization technologies for HPC},
-  author={Chaudhary, V. and Cha, M. and Walters, JP and Guercio, S. and Gallo, S.},
-  booktitle={Advanced Information Networking and Applications, 2008. AINA 2008. 22nd International Conference on},
-  pages={861--868},
-  year={2008},
-  organization={IEEE}
-}
-@article{ekanayake2010high,
+ author = {Walters, J.P. and Chaudhary, V. and Cha, M. and Jr., S.G. and Gallo, S.},
+ title = {A Comparison of Virtualization Technologies for {{HPC}}},
+ booktitle = {Proceedings of the 22nd International Conference on Advanced Information Networking and Applications},
+ series = {AINA '08},
+ year = {2008},
+ isbn = {978-0-7695-3095-6},
+ pages = {861--868},
+ numpages = {8},
+ url = {http://dx.doi.org/10.1109/AINA.2008.45},
+ doi = {10.1109/AINA.2008.45},
+ acmid = {1395146},
+ publisher = {IEEE Computer Society},
+ address = {Washington, DC, USA},
+ keywords = {virtual machines, HPC},
+} 
+
+
+@inproceedings{ekanayake2010high,
   title={High performance parallel computing with clouds and cloud technologies},
   author={Ekanayake, J. and Fox, G.},
-  journal={Cloud Computing},
+  booktitle={Cloud Computing},
   pages={20--38},
   year={2010},
-  publisher={Springer}
+  publisher={Springer Berlin Heidelberg}
 }
+
+
 
 @inproceedings{wang2010impact,
   title={The impact of virtualization on network performance of amazon ec2 data center},
@@ -163,19 +179,30 @@
   organization={IEEE}
 }
 
+
 @article{barham2003xen,
-  title={Xen and the art of virtualization},
-  author={Barham, P. and Dragovic, B. and Fraser, K. and Hand, S. and Harris, T. and Ho, A. and Neugebauer, R. and Pratt, I. and Warfield, A.},
-  journal={ACM SIGOPS Operating Systems Review},
-  volume={37},
-  number={5},
-  pages={164--177},
-  year={2003},
-  publisher={ACM}
-}
+ author = {Barham, P. and Dragovic, B. and Fraser, K. and Hand, S. and Harris, T. and Ho, A. and Neugebauer, R. and Pratt, I. and Warfield, A.},
+ title = {{{X}}en and the art of virtualization},
+ journal = {SIGOPS Oper. Syst. Rev.},
+ issue_date = {December 2003},
+ volume = {37},
+ number = {5},
+ month = oct,
+ year = {2003},
+ issn = {0163-5980},
+ pages = {164--177},
+ numpages = {14},
+ url = {http://doi.acm.org/10.1145/1165389.945462},
+ doi = {10.1145/1165389.945462},
+ acmid = {945462},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {hypervisors, paravirtualization, virtual machine monitors},
+} 
+
 
 @inproceedings{dong2008sr,
-  title={SR-IOV networking in Xen: Architecture, design and implementation},
+  title={{{SR-IOV}} networking in Xen: Architecture, design and implementation},
   author={Dong, Y. and Yu, Z. and Rose, G.},
   booktitle={Proceedings of the First conference on I/O virtualization},
   pages={10--10},
@@ -184,16 +211,16 @@
 }
 
 @inproceedings{dong2010high,
-  title={High performance network virtualization with SR-IOV},
+  title={High performance network virtualization with {{SR-IOV}}},
   author={Dong, Y. and Yang, X. and Li, X. and Li, J. and Tian, K. and Guan, H.},
-  booktitle={High Performance Computer Architecture (HPCA), 2010 IEEE 16th International Symposium on},
+  booktitle={IEEE 16th International Symposium on High Performance Computer Architecture  (HPCA)},
   pages={1--10},
   year={2010},
   organization={IEEE}
 }
 
 @inproceedings{menon2006optimizing,
-  title={Optimizing network virtualization in Xen},
+  title={Optimizing network virtualization in {{X}}en},
   author={Menon, A. and Cox, A.L. and Zwaenepoel, W.},
   booktitle={Proceedings of the annual conference on USENIX'06 Annual Technical Conference},
   pages={2--2},
@@ -202,13 +229,14 @@
 }
 
 @inproceedings{liu2010evaluating,
-  title={Evaluating standard-based self-virtualizing devices: A performance study on 10 GbE NICs with SR-IOV support},
+  title={Evaluating standard-based self-virtualizing devices: A performance study on 10 GbE {{NIC}}s with {{SR-IOV}} support},
   author={Liu, J.},
-  booktitle={Parallel \& Distributed Processing (IPDPS), 2010 IEEE International Symposium on},
+  booktitle={IEEE International Parallel \& Distributed Processing Symposium (IPDPS)},
   pages={1--12},
   year={2010},
   organization={IEEE}
 }
+
 
 @article{shouraboura2011placement,
   title={Placement of applications in computing clouds using Voronoi diagrams},
@@ -220,7 +248,7 @@
 }
 
 @article{Waldspurger:2012:IV:2063176.2063194,
-  title={I/O virtualization},
+  title={{{I/O}} virtualization},
   author={Waldspurger, C. and Rosenblum, M.},
   journal={Communications of the ACM},
   volume={55},
@@ -231,14 +259,22 @@
 }
 
 @article{Rixner:2008:NVB:1348583.1348592,
-  title={Network virtualization: Breaking the performance barrier},
-  author={Rixner, S.},
-  journal={Queue},
-  volume={6},
-  number={1},
-  pages={36--ff},
-  year={2008},
-  publisher={ACM}
+ author = {Rixner, S.},
+ title = {Network Virtualization: Breaking the Performance Barrier},
+ journal = {Queue},
+ issue_date = {January/February 2008},
+ volume = {6},
+ number = {1},
+ month = jan,
+ year = {2008},
+ issn = {1542-7730},
+ pages = {37:36--37:ff},
+ articleno = {37},
+ url = {http://doi.acm.org/10.1145/1348583.1348592},
+ doi = {10.1145/1348583.1348592},
+ acmid = {1348592},
+ publisher = {ACM},
+ address = {New York, NY, USA},
 } 
 
 @article{calheiros2011cloudsim,
@@ -255,15 +291,15 @@
 @inproceedings{casanova2008simgrid,
   title={SimGrid: a generic framework for large-scale distributed experiments},
   author={Casanova, H. and Legrand, A. and Quinson, M.},
-  booktitle={Computer Modeling and Simulation, 2008. UKSIM 2008. Tenth International Conference on},
+  booktitle={Tenth International Conference on Computer Modeling and Simulation, 2008 (UKSIM 2008) },
   pages={126--131},
   year={2008},
   organization={IEEE}
 }
 
 @inproceedings{Santos:2008:BGS:1404014.1404017,
- author = {Santos, Jose Renato and Turner, Yoshio and Janakiraman, G. and Pratt, Ian},
- title = {Bridging the gap between software and hardware techniques for I/O virtualization},
+ author = {Santos, J. and Turner, Y. and Janakiraman, G. and Pratt, I.},
+ title = {Bridging the gap between software and hardware techniques for {{I/O}} virtualization},
  booktitle = {USENIX 2008 Annual Technical Conference on Annual Technical Conference},
  series = {ATC'08},
  year = {2008},
@@ -277,7 +313,7 @@
 }
 
 @InProceedings{shipman07:_inves_infin,
-  author =  {Galen M. Shipman and Ron Brightwell and Brian Barrett and Jeffrey M. Squyres and Gil Bloch},
+  author =  {Shipman, G. and Brightwell R. and Barrett B. and Squyres J. and Bloch G.},
   title =       {Investigations on InfiniBand: Efficient Network Buffer Utilization at Scale},
   booktitle =   {Proceedings, Euro PVM/MPI},
   year =        2007,
@@ -286,9 +322,9 @@
 }
 
 @inproceedings{oi2009performance,
-  title={Performance analysis of large receive offload in a Xen virtualized system},
+  title={Performance analysis of large receive offload in a {{X}}en virtualized system},
   author={Oi, H. and Nakajima, F.},
-  booktitle={Computer Engineering and Technology, 2009. ICCET'09. International Conference on},
+  booktitle={International Conference on Computer Engineering and Technology, 2009 (ICCET'09)},
   volume={1},
   pages={475--480},
   year={2009},
@@ -297,102 +333,102 @@
 
 @misc{gro,
     title= {Generic receive offload},
-    author={Jonathan Corbet},
+    author={Corbet, J.},
     year={2009},
     howpublished = {\url{http://lwn.net/Articles/358910/}},
-    note={Acessado em: 25/6/2012}
+    note={Acessado em: 8/8/2013}
 }
 
 @misc{xenenv,
-    title={Xen Network Environment},
-    author={Thomas M. Eastep},
+    title={{{X}}en Network Environment},
+    author={Eastep, T.},
     year={2007},
     howpublished={\url{http://www1.shorewall.net/XenMyWay.html}},
-    note={Acessado em: 25/6/2012}}
+    note={Acessado em: 8/8/2013}}
 }
 
 @misc{xenbestpractices,
-    title={Xen Best Practices},
-    author={},
+    title={{{X}}en Best Practices},
+    author={Xen},
     year={2012},
-    howpublished={\url{http://wiki.xen.org/wiki/XenBestPractices}},
-    note={Acessado em: 25/6/2012}}
+    howpublished={\url{http://wiki.xen.org/wiki/Xen_Best_Practices}},
+    note={Acessado em: 8/8/2013}}
 }
 
 
 @misc{salesforce,
     title={Application Development with Force.com},
-    author={},
+    author={Salesforce},
     year={2012},
     howpublished={\url{http://www.salesforce.com/platform/}},
-    note={Acessado em: 16/7/2012}}
+    note={Acessado em: 8/8/2013}}
 }
 
 @misc{cloudexpo,
     title={The Top 150 Players in Cloud Computing},
-    author={Jeremy Geelan},
+    author={Geelan, J.},
     year={2009},
     howpublished={\url{http://cloudcomputing.sys-con.com/node/770174}},
-    note={Acessado em: 16/7/2012}}
+    note={Acessado em: 8/8/2013}}
 }
 @misc{xenguide,
-    title={New to Xen Guide},
-    author={Stephen Spector},
+    title={New to {{X}}en Guide},
+    author={Spector, S.},
     year={2010},
     howpublished={\url{http://www.xen.org/files/Marketing/NewtoXenGuide.pdf}},
-    note={Acessado em: 16/7/2012}}
+    note={Acessado em: 8/8/2013}}
 }
 @misc{route,
-    title={Xen Networking},
-    author={},
+    title={{{X}}en Networking},
+    author={Xen},
     year={2010},
     howpublished={\url{http://wiki.xen.org/wiki/Xen_Networking}},
-    note={Acessado em: 16/7/2012}}
+    note={Acessado em: 8/8/2013}}
 }
 
 @misc{SRIOV,
-    title={What is SR-IOV?},
-    author={Scott Low},
+    title={What is {{SR-IOV}}?},
+    author={Low, S.},
     year={2009},
     howpublished={\url{http://blog.scottlowe.org/2009/12/02/what-is-sr-iov/}},
-    note={Acessado em: 19/7/2012}}
+    note={Acessado em: 8/8/2013}}
 }
 
 @misc{intel_SRIOV,
-    title={Intel server adapters},
-    author={},
+    title={{{I}}ntel server adapters},
+    author={Intel},
     year={2012},
     howpublished={\url{http://www.intel.com/support/network/adapter/pro100/sb/CS-031492.htm}},
-    note={Acessado em: 19/7/2012}}
+    note={Acessado em: 8/8/2013}}
 }
 
 @misc{cisco_SRIOV,
-    title={Cisco UCS Virtual Interface Card 1240},
-    author={},
+    title={{{C}}isco {{UCS}} Virtual Interface Card 1240},
+    author={Cisco},
     year={},
-    howpublished={\url{http://www.bailey.ciscosolution.net/sw/swchannel/productcatalogcf_v2/internet/model.asp?ProductMasterId=2426700&ParentId=607272}},
-    note={Acessado em: 19/7/2012}}
+    howpublished={\url{http://www.cisco.com/en/US/prod/collateral/modules/ps10277/ps12377/data_sheet_c78-699459.html}},
+    note={Acessado em: 8/8/2013}}
 }
 
 @misc{intel_interrupt,
-    title={Interrupt Moderation, Intel GbE Controllers},
-    author={},
+    title={Interrupt Moderation, {{I}}ntel GbE Controllers},
+    author={Intel},
     year={2007},
     howpublished={\url{http://www.intel.com/content/www/us/en/ethernet-controllers/gbe-controllers-interrupt-moderation-appl-note.html}},
-    note={Acessado em: 29/7/2012}}
+    note={Acessado em: 8/8/2013}}
 }
 
 @misc{NAPI,
-    title={NAPI performance - a weighty matter},
-    author={corbet},
+    title={{{NAPI}} performance - a weighty matter},
+    author={Corbet, J.},
     year={2005},
     howpublished={\url{http://lwn.net/Articles/139884/}},
-    note={Acessado em: 16/7/2012}}
+    note={Acessado em: 8/8/2013}}
 }
 
 @inproceedings{Liao:2008:STI:1477942.1477971,
- author = {Liao, Guangdeng and Guo, Danhua and Bhuyan, Laxmi and King, Steve R},
- title = {Software techniques to improve virtualized I/O performance on multi-core systems},
+ author = {Liao, G. and Guo, D. and Bhuyan, L. and King, S.},
+ title = {Software techniques to improve virtualized {{I/O}} performance on multi-core systems},
  booktitle = {Proceedings of the 4th ACM/IEEE Symposium on Architectures for Networking and Communications Systems},
  series = {ANCS '08},
  year = {2008},
@@ -409,7 +445,7 @@
 } 
 
 @inproceedings{apparao2006characterization,
-  title={Characterization of network processing overheads in Xen},
+  title={Characterization of network processing overheads in {{X}}en},
   author={Apparao, P. and Makineni, S. and Newell, D.},
   booktitle={Proceedings of the 2nd international Workshop on Virtualization Technology in Distributed Computing},
   pages={2},
@@ -426,36 +462,45 @@
   publisher={Springer}
 }
 @misc{ahmadimproving,
-  title={Improving Performance with Interrupt Coalescing for Virtual Machine Disk IO in VMware ESX Server},
+  title={Improving Performance with Interrupt Coalescing for Virtual Machine Disk {{I/O}} in {{VM}}ware {{ESX}} Server},
   author={Ahmad, I. and Gulati, A. and Mashtizadeh, A. and Austruy, M.}
 }
 
 
-@article{fortuna2012improving,
-  title={Improving Packet Reception and Forwarding within Virtualized Xen Environments},
+@inproceedings{fortuna2012improving,
+  title={Improving Packet Reception and Forwarding within Virtualized {{X}}en Environments},
   author={Fortuna, T. and Adamczyk, B.},
-  journal={Computer Networks},
+  booktitle={Computer Networks},
   pages={153--160},
   year={2012},
   publisher={Springer}
 }
 
 @inproceedings{dong2011optimizing,
-  title={Optimizing network I/O virtualization with efficient interrupt coalescing and virtual receive side scaling},
-  author={Dong, Y. and Xu, D. and Zhang, Y. and Liao, G.},
-  booktitle={Cluster Computing (CLUSTER), 2011 IEEE International Conference on},
-  pages={26--34},
-  year={2011},
-  organization={IEEE}
-}
+ author = {Dong, Y. and Xu, D. and Zhang, Y. and Liao, G.},
+ title = {Optimizing Network {{I/O}} Virtualization with Efficient Interrupt Coalescing and Virtual Receive Side Scaling},
+ booktitle = {Proceedings of the 2011 IEEE International Conference on Cluster Computing},
+ series = {CLUSTER '11},
+ year = {2011},
+ isbn = {978-0-7695-4516-5},
+ pages = {26--34},
+ numpages = {9},
+ url = {http://dx.doi.org/10.1109/CLUSTER.2011.12},
+ doi = {10.1109/CLUSTER.2011.12},
+ acmid = {2065755},
+ publisher = {IEEE Computer Society},
+ address = {Washington, DC, USA},
+ keywords = {Network I/O virtualization, Xen, Interrupt coalescing, Receive side scaling, Multi-core},
+} 
 
-@book{Corbet:2005:LDD:1209083,
- author = {Corbet, Jonathan and Rubini, Alessandro and Kroah-Hartman, Greg},
- title = {Linux Device Drivers, 3rd Edition},
+
+@inbook{Corbet:2005:LDD:1209083,
+ author = {Corbet, J. and Rubini, A. and Kroah-Hartman, G.},
+ title = {{{L}}inux Device Drivers},
+ edition={3},
+ pages = {497--595},
  year = {2005},
- isbn = {0596005903},
- pages={497--595},
- publisher = {O'Reilly Media, Inc.}
+ publisher = {O'Reilly Media}
 } 
 @article{salah2007coalesce,
   title={To coalesce or not to coalesce},
@@ -467,9 +512,11 @@
   year={2007},
   publisher={Elsevier}
 }
-@article{schmidtanalise,
-  title={An{\'a}lise de Desempenho da Virtualiza{\c{c}} ao de Rede nos Sistemas Xen e OpenVZ},
-  author={Schmidt, A.H. and Boufleur, M.P. and dos Santos, R.C.M. and Charao, A.S.}
+@misc{schmidtanalise,
+  title={An{\'a}lise de Desempenho da Virtualiza{\c{c}}{\~a}o de Rede nos Sistemas {{X}}en e {{O}}pen{{VZ}}},
+  author={Schmidt, A.H. and Boufleur, M.P. and dos Santos, R.C.M. and Charao, A.S.},
+  howpublished={\url{http://www-usr.inf.ufsm.br/~canofre/site/arquivos/2007/errc_07_ap.pdf}},
+  note={Acessado em: 8/8/2013}
 }
 
 @article{padala2007performance,
@@ -480,43 +527,55 @@
 }
 
 @inproceedings{che2010synthetical,
-  title={A synthetical performance evaluation of openvz, xen and kvm},
-  author={Che, J. and Yu, Y. and Shi, C. and Lin, W.},
-  booktitle={Services Computing Conference (APSCC), 2010 IEEE Asia-Pacific},
-  pages={587--594},
-  year={2010},
-  organization={IEEE}
-}
+ author = {Che, J. and Shi, C. and Yu, Y. and Lin, W.},
+ title = {A Synthetical Performance Evaluation of {{O}}pen{{VZ}}, {{X}}en and {{KVM}}},
+ booktitle = {Proceedings of the 2010 IEEE Asia-Pacific Services Computing Conference},
+ series = {APSCC '10},
+ year = {2010},
+ isbn = {978-0-7695-4305-5},
+ pages = {587--594},
+ numpages = {8},
+ url = {http://dx.doi.org/10.1109/APSCC.2010.83},
+ doi = {10.1109/APSCC.2010.83},
+ acmid = {1956769},
+ publisher = {IEEE Computer Society},
+ address = {Washington, DC, USA},
+ keywords = {virtualization, virtual machine, virtual machine monitor, performance, evaluation},
+} 
 
-@inproceedings{james2004performance,
-  title={Performance evaluation of Linux Bridge},
+
+@misc{james2004performance,
+  title={Performance evaluation of {{L}}inux Bridge},
   author={James, T.Y.},
-  booktitle={Telecommunications System Management Conference},
-  year={2004}
+  year={2004},
+  howpublished={\url{http://facweb.cti.depaul.edu/jyu/Publications/Yu-Linux-TSM2004.pdf}},
+  note={Acessado em: 8/8/2013}
 }
 
-@article{bradner1991rfc,
-  title={RFC 1242--Benchmarking Terminology for Network Interconnection Devices},
+@misc{bradner1991rfc,
+  title={{{RFC}} 1242--Benchmarking Terminology for Network Interconnection Devices},
   author={Bradner, S.},
-  journal={IETF, July},
+  howpublished={\url{http://www.ietf.org/rfc/rfc1242.txt}},
+  note={Acessado em: 8/8/2013},  
   year={1991}
 }
 
-@article{bradner1999rfc,
-  title={RFC 2544},
-  author={BRADNER, S. and MCQUAID, J.},
-  journal={Benchmarking methodology for network interconnect devices},
+@misc{bradner1999rfc,
+  title={{{RFC}} 2544--Benchmarking Methodology for Network Interconnect Devices},
+  author={Bradner, S. and Mcquaid, J.},
+  howpublished={\url{http://www.ietf.org/rfc/rfc2544.txt}},
+  note={Acessado em: 8/8/2013},
   year={1999}
 }
 
 @inproceedings{alkmim2009soluccao,
   title={Uma solu{\c{c}}{\~a}o de baixo custo para a Migra{\c{c}}{\~a}o de M{\'a}quinas Virtuais},
   author={Alkmim, G.P. and Uch{\^o}a, J.Q.},
-  booktitle={VIII WPerformance-Workshop em Desempenho de Sistemas Computacionais e de Comunica{\c{c}}ao-XXIX CSBC-Congresso da Sociedade Brasileira de Computa{\c{c}}ao},
+  booktitle={VIII Workshop em Desempenho de Sistemas Computacionais e de Comunica{\c{c}}{\~a}o, XXIX Congresso da Sociedade Brasileira de Computa{\c{c}}{\~a}o},
   year={2009}
 }
 
-@book{stallings1986computer,
+@inbook{stallings1986computer,
   title={Computer organization and architecture},
   author={Stallings, W.},
   year={2010},
@@ -526,7 +585,7 @@
 }
 
 @article{salah2005analysis,
-  title={Analysis and simulation of interrupt overhead impact on OS throughput in high-speed networks},
+  title={Analysis and simulation of interrupt overhead impact on {{OS}} throughput in high-speed networks},
   author={Salah, K. and El-Badawi, K.},
   journal={International Journal of Communication Systems},
   volume={18},
@@ -534,4 +593,63 @@
   pages={501--526},
   year={2005},
   publisher={Wiley Online Library}
+}
+
+@misc{amdv,
+	author={AMD},
+    title= {{{AMD}} Virtualization ({{AMD-V}}) Technology},
+    year={2008},
+    howpublished= {\url{http://sites.amd.com/us/business/it-solutions/virtualization/Pages/virtualization.aspx}},
+    note={Acessado em 8/8/2013}
+}
+
+@misc{ixen,
+	author={Rami Rosen},
+    title= {Introduction to the {{X}}en Virtual Machine},
+    year={2005},
+    howpublished = {\url{http://www.linuxjournal.com/article/8540}},
+    note={Acessado em 8/8/2013}
+}
+
+@misc{vtx,
+    title= {{{I}}ntel Virtualization Technology: Hardware support for efficient processor virtualization},
+    author={Gil Neiger and Amy Santoni and Felix Leung and Dion Rodgers and Rich Uhlig},
+    year={2006},
+    howpublished = {\url{http://noggin.intel.com/content/intel-virtualization-technology-hardware-support-for-efficient-processor-virtualization}},
+    note={Acessado em 8/8/2013}
+}
+
+@misc{xen_hist,
+    Author={Dunlap, G.},
+    title={The Paravirtualization Spectrum},
+    year={2012},
+    howpublished={\url{http://blog.xen.org/index.php/2012/10/23/the-paravirtualization-spectrum-part-1-the-ends-of-the-spectrum/}},
+    note={Acessado em 8/8/2013}
+}
+
+@article{salah2009implementation,
+  title={Implementation and experimental performance evaluation of a hybrid interrupt-handling scheme},
+  author={Salah, K. and Qahtan, A.},
+  journal={Computer Communications},
+  volume={32},
+  number={1},
+  pages={179--188},
+  year={2009},
+  publisher={Elsevier}
+}
+
+@misc{intel_placa_de_rede,
+    title={{{L}}inux ixgbe* Base Driver overview and installation},
+	author={Intel},
+    year={2011},
+    howpublished={\url{http://www.intel.com/support/network/adapter/pro100/sb/CS-032530.htm}},
+    note={Acessado em: 8/8/2013}
+}
+
+@misc{softint,
+	title={Software interrupts and realtime},
+	author={Corbet, J.},
+	year={2012},
+	howpublished={\url{https://lwn.net/Articles/520076/}},
+	note={Acessado em: 8/8/2013}
 }

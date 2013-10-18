@@ -1,50 +1,36 @@
 %% ------------------------------------------------------------------------- %%
 \chapter{Introdução}
 \label{cap:introducao}
-Em infraestruturas de nuvem, recursos computacionais são controlados pelo fornecedor e alocados a qualquer momento de acordo com os requisitos do consumidor \cite{goncalvesresource}. 
-Para alocar recursos a qualquer momento, a nuvem adota uma tecnologia chamada virtualização.
+A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de \textit{hardware} e \textit{software} dos CPDs (Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
+
+Quando fornecemos uma infraestrutura computacional como serviço, recursos computacionais devem ser alocados a qualquer momento de acordo com os requisitos do usuário \cite{goncalvesresource}. 
+Para que a infraestrutura suporte esse tipo de recurso, ela adota uma tecnologia chamada virtualização.
 
 A virtualização divide um recurso com grande capacidade de processamento em recursos menores chamados de máquinas virtuais \cite{barham2003xen}.
-Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
+Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
+
 Por exemplo, uma empresa de comércio eletrônico pode alugar uma quantidade $x$ de processadores de uma máquina física na véspera do natal, afim de garantir que todos os clientes terão sucesso nas compras, e reduzir esse aluguel para $x/16$ após a data festiva, já que a quantidade esperada de acessos tende a cair.
-Apesar das máquinas virtuais ajudarem a aumentar a flexibilidade, elas ainda têm um desempenho abaixo da máquina pura quando executamos aplicações que usam muito a rede
+Apesar das máquinas virtuais ajudarem a aumentar a flexibilidade, elas ainda têm um desempenho abaixo das máquinas físicas quando são executadas aplicações que usam muito a rede
  \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. 
 
-Uma das principais causas é o \textit{hypervisor}, um módulo necessário para a gerência das máquinas virtuais, e sua arquitetura de virtualização de rede. 
-Diferentemente da arquitetura de rede padrão, há alguns passos adicionais para transmitir e receber um pacote de informação que implicam em um custo adicional tanto na memória como no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
+Uma das principais causas é a forma com que o \textit{hypervisor}, módulo que gerencia as máquinas virtuais, intermedeia a comunicação das máquinas virtuais com os dispositivos de rede.
+Diferentemente dos computadores físicos, as máquinas virtuais necessitam executar alguns passos adicionais para transmitir ou receber um pacote de informação que implicam em um custo adicional no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
 
-Para reduzir o custo do processamento, uma proposta é adotar uma estratégia para gerenciar a agregação de interrupções \cite{salah2007coalesce}, \cite{dong2011optimizing}.
-Na agregação de interrupções, o \textit{driver} da placa de rede não gera interrupções no sistema quando um pacote é recebido ou é transmitido com sucesso.
+Uma proposta para reduzir a carga no processamento da rede é adotar estratégias que agreguem as interrupções geradas para a transmissão/recepção de pacotes \cite{salah2007coalesce}, \cite{dong2011optimizing}.
+Uma Estratégia simples é agregar as interrupções por intervalo de tempo ou por pacotes. Nela, o dispositivo deixa de gerar interrupções a cada pacote que chega ou é transmitido e passa a gerar uma única interrupção apenas depois de um intervalo de tempo que um pacote é recebido ou transmitido, ou quando uma quantidade de pacotes determinada é transmitida/recebida.
+Como apenas uma interrupção é gerada para um agrupamento de pacotes, isso reduz a quantidade de interrupções por pacote, porém, também pode atrasa o processamento de pacote já que cada pacote poderá ser processado somente quando a interrupção for gerada.
 
-Ao invés disso, uma interrupção é gerada depois de um intervalo de tempo que um pacote é recebido ou transmitido, ou quando uma quantidade de pacotes é transmitida/recebida.
-Como a interrupção é gerada para um agrupamento de pacotes, ao invés de ser gerada para cada pacote, isso reduz a quantidade de interrupções por pacote, porém, pode atrasa o processamento de pacote já que cada pacote poderá ser processado somente quando a interrupção for gerada.
+Atualmente, uma estratégia de agregação muito utilizada é a \textit{NAPI} (\textit{New API}) \cite{Corbet:2005:LDD:1209083}, um conjunto de interfaces oferecido pelo núcleo do \textit{Linux} que os \textit{drivers} dos dispositivos de rede implementam para agregar interrupções. 
+Nela, quando uma grande quantidade de pacotes for enviada para o dispositivo de rede, ao invés do dispositivo enviar uma interrupção ao \textit{driver} para cada pacote que chega, o \textit{driver} desabilita as interrupções na chegada do primeiro pacote e processa continuamente os próximos pacotes. Esse processamento continuo dos pacotes é chamado varredura.
 
-Embora focarmos em redes, qualquer dispositivo de E/S é capaz de gerar interrupções.
-Considerando outros dispositivos de E/S, as redes gigabits transferem com um taxa 10x maior que os discos rígidos e 1000x maior que os discos flexíveis como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}. 
-
-
-\begin{figure}[h!]
-\begin{center}
-  \includegraphics[width=288pt,height=222pt]{./img/taxa.eps}
-\caption{taxa de transferência para diferentes dispositivos de E/S \cite{stallings1986computer}}
-\label{taxa}
-\end{center}
-\end{figure}
-
-\uline{
-A maioria dos trabalhos propostos em agregação de interrupções não analisam dispositivos de rede virtuais gerados pelo \textit{hypervisor}. Estes participam diretamente do tráfego de rede em infraestruturas em nuvem. Em \cite{dong2011optimizing}, foi proposto um algoritmo para dispositivo de redes virtuais, porém, foi considerado apenas a agregação de pacotes por intervalo de tempo.   
-Essa pesquisa propõe algoritmos que automatizem a configuração de agregação de interrupções realizada pelo \textit{hypervisor}. Será considerado tanto a agregação de pacotes por intervalo de tempo como também por quantidade de pacotes transmitidos ou recebidos.
-Os algoritmos tentam ajustar os parâmetro de agregação de interrupções dinamicamente de forma a garantir os requisitos de qualidade de serviço (\textit{QoS} -- do inglês \textit{quality of service}) de aplicações em nuvem que façam uso intensivo dos enlaces de rede.
-}
+Atualmente a \textit{NAPI} é a proposta mais implementada pelos \textit{drivers} de dispositivos de rede para agregar interrupções, porém, há poucos estudos na área, principalmente quando consideramos dispositivos virtuais. Neste trabalho de mestrado realizamos um estudo aprofundado da \textit{NAPI} e identificamos quais parâmetros influenciam o desempenho em função da banda de rede e uso de \textit{CPU} (do inglês \textit{central processing unit} -- unidade central de processamento). 
 
 %% ------------------------------------------------------------------------- %%
 \section{Objetivos}
 \label{sec:objetivo}
-\sout{O objetivo dessa pesquisa é demostrar que os algoritmos de agregação de interrupções reduzem o uso da \textit{CPU} por pacote na transmissão e recepção e mantém a latência consideravelmente baixa, dentro dos requisitos das aplicações.
-}
-\uline{
-O objetivo dessa pesquisa é demostrar que os algoritmos de agregação de interrupções propostos reduzem o uso da \textit{CPU} por pacote na transmissão e recepção e mantém a latência consideravelmente baixa, dentro dos requisitos das aplicações.
-}
+A \textit{NAPI} possui um parâmetro chamado limite. Esse parâmetro limita a quantidade de pacotes processada pelo sistema a cada ciclo de varredura, podendo controlar o momento em que  o sistema deve iniciar uma varredura.
+O limite é estudado no artigo de Corbet \cite{NAPI} e Salah \cite{salah2005analysis}, porém, apenas considerando dispositivos físicos.
+Assim, o objetivo desse trabalho é elaborar um mecanismo que escolha o melhor valor para o parâmetro limite da \textit{NAPI}, no qual o sistema tenha um bom desempenho tanto no uso de \textit{CPU} como na largura de banda.
 %% ------------------------------------------------------------------------- %%
 \section{Contribuições}
 \label{sec:contribucoes}
@@ -52,19 +38,19 @@ O objetivo dessa pesquisa é demostrar que os algoritmos de agregação de interrup
 As principais contribuições desse trabalho são:
 
 \begin{itemize}
-  \item 
-   Fornecer um algoritmo capaz de garantir uma melhor utilização dos recursos de processamento e de comunicação na infraestrutura de nuvem para aplicações que façam uso intenso da rede.
-  \item 
-   Automatizar as configurações de agregação de interrupções do \textit{hypervisor} de acordo com a transmissão e recepção de pacotes.
   \item
-    Desenvolver um módulo para simulações de nuvens que dê suporte a avaliação de desempenho de diferentes algoritmos de agregação de interrupções da placa de rede.
+	Um estudo aprofundado sobre o comportamento dos dispositivos de rede virtuais usando \textit{NAPI}.
+	Atualmente, estudos foram feitos apenas com dispositivos de rede reais.
+  \item
+	Um mecanismo que define o melhor valor para o parâmetro limite da \textit{NAPI}, considerando a largura de banda e uso de \textit{CPU} para os seguintes \textit{hypervisors}: \textit{VirtualBox}, \textit{Xen} e \textit{Vmware}.
 \end{itemize}
 
 %% ------------------------------------------------------------------------- %%
 \section{Organização do Trabalho}
 \label{sec:organizacao_trabalho}
 
-Este texto está organizado da seguinte forma: no Capítulo~\ref{cap:conceitos}, são apresentados os conceitos de virtualização de servidores, virtualização de E/S, virtualização de rede, agregação de interrupções e computação em nuvem.
+Este texto está organizado da seguinte forma: no Capítulo~\ref{cap:conceitos}, são apresentados os conceitos de dispositivos de E/S, interrupções de \textit{hardware} e \textit{software}, virtualização de computadores, virtualização de rede, agregação de interrupções e computação em nuvem.
 No Capítulo~\ref{cap:revisao_bibliografica} é apresentada uma revisão bibliográfica na área de virtualização de rede.
-Finalmente, no Capítulo~\ref{cap:proposta} é apresentada a proposta de um algoritmo para a agregação das interrupções da placa de rede, de um mecanismo para automatização dos parâmetros do algoritmo e de um módulo para simulação de transferência de dados entre máquinas virtuais em nuvens que permite estudos relacionados com a gerência de interrupções das placas de rede.
-
+No Capítulo~\ref{cap:proposta} é apresentada a proposta de pesquisa.
+No Capítulo~\ref{cap:experimentos} são apresentados os experimentos com \textit{NAPI}.
+Por fim, no Capítulo~\ref{cap:conclusoes} são apresentadas as conclusões do trabalho.

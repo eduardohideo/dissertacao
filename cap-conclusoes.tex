@@ -1,22 +1,28 @@
 %% ------------------------------------------------------------------------- %%
 \chapter{Conclusões}
 \label{cap:conclusoes}
+Em nossos experimentos percebemos que o parâmetro limite igual a 1 causou uma perda de pacotes \textit{CPU}.
+Isso ocorreu devido ao processamento contínuo de pacotes que, quando reduz a taxa de interrupções próximo a 0, sobrecarrega o sistema com interrupções de \textit{software} e este passa a descartar pacotes.
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto\footnote{Exemplo de referência para página
-Web: \url{www.vision.ime.usp.br/~jmena/stuff/tese-exemplo}}.
+Com limite igual a 2, no \textit{VirtualBox} não houve diferença em relação aos limites 60 e 200, no Xen, o sistema usou mais \textit{CPU} em relação aos limites 60 e 200, por fim, no \textit{VMware} houve perda de pacotes semelhante ao que ocorreu com limite igual a 1.
+Com limites altos (60 e 200) houve um bom desempenho tanto em uso de \textit{CPU} como largura de banda e não houve diferença no resultado entre valores altos.
 
-%------------------------------------------------------
-\section{Considerações Finais} 
+Assim, sabe-se que diferementemente dos dispositivos físicos que têm bons resultados com limites baixos, nos dispositivos virtuais, limites altos tiveram um bom desempenho em todos os casos comparado com limites baixos.
+No caso particular, com o e1000, \textit{driver} usado nos experimentos, o valor de limite por padrão é 64, não sendo necessário alterá-lo se decidirmos escolher o melhor limite.
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto. 
+Vimos que o uso de \textit{CPU} é sensível a mudanças na frequência de envio de pacotes mesmo quando a largura de banda não varia. 
+É provável que controlar a frequência de envio de pacotes, aumente a frequência de pacotes processada e, consequentemente, reduza o uso de \textit{CPU} como ocorreu no \textit{VirtualBox} e \textit{Xen} com transmissão acima de 800 Mbits/s.
+
+Quando monitoramos o uso de \textit{CPU} da máquina virtual com o \textit{Xen}, \textit{VirtualBox} e \textit{Vmware}, os resultados mostraram que o \textit{Xen} foi o que usou menos \textit{CPU} e teve o melhor desempenho da largura de banda.
 
 %------------------------------------------------------
 \section{Sugestões para Pesquisas Futuras} 
+Durante o experimento configuraramos o tamanho do \textit{buffer} do \textit{socket}.
+A escolha do valor para esse parâmetro poderia ser automatizado para um valor que não use muita memória e não descarte pacotes.
 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto...
+Também selecionamos a \textit{CPU} na qual o \texttt{iperf} seria executado pois estavam comprometendo a medição. 
+Entre usar uma \textit{CPU} e usar duas, em tarefas que exigem apenas uma \textit{CPU}, houve uma carga extra no processamento quando usamos duas \textit{CPU}.
+Já com tarefas que exigem duas \textit{CPUs}, experimentos com apenas uma CPU resultou em perda de pacotes.
+É interessante analisar quando os processos poderão usar uma \textit{CPU} ou mais.
+
+

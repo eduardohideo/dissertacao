@@ -1,223 +1,23 @@
-\chapter{Motivação}
-\label{cap:motivacao}
-
-\section{NAPI}
-A \textit{NAPI} (\textit{New API}) \cite{Corbet:2005:LDD:1209083} é um conjunto de interfaces oferecido pelo núcleo do Linux que os \textit{drivers} dos dispositivos de rede usam para agregar interrupções. 
-O objetivo dela é reduzir a carga extra do processamento na recepção de uma grande quantidade de pacotes em um ou mais dispositivos de rede.
-Para isso, no momento que uma grande quantidade de pacotes for enviada para o dispositivo de rede, ao invés do dispositivo enviar uma interrupção ao \textit{driver} para cada pacote que chega, o \textit{driver} desabilita as interrupções na chegada do primeiro pacote e processa continuamente próximos pacotes.
-
-No processo dos pacotes, o \textit{driver} envia uma tarefa de recepção de pacotes na fila de \textit{polling} do núcleo do sistema\cite{NAPI}.
-Cada tarefa da fila de \textit{polling} é processada pelo núcleo do sistema e a quantidade de pacotes que essa tarefa poderá processar é definida por uma variável peso.
-Quanto maior o peso, mais pacotes poderão ser processados, mas não existe uma relação clara entre os pacotes e o peso, pois cada \textit{driver} faz uma implementação diferente da recepção de pacotes.
-Durante o processo de recepção, é verificada a quantidade de pacotes recebida, se uma estimada quantidade não for recebida, a tarefa é retirada da fila de \textit{polling}, a interrupção é reativada e será necessária a chegada de outro pacote para a tarefa retornar a fila, já se essa quantidade é processada, a tarefa é encerrada e recolocada na fila \cite{NAPI}.
-
-Comparando a \textit{NAPI} com a estratégia comum de interrupção, a \textit{NAPI} têm como vantagem a quantidade reduzida de interrupções geradas pelo dispositivo já que a interrupção é desabilitada durante o processo de pacotes, isso influência diretamente no desempenho da largura de banda de tráfegos intensivos.
-
-\section{Experimento}
-Para analisar o desempenho da \textit{NAPI} em dispositivos de rede virtuais, foram feitos experimentos variando o parâmetro peso do \textit{driver} de rede e1000 da \textit{Intel}.
-Esse \textit{driver} implementa \textit{NAPI} e tem o código-fonte claro e bem escrito, sendo usado por vários \textit{hypervisors} como  \textit{XEN}, \textit{VirtualBox}, \textit{VMWare} e \textit{KVM} para processar a recepção e envio de dados pela rede na máquina virtual.
-Na sua implementação de recepção de pacotes, o peso define a quantidade limite de pacotes que a tarefa de recepção poderá coletar. Se a quantidade de pacotes atingir esse limite, a tarefa é recolocada na fila de \textit{polling}, caso contrário, ela é removida da fila.
-
-Como \textit{hypervisor} foi usado o \textit{VirtualBox} por sua instalação ser rápida e sua interface ser simples e clara. 
-A máquina física contém um processador i7-2620M de dois núcleos e quatro fluxos de execução, 8 \textit{Gigabytes} de memória \textit{RAM} e sistema operacional \textit{Mac OS X} 10.6.8. 
-A máquina virtual usa dois fluxos de execução, 5 \textit{Gigabytes} de memória \textit{RAM} e sistema operacional \textit{Ubuntu} 11.10 com núcleo \textit{Linux} 3.0.43.
-
-O desempenho foi analisado verificando a largura de banda, o processamento da máquina física e virtual, a quantidade de interrupções gerada pela recepção e transmissão de pacotes e a quantidade de pacotes processada por ciclo de \textit{pooling}.
-A banda foi medida usando o programa \texttt{iperf} com protocolo \textit{TCP} e \textit{UDP} durante 30 segundos, o processamento usando o programa \texttt{top}, a quantidade de interrupções usando \texttt{itop} e a quantidade de pacotes por ciclo de \textit{pooling} através do \texttt{dmesg}, um comando do \textit{Linux} para imprimir as mensagens do núcleo de sistema na saída padrão.
-Como a quantidade total de pacotes processada durante o experimento pode ultrapassar 1 milhão, o \textit{buffer} pode encher rapidamente e, consequentemente, descartar informações. Assim, foi necessário aumentar o comprimento do \textit{buffer} de mensagens do núcleo alterando o parâmetro \texttt{LOG\_BUF\_LEN} do núcleo do sistema. 
-
-Em todos os experimentos, o processamento da máquina virtual chegou ao seu limite de processamento sendo o gargalo nos experimentos. Já no processamento da máquina física os experimentos não passaram de 50\% de uso.
-
-Na Figura \ref{receiv}, é mostrada a largura de banda processada para diferentes valores de pesos e protocolos.
-Com protocolo \textit{TCP}, comparando o peso com valor igual a 2 e a 64, a largura de banda é maior com 64, pois cada tarefa de recepção processa mais pacotes, e assim, necessita de executar menos tarefas de recepção para a mesma quantidade de pacotes com peso igual a 2.
-Percebe-se que a quantidade de interrupções por segundo, na Figura \ref{receiv_int}, foi praticamente a mesma com peso igual a 2 e 64.
-
-Na Figura \ref{histograma2tcp}, vemos frequência de pacotes processados por ciclo de \textit{polling} com peso igual a 2 e protocolo TCP, nota-se que o sistema processa muitas vezes 2 ou nenhum pacote.
-Observando os dados de quantidade de pacotes processada no ciclo de polling com peso igual a 2, percebemos uma alternância nos valores 0 e 2 o que dificulta o sistema se manter em \textit{polling}. 
-Esse comportamento é devido ao \textit{TCP} que obriga o sistema a responder ao remetente do pacote para receber o próximo pacote, e assim, atrasar o processo de envio.
-Nesse cenário, o sistema não consegue entrar em \textit{polling} por um período longo pois o processador atinge seu limite antes.
-Na Figura \ref{histograma64tcp}, vemos que o sistema dificilmente se manteria em \textit{polling} pois raramente processa 64 pacotes.
-
-\begin{figure}[h!]
-\begin{center}
-  \includegraphics[width=300pt,height=220pt]{./img/receiv_br.eps}
-\caption{Largura de banda na Recepção de pacotes}
-\label{receiv}
-\end{center}
-\end{figure}
-
-\begin{figure}[h!]
-\begin{center}
-  \includegraphics[width=300pt]{./img/receiv_int.eps}
-\caption{Quantidade de interrupções por segundo no dipositivo de rede virtual durante a recepção de pacotes}
-\label{receiv_int}
-\end{center}
-\end{figure}
-
-\begin{figure}[h!]
-\begin{center}
-  \includegraphics[width=300pt]{./img/histograma-2tcp.eps}
-\caption{Frequência de pacotes processados no ciclo de polling com peso igual a 2 e protocolo TCP}
-\label{histograma2tcp}
-\end{center}
-\end{figure}
-
-\begin{figure}[h!]
-\begin{center}
-  \includegraphics[width=300pt]{./img/histograma-64tcp.eps}
-\caption{Frequência de pacotes processados no ciclo de polling com peso igual a 64 e protocolo TCP}
-\label{histograma64tcp}
-\end{center}
-\end{figure}
-
-Continuando a análise da Figura \ref{receiv}, com protocolo \textit{UDP} e banda de envio de 1 Gbits/s e 2 Gbits/s, percebemos que a largura de banda recebida é maior com peso igual 2, isso acontece pois o sistema entra em \textit{polling} e passa a processar os pacotes que chegam sem interrupções como é possível ver pela quantidade de interrupções geradas na Figura \ref{receiv_int}. Em adição, como o protocolo \textit{UDP} obriga apenas a recepção de pacotes, diferente do {TCP} que obriga também a responder ao remetente, todo o processo é gasto na recepção de pacotes o que faz o sistema entrar e se manter em \textit{pooling} antes do processador chegar ao limite.
-
-Já com peso igual a 64, o sistema não consegue pacotes o suficiente para se manter em \textit{polling} e passa a ter que entrar/sair da fila de \textit{polling} gerando muitas interrupções e reduzindo seu desempenho. 
-Nota-se que nos experimentos com 1GBits/s e 2Gbits/s, o primeiro teve um desempenho um pouco superior em relação ao último, isso é devido ao processador estar no seu limite da sua carga e por causa da chegada de mais pacotes, este passa a ter que rejeitar os que chegam gastando mais processamento.
-
-Na Figura \ref{histograma64udp}, vemos que a quantidade de pacotes processada por ciclo de \textit{polling} com peso igual a 64 e protocolo UDP raramente atinge 64, e assim, a recepção nunca entra em \textit{polling}. Por outro lado, na Figura \ref{histograma2udp}, onde mostra o mesmo gráfico com peso igual a 2, vemos que o sistema processa, com frequência a quantidade máxima de pacotes, e, como consequência, entra em longos períodos de \textit{pooling}.
-
-\begin{figure}[h!]
-\begin{center}
-  \includegraphics[width=300pt]{./img/histograma-2udp.eps}
-\caption{Frequência de pacotes processados no ciclo de polling com peso igual a 2 e protocolo UDP com banda de transferência de 1Gbit/s}
-\label{histograma2udp}
-\end{center}
-\end{figure}
-
-\begin{figure}[h!]
-\begin{center}
-  \includegraphics[width=300pt]{./img/histograma-64udp.eps}
-\caption{Frequência de pacotes processados no ciclo de polling com peso igual a 64 e protocolo UDP com banda de transferência de 1Gbit/s}
-\label{histograma64udp}
-\end{center}
-\end{figure}
-
-Na Figura \ref{trans}, é mostrada a largura de banda transferida.
-É notado que a variação no peso não afeta a banda transferida, pois a \textit{NAPI} é usada apenas na recepção de pacotes. Nota-se que apesar do \textit{TCP} ser mais complexo que o\textit{UDP}, a forma como é feita a transmissão de pacotes no \textit{iperf} faz o sistema com \textit{UDP} gerar mais interrupções que o com \textit{TCP} como é possível ver na Figura \ref{trans_int}, consequentemente, o sistema com \textit{TCP} tem um desempenho melhor na transmissão.
-
-\begin{figure}[h!]
-\begin{center}
-  \includegraphics[width=300pt]{./img/trans_br.eps}
-\caption{Largura de banda na Transmissão de pacotes}
-\label{trans}
-\end{center}
-\end{figure}
-
-
-\begin{figure}[h!]
-\begin{center}
-  \includegraphics[width=300pt]{./img/trans_int.eps}
-\caption{Quantidade de interrupções por segundo no dispositivo de rede virtual durante a transmissão}
-\label{trans_int}
-\end{center}
-\end{figure}
-
 \chapter{Proposta}
 \label{cap:proposta}
 
 \section{Tema de Pesquisa}
-
-Essa pesquisa tem como tema técnicas de otimização \sout{na} \uline{da} virtualização de rede em infraestruturas em nuvem.
+Essa pesquisa tem como tema o uso da \textit{NAPI} em dispositivos de rede virtuais.
 
 \section{Problema de Pesquisa}
-
-O problema a ser tratado nessa pesquisa é o desempenho baixo nas infraestruturas em nuvem que utilizam técnicas de virtualização com \textit{hypervisores} em relação a infraestruturas que virtualizam sem o uso de \textit{hypervisores}, como a virtualização em nível de sistema operacional, ou não virtualizam quando executam aplicações que usam intensamente a rede.
-
-\section{Evidências do Problema}
-
-Para ter evidências que o problema existe, foi feita uma revisão bibliográfica.
-Nela diversos autores falam sobre problemas na arquitetura da virtualização de rede que é usada pelos \textit{hypervisores} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592} \cite{Santos:2008:BGS:1404014.1404017} \cite{oi2009performance} \cite{xenbestpractices}. 
-Experimentos foram realizados com infraestruturas usando \textit{XEN} e infraestruturas sem virtualização. O resultado foi que as infraestruturas usando \textit{XEN} tiveram um desempenho muito inferior causado pela alta latência e muito uso do processador \cite{ekanayake2010high}.
+A \textit{NAPI} possui um parâmetro chamado limite que é capaz de controlar quando o sistema inicia uma varredura nos pacotes. 
+O problema que essa pesquisa prentende resolver é a falta de um mecanismo que indique qual o melhor valor para o parâmetro limite para dispositivos virtuais considerando a largura de banda e o uso de \textit{CPU}.
 
 \section{Relevância do Problema}
-\sout{Muitas organizações têm investido em computação em nuvem, mais de 150 empresas tem entrado na indústria como fornecedoras de nuvem \cite{cloudexpo}. No lado dos consumidores de nuvem, uma recente pesquisa com mais de 600 companhias pelo InformationWeek revelou que o número de companhias usando computação em nuvem aumentou de 18\% em fevereiro de 2009 para 30\% em outubro de 2010 \cite{goncalvesresource}.
-}
-\uline{
-Muitas organizações têm investido em computação em nuvem, até 2009, mais de 150 empresas tornaram-se fornecedoras na indústria de nuvem \cite{cloudexpo}. No lado dos consumidores de nuvem, uma pesquisa com mais de 600 companhias pelo InformationWeek revelou que o número de companhias usando computação em nuvem aumentou de 18\% em fevereiro de 2009 para 30\% em outubro de 2010 \cite{goncalvesresource}.
-}
+Diferentemente dos computadores físicos, as máquinas virtuais necessitam executar alguns passos adicionais para transmitir ou receber um pacote de informação que implicam em um custo adicional no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
+Assim, estratégias que reduzem o uso da \textit{CPU} causado pelo tráfego intensivo de pacotes pela rede são importantes para reduzir a carga extra gerada pela virtualização.
 
-Na revisão bibliográfica foram encontrados vários autores que propuseram técnicas para tentar resolver o problema da má utilização dos recursos compartilhados quando há aplicações que fazem uso intenso de rede nas nuvens. \cite{Rixner:2008:NVB:1348583.1348592} \cite{Santos:2008:BGS:1404014.1404017} \cite{oi2009performance} \cite{Liao:2008:STI:1477942.1477971} \cite{apparao2006characterization} \cite{jang2011low} \cite{fortuna2012improving} \cite{dong2011optimizing}. 
+Atualmente a \textit{NAPI} é implementada por vários \textit{drivers} de dispositivos de rede para agregar interrupções, porém, há poucos estudos na área, principalmente quando consideramos dispositivos virtuais. 
 
-Uma especificação para dispositivos PCIe chamada \textit{SR-IOV} foi criada apenas para tentar resolver esse problema \cite{SRIOV} e fabricantes de placas de rede como a Intel\cite{intel_SRIOV} e a Cisco\cite{cisco_SRIOV} passaram a fabricar e vender placas de rede com essa especificação para servidores que usam \textit{XEN} ou \textit{KVM}.
+Em \cite{NAPI}, é citado que não existe uma orientação para a escolha do valor de limite e muitos \textit{drivers} definem o valor entre 16 e 64, já em \cite{salah2009implementation}, um experimento prático com limite igual a 2, 6 e 300 mostrou um desempenho de largura de banda melhor com limite igual a 2, porém essa medição foi feita apenas em um dispositivo físico.
 
 \section{Proposta de Pesquisa}
-
-
-
-Na revisão bibliográfica apresentada no Capítulo~\ref{cap:revisao_bibliografica} foram descobertos vários artigos que modificam diferentes partes de uma infraestrutura de nuvem para conseguir um ganho de desempenho. 
-\sout{Resolvemos direcionar essa proposta para as estratégias de agregação de interrupções por parecer uma estratégia ainda pouco pesquisada e que pode trazer uma redução grande de interrupções as quais, consequentemente, poderia melhorar o desempenho da infraestrutura de nuvem.
-}
-\uline{Resolvemos direcionar essa proposta para as estratégias de agregação de interrupções por parecer uma estratégia ainda pouco pesquisada e que pode melhorar o desempenho da infraestrutura de nuvem reduzindo a quantidade de interrupções por pacote.
-}
-
-Apesar de não garantir que essa estratégia irá ser melhor que as outras, podemos unir diferentes estratégias para tentar conseguir um ganho ainda maior já que cada estratégia pode modificar uma diferente parte da mesma infraestrutura.
-
-Nessa pesquisa, propomos um algoritmo para agregação de interrupções dos \textit{drivers} das placas de rede virtuais e física tentando ajustar os parâmetros de agregação dinamicamente de forma a garantir uma melhor qualidade dos serviços da aplicação na infraestrutura de nuvem.
-A qualidade a qual estamos focando está em atributos de desempenho, em específico, a latência, a largura de banda e o uso do processador. Estes variam quando modificamos os parâmetros de agregação. 
-O algoritmo será uma solução se, na infraestrutura, reduzir o uso da \textit{CPU} por pacote na transmissão e recepção e manter a latência consideravelmente baixa.
-
-A estratégia de agregação pode ser feita tanto no \textit{driver} físico como no \textit{driver} virtual de \textit{frontend} e \textit{backend} como foi apresentado na Seção \ref{sec:agrec}.
-Se pensarmos em agregar as interrupções na recepção dos três \textit{drivers} ao mesmo tempo, o comportamento final da rede pode ser um pouco mais complexo de se prever em relação a agregar apenas um dos \textit{drivers}.
-Isso porque cada \textit{driver} depende tanto dos próprios parâmetros de previsão de chegada de pacotes como também depende dos parâmetros dos \textit{drivers} em que o tráfego de pacotes já passou.
-O \textit{driver} virtual de \textit{frontend} recebe pacotes que passaram pelo \textit{driver} virtual de \textit{backend}. Sabendo que o \textit{driver} de \textit{backend} espera X pacotes para gerar uma interrupção, esperar receber mais que X pacotes no \textit{frontend} poderia fazer o \textit{driver} ficar esperando demais por pacotes.
-
-Na agregação de interrupções na transmissão, não foram encontrados experimentos, mas em \cite{Corbet:2005:LDD:1209083}, é mostrado que a quantidade de interrupções devido a transmissão de pacotes é equivalente às interrupções de recepção na virtualização de rede do \textit{XEN}.
-Também não foi encontrado ainda nenhum artigo que analisa a agregação desses três \textit{drivers} ao mesmo tempo.
-\sout{Uma análise de como os parâmetros estão relacionados e como eles influenciam no tráfego de rede será necessário antes de elaborar um algoritmo.}
-
-\subsection{Algoritmo}
-
-\uline{
-Na primeira proposta de algoritmo, separaremos as aplicações que estão dentro da nuvem em classes de serviços. Essa idéia foi baseada no algoritmo de moderação de interrupção proposto  em \cite{intel_interrupt}.
-De acordo com os dados obtidos nessa classificação, iremos variar os parâmetros de agregação de interrupções.
-A classe de serviços é divida em A, B, C e D. Nas classes A, B e C, a aplicação exige respectivamente uma latência baixa, média, alta. Enquanto que na classe E não exige requisitos de latência.
-}
-
-\uline{
-Com a classificação de todas as aplicações, iremos modificar os parâmetros de agregação em todas as placas de rede. 
-Na placa de rede física, como todo tráfego de todas as máquinas virtuais passam por ela e queremos que os requisitos de todas as aplicações sejam respeitados, modificaremos os parâmetros se baseando na classificação da aplicação que exigir a menor latência.
-Nas placas de rede virtuais, como elas gerenciam o tráfego apenas da máquina virtual que controla a placa de rede de \textit{backend}, devemos nos preocupar apenas com os requisitos das aplicações que estão dentro dessa máquina virtual. Assim, modificaremos os parâmetros se baseando na classificação da aplicação que exigir a menor latência e está implantada dentro da máquina virtual que controla a placa de rede de \textit{backend}.
-}
-
-\uline{
-Algoritmo:
-}
-
-\uline{
-1. Analisar os requisitos de latência de todas as aplicações
-}
-
-\uline{
-2. Classificar as aplicações de acordo com esses requisitos
-}
-
-\uline{
-3. Os parâmetros de agregação da placa de rede física serão modificados se baseando na classificação da aplicação que exigir a menor latência.
-Caso não exista nenhuma aplicação, os parâmetros serão modificados se baseando na classe de serviços E.
-}
-
-\uline{
-4. Os parâmetros de agregação da placa de rede virtual de \textit{backend} e \textit{frontend} serão modificados se baseando na classificação da aplicação que exigir a menor latência dentro da máquina virtual que controla a placa de rede de \textit{backend}. 
-Caso não exista aplicações dentro da máquina virtual, os parâmetros serão modificados se baseando na classe de serviços E.
-}
-
+É proposto nessa pesquisa um mecanismo para escolher o melhor valor para o limite que melhore a largura de banda e o uso da \textit{CPU} em dispositivos virtuais.
 
 \section{Questão de Pesquisa}
-O algoritmo de agregação de interrupção proposto reduz o uso da \textit{CPU} por pacote na transmissão e recepção e mantêm a latência consideravelmente baixa em relação a infraestrutura sem o algoritmo?
-
-
-\section{Cronograma}
-Revisão bibliográfica adicional: Agosto\newline
-
-Experimento analisando a relação entre cada parâmetro da agregação: Setembro/Outubro\newline
-
-Desenvolvimento de um protótipo de simulador para avaliar as propostas: Setembro/Outubro/Novembro\newline
-
-Experimento avaliando o algoritmo proposto: Novembro/Dezembro\newline
-
-Escrita de artigo para o SBRC 2012: Novembro/Dezembro\newline
-
-Texto da dissertação: Janeiro/Fevereiro\newline
-
-Escrita de artigo para o CAMAD ou para o WPerformance (simulador): Fevereiro
+O mecanismo que seleciona o melhor valor para o parâmetro limite é capaz de obter um desempenho superior em largura de banda e uso de \textit{CPU} em relação ao valor padrão do definido pelo \textit{driver}?
