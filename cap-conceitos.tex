@@ -63,11 +63,6 @@ Quando geradas, devem ser tratadas pelo núcleo do sistema o mais rápido possível
 Nesse caso, se o tratamento for demorado, outros processos terão um atraso de execução por falta de espaço de tempo no processador.
 Já se o tratamento da interrupção entrar em um laço infinito, o sistema entrará em \textit{livelock}, ou seja, o sistema não estará bloqueado, porém, não será capaz de prosseguir porque todo o processador estará sendo usado para o tratamento da interrupção \cite{salah2005analysis}. 
 
-Cada interrupção de hardware possui no sistema um bit que pode estar ativado ou desativado.
-Quando este bit está desativado, o sistema desativa a interrupção e ignora todas as interrupções recebida pelo dispositivo. Já quando o bit está  ativado, o sistema permite que a interrupção gerada pelo hardware seja tratada. 
-O bit normalmente é desativado quando o sistema está tratando uma interrupção do dispositivo, e é reativado quando o sistema termina o tratamento.
-A desativação ocorre porque durante o tratamento da interrupção, o próprio dispositivo pode gerar várias interrupção e sobrecarregar o sistema de interrupções que precisam ser tratadas.
-
 Como cada dispositivo transfere informações em taxas diferentes, alguns geram mais interrupções que outros. As placas de rede que operam no padrão 10 Gigabit Ethernet por exemplo transferem dados com um taxa 3x maior que discos rígidos que operam no padrão SATA II como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}. 
 
 \begin{figure}[h!]
@@ -81,8 +76,7 @@ Como cada dispositivo transfere informações em taxas diferentes, alguns geram ma
 Já as interrupções de software são semelhantes às interrupções de \textit{hardware}, porém, são geradas por software.
 Assim, qualquer software no espaço do núcleo do sistema é capaz de gerar interrupções de software. 
 Elas são reentrantes, mas não são preemptivas, ou seja não podem ser interrompidas tanto por interrupções de software como de \textit{hardware}, porém, podem ceder seu tempo para outros processos tornando-as mais flexíveis em relação ao tempo gasto no tratamento delas \cite{softint}.
-O uso delas é normalmente reservado para processos do sistema que exigem tempo real e que são importantes. 
-Também são usadas no fim do tratamento de uma interrupção de \textit{hardware} para que o sistema reative esta.
+O uso delas é, normalmente, reservado para processos do sistema que exigem tempo real e que são importantes.
 
 No sistema operacional GNU/Linux, o \textit{ksoftirqd} é um processo do núcleo do sistema que ajuda no processamento das interrupções de software.
 Quando muitas interrupções de software são geradas, o sistema pode sobrecarregar.
@@ -94,7 +88,7 @@ Caso algum núcleo do processador esteja desocupado, o \textit{ksoftirqd} é rapid
 \section{Computação em Nuvem}\index{Computação em nuvem!fundamentos}
 \label{sec:computacaoEmNuvem}
 
-A computação em nuvem é um paradigma de computação no qual serviços computacionais são requisitados por clientes e executados por provedores de serviços, na grande maioria das vezes remotamente. Os clientes nesse paradigma pagam apenas pela quantidade de utilização dos serviços. A ideia da computação em nuvem é tornar a computação um serviço da mesma forma como acontece com a energia elétrica, ou seja, a infraestrutura deve ser transparente para o usuário que pagará apenas pela quantidade utilizada e que terá garantias de que seus requisitos de QoS serão atendidos. O termo computação em nuvem costuma ser usado para referir-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de \textit{hardware} e software dos CPDs (Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
+A computação em nuvem é um paradigma de computação no qual serviços computacionais são requisitados por clientes e executados por provedores de serviços, na grande maioria das vezes remotamente. Os clientes nesse paradigma pagam apenas pela quantidade de utilização dos serviços. A ideia da computação em nuvem é tornar a computação um serviço da mesma forma como acontece com a energia elétrica, ou seja, a infraestrutura deve ser transparente para o usuário que pagará apenas pela quantidade utilizada e que terá garantias de que seus requisitos de \textit{QoS} serão atendidos. O termo computação em nuvem costuma ser usado para referir-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de \textit{hardware} e software dos CPDs (Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
 
 Existem várias classificações para os serviços fornecidos na computação em nuvem. Uma das mais difundidas divide os serviços em três classes: software como serviço (SaaS -- \textit{Software as a Service}), 
 plataformas como serviço (PaaS -- \textit{Platform as a Service}), 
@@ -113,13 +107,13 @@ O \textit{Google App Engine}\footnote[2]{http://developers.google.com/appengine/
 IaaS oferecem infraestruturas computacionais ao cliente. Um exemplo desse tipo de nuvem é o Amazon EC2\footnote[4]{http://aws.amazon.com/ec2/} que fornece uma infraestrutura a qual emula um computador. Clientes de IaaS podem ser tanto desenvolvedores quanto administradores de sistemas que pretendem implantar um sistema já desenvolvido em uma plataforma virtual para reduzir os custos com TI das suas empresas.
 \end{itemize}
 
-Nesta dissertação, o foco das análises é no fornecimento de infraestrutura, em específico, computadores como serviço (IaaS). Cada serviço pode receber várias requisições para hospedar programas de desenvolvedores e, nesse caso, terá que implantá-los na infraestrutura. Quando um cliente, em algum momento, faz uma requisição para executar esse programa, a nuvem executa o programa internamente e repassa o resultado ao cliente.
+Nesta dissertação, focamos no fornecimento de infraestrutura, em específico, computadores como serviço (IaaS). Cada serviço pode receber várias requisições para hospedar programas de desenvolvedores e, nesse caso, terá que implantá-los na infraestrutura. Quando um cliente, em algum momento, faz uma requisição para executar esse programa, a nuvem executa o programa internamente e repassa o resultado ao cliente.
 Para que isso seja possível, a infraestrutura de nuvem contém vários nós, os quais são recursos físicos, como computadores ou mesmo CPDs inteiros, que contêm e controlam várias máquinas virtuais usando alguma técnica de virtualização. Cada requisição para implantar ou executar um programa é feita oferecendo as máquinas virtuais as quais estão contidas na infraestrutura.
 
 \section{Virtualização}\index{virtualização!fundamentos}
 \label{sec:virtualizacao}
 
-Na computação em nuvem, em particular quando se é fornecida uma infraestrutura para implantar aplicações (IaaS), a adoção da virtualização, em relação a computadores que não adotam virtualização, melhora a utilização dos recursos e protege o computador de problemas que os softwares dos clientes possam causar \cite{chaudhary2008comparison}.
+Na computação em nuvem, em particular quando fornecemos uma infraestrutura para implantar aplicações (IaaS), a adoção da virtualização, em relação a computadores que não adotam virtualização, melhora a utilização dos recursos e protege o computador de problemas que os softwares dos clientes possam causar \cite{chaudhary2008comparison}.
 Por exemplo, em um cenário com máquinas sem virtualização, um erro de programação que cause um laço infinito pode consumir toda a \textit{CPU} do computador, atrapalhando todos os usuários daquela máquina.
 Em um cenário virtualizado, há um isolamento entre os recursos das máquinas virtuais o qual impede uma máquina virtual de usar recursos alocados para outra máquina virtual.
 Assim, a única máquina afetada no cenário é aquela utilizada pelo programador. 
@@ -221,7 +215,7 @@ Outra possibilidade é criptografar a informação quando alguém escrever no disco,
 A virtualização do dispositivo de rede, que também é um dispositivo de E/S, tem algumas particularidades em relação a outros dispositivos.
 Segundo Rixner \cite{Rixner:2008:NVB:1348583.1348592}, a complexidade de virtualizar a rede é muito maior pelo fato de muitas vezes não se conhecer o destino de uma informação, pois esse está fora do sistema, diferente por exemplo do disco rígido que só se comunica com o sistema. Outra dificuldade é a necessidade do sistema operacional estar preparado a qualquer momento para receber e responder ao tráfego da rede, diferentemente da virtualização de disco em que a leitura e escrita só ocorre quando requisitada pela máquina virtual.
 
-Outra diferença é a taxa de transferência em relação a outros dispositivos de E/S, as placas de rede gigabit por exemplo transferem dados com um taxa 10x maior que os discos rígidos, como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}.
+Outra diferença é a taxa de transferência em relação a outros dispositivos de E/S, as placas de rede 10 Gigabit por exemplo transferem dados com um taxa 3x maior que os discos rígidos, como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}.
 
 %% ------------------------------------------------------------------------- %%
 \subsubsection{Virtualização da Rede no Xen}\label{xen_rede}
@@ -278,9 +272,9 @@ Na transmissão de pacotes, o \texttt{domU} coloca o pacote no \textit{buffer} de
 O \textit{dom0} por sua vez, lê o \textit{buffer} de descrição, mapeia as páginas recebidas no seu espaço de endereços e pede para transmiti-las através da ponte. 
 Quando o dispositivo físico confirmar a transmissão, o \texttt{domU} libera as páginas do \textit{buffer} de E/S.
 
-Na recepção, o \textit{netfront} informa as possíveis páginas da memória que podem ser usadas como \textit{buffer} de E/S  ao \textit{netback}.
+Na recepção, o \textit{domU} informa as possíveis páginas da memória que podem ser usadas como \textit{buffer} de E/S  ao \textit{dom0}.
  Quando algum pacote chega pelo dispositivo físico, este envia uma interrupção de chegada de pacote à ponte dentro do \textit{dom0}.
- A ponte então avisa o \textit{netback} correto sobre a chegada de pacotes.  O \texttt{netback} o copia para uma página da memória que foi fornecida pelo \textit{netfront} e envia uma interrupção para o mesmo. Quando o \textit{netfront} recebe a interrupção, ele pega o conteúdo que está no \textit{buffer}, envia para o seu sistema e libera as páginas fornecidas.
+ A ponte então avisa o \textit{domU} correto sobre a chegada de pacotes.  O \texttt{dom0} o copia para uma página da memória que foi fornecida pelo \textit{domU} e envia uma interrupção para o mesmo. Quando o \textit{domU} recebe a interrupção, ele pega o conteúdo que está no \textit{buffer}, envia para o seu sistema e libera as páginas fornecidas.
 % ------------------------------------------------------------------------- %%
 
 \section{Agregação de Interrupções}\index{Agregação de interrupções}
@@ -311,7 +305,7 @@ Existem 4 parâmetros para configuração da agregação de interrupções: \texttt{tx-
 
 Como pode-se notar na Tabela \ref{funcoes}, a agregação de interrupções depende do tamanho do \textit{buffer} de transmissão e recepção.
 O \textit{buffer} pode ser tanto um espaço de memória da máquina (\textit{DMA}) como uma memória interna da placa de rede. 
-Caso este seja pequeno, vários pacotes serão descartados durante o tráfego de pacotes por falta de espaço, caso seja grande, pode aumentar a latência por ter muitos pacotes esperando serem lidos dentro dele.
+Caso este seja pequeno, vários pacotes serão descartados durante o tráfego de pacotes por falta de espaço, caso seja grande, pode aumentar a latência por ter muitos pacotes esperando serem lidos dentro dele e pode consumir muita memória do sistema.
 Um problema com essa proposta é que nem sempre a placa de rede virtual ou física implementa essa funcionalidade, como o driver e1000 da Intel, o dispositivo de rede do Xen e o Virtio, que são mais usados pelos \textit{hypervisors}.
 
 \subsection{NAPI}
@@ -326,7 +320,7 @@ Quanto maior o peso, mais pacotes poderão ser processados, mas não existe uma re
 Durante o processo de recepção, é verificada a quantidade de pacotes recebida, se uma estimada quantidade não for recebida, a tarefa é retirada da fila de varredura, a interrupção de \textit{hardware} é reativada e será necessária a chegada de outro pacote para a tarefa ser devolvida para a fila, já se essa quantidade é processada, a tarefa é encerrada e recolocada na fila \cite{NAPI}. 
 Caso o sistema fique sobrecarregado e não seja possível processar mais pacotes, o \textit{driver} descarta os pacotes.
 
-Comparando o uso da \textit{NAPI} com a estratégia comum de interrupção dirigida a E/S, \textit{DMA} e a estratégia de agregação de interrupções por intervalo de tempo e por pacote, nota-se prós e contras.
+Comparando o uso da \textit{NAPI} com a estratégia comum de interrupção dirigida a E/S, \textit{DMA} e a estratégia de agregação de interrupções por intervalo de tempo e por pacote, notamos prós e contras.
 
 Prós do uso da \textit{NAPI}:
 \begin{itemize}
