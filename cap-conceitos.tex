@@ -2,13 +2,13 @@
 \chapter{Conceitos}
 \label{cap:conceitos}
 
-Este trabalho avalia aspectos tanto de \textit{hardware}, como de \textit{software} de sistemas operacionais em ambientes virtualizados. 
-A seguir, descreveremos os mecanismos de E/S (Entrada e Saída) de computadores que seguem o modelo de Von Neumann e, em seguida, mostraremos como isso se aplica em plataformas de computação virtualizada como as de computação em nuvem.
+Esta dissertação estuda aspectos tanto de \textit{hardware}, como de software de sistemas operacionais em ambientes virtualizados. 
+A seguir, descreveremos os mecanismos de E/S de computadores que seguem o modelo de Von Neumann e, em seguida, mostraremos como isso se aplica em plataformas de computação virtualizada como as de computação em nuvem.
 
 %% ------------------------------------------------------------------------- %%
-\section{Arquitetura de E/S (Entrada e Saída) em Computadores}\index{Arquitetura de E/S}
+\section{Arquitetura de E/S em Computadores}\index{Arquitetura de E/S}
 \label{sec:dispositivosDeES}
-Um computador, segundo o modelo de Von Neumann \cite{stallings1986computer}, é formado por uma memória principal, uma unidade central de processamento e dispositivos de E/S como mostra a Figura \ref{arqvon}.
+Um computador, segundo o modelo de Von Neumann \cite{stallings1986computer}, é formado por uma memória principal, uma unidade central de processamento e dispositivos de E/S como mostra a Figura \ref{arqvon}. Nesse modelo genérico, a unidade central de processamento comunica-se com a memória e com os dispositivos de E/S, sendo que esses dois últimos não comunicam-se diretamente entre si.
 Cada dispositivo de E/S do computador é controlado por um módulo para E/S. 
 Este módulo de E/S é necessário para que o processador possa se comunicar com um ou mais dispositivos de E/S.
 Os dispositivos de E/S possuem vários métodos de operação, diferentes formatos, comprimento de palavras e velocidade de transferência, o que faz cada módulo ter uma lógica específica para um tipo de dispositivo.
@@ -16,38 +16,38 @@ Os dispositivos de E/S possuem vários métodos de operação, diferentes formatos, 
 \begin{figure}[h!]
 \begin{center}
   \includegraphics[width=350pt,height=232pt]{./img/diagramavon.eps}
-\caption{Estrutura de um computador segundo o modelo de Von Neumann traduzida de \cite{stallings1986computer}}
+\caption{Estrutura de um computador segundo o modelo de Von Neumann (traduzida de \cite{stallings1986computer})}
 \label{arqvon}
 \end{center}
 \end{figure}
 
-Existem três técnicas possíveis para operações de E/S: E/S programada (varredura), interrupção dirigida à E/S e \textit{DMA} (do inglês \textit{direct memory access} -- acesso direto a memória).
+Existem três técnicas possíveis para operações de E/S: E/S programada (varredura), interrupção dirigida a E/S e \textit{DMA} (do inglês \textit{Direct Memory Access} -- Acesso Direto a Memória).
 \begin{itemize}
 \item
-Na E/S programada também chamada de varredura, dados são transferidos entre o processador e o módulo de E/S.
+Na E/S programada, também chamada de varredura, dados são transferidos entre o processador e o módulo de E/S.
 O processador executa um programa e fornece a este, controle direto das operações de E/S.
 Um problema com essa estratégia é o intervalo de tempo que o processador precisa esperar para o dispositivo de E/S estar pronto. Dentro desse intervalo, muitas instruções poderiam ser processadas;
 
 \item
-Na interrupção dirigida à E/S, um programa emite um comando requisitando E/S e continua executando outras instruções. 
-O modulo E/S então gera uma interrupção de \textit{hardware} quando o dispositivo estiver preparado, o processador então trata essa interrupção.
-Como o processador não espera ociosamente o dispositivo estar pronto, é possível processar uma quantidade de instruções maior quando algum dispositivo de E/S é acessado;
+Na interrupção dirigida a E/S, um programa emite um comando requisitando E/S e continua executando outras instruções. 
+O módulo de E/S gera uma interrupção de \textit{hardware} quando o dispositivo estiver preparado e o processador trata essa interrupção.
+Como o processador não espera ociosamente o dispositivo estar pronto, é possível processar uma quantidade de instruções maior do que na E/S programada quando algum dispositivo de E/S é acessado;
 \item
 No \textit{DMA}, um módulo chamado \textit{DMA} é incluído no sistema. O módulo é um processador especializado em E/S que recebe o controle das operações de E/S para mover um grande bloco de dados usando a memória principal. 
 Quando o módulo conclui uma operação, uma interrupção de hardware é gerada para ser tratada pelo processador.
-Nota-se que o processador não participa ativamente nessa técnica como nas anteriores, o que reduz o custo de processamento em relação as outras.
+Nota-se que o processador não participa ativamente nessa técnica como nas anteriores, o que reduz o custo de processamento em relação às outras.
 \end{itemize}
 
 Na Figura \ref{leitura}, é possível observar o fluxogramas das três técnicas sendo aplicadas para receber um bloco de dados de um dispositivo de E/S.
 Tanto na varredura como na interrupção dirigida a E/S, percebe-se que o processador participa de todo processo, enquanto que no \textit{DMA}, como o dispositivo consegue acessar diretamente a memória, a \textit{CPU} participa apenas na requisição de leitura e na recepção da interrupção do módulo de \textit{DMA}, avisando que o bloco de dados foi copiado.
 Atualmente, a técnica de varredura é pouco usada, pois é desperdiçado muito tempo de processamento e sempre podem existir aplicações que necessitam de processamento. 
-Já a interrupção dirigida à E/S é normalmente usada para dispositivos de E/S que transferem quantidades pequenas de informação e necessitam de pouco atraso como o teclado e o \textit{mouse}.
-Por fim, o \textit{DMA} é normalmente usado para dispositivos que transferem quantidades grandes de informações como o disco rígido e o leitor de CD/DVD.
+Já a interrupção dirigida a E/S é normalmente usada para dispositivos de E/S que transferem quantidades pequenas de informação e necessitam de pouco atraso como o teclado e o \textit{mouse}.
+O \textit{DMA} é normalmente usado para dispositivos que transferem quantidades grandes de informações como o disco rígido e a placa de rede.
 
 \begin{figure}[h!]
 \begin{center}
   \includegraphics[width=450pt,height=300pt]{./img/leitura.eps}
-\caption{Três técnicas para operações de E/S traduzida de \cite{stallings1986computer}}
+\caption{Três técnicas para operações de E/S (traduzida de \cite{stallings1986computer})}
 \label{leitura}
 \end{center}
 \end{figure}
@@ -57,40 +57,46 @@ Por fim, o \textit{DMA} é normalmente usado para dispositivos que transferem qua
 \section{Interrupções de Hardware X Interrupções de Software}\index{hardwarexsoftware}
 \label{sec:hardwarexsoftware}
 
-As interrupções de \textit{hardware} são como o próprio nome diz, interrupções geradas por dispositivos externos como o disco rígido, a placa de rede, mouse entre vários outros.
-Essas interrupções são usadas quando a estratégia para operações de E/S é a interrupção dirigida à E/S ou \textit{DMA}.
-Quando geradas, devem ser tratadas pelo núcleo do sistema o mais rápido possível, ignorando interrupções durante o processo e sem ceder o tempo para outros processos ou seja, o tratamento das interrupções de \textit{hardware} é não preemptivo e não reentrante.
+As interrupções de \textit{hardware} são, como o próprio nome diz, interrupções geradas por dispositivos externos como o disco rígido, a placa de rede, mouse entre vários outros.
+Essas interrupções são usadas quando a estratégia para operações de E/S é a interrupção dirigida a E/S ou \textit{DMA}.
+Quando geradas, devem ser tratadas pelo núcleo do sistema o mais rápido possível, ignorando interrupções durante o processo e sem ceder o tempo para outros processos. Ou seja, o tratamento das interrupções de \textit{hardware} é não preemptivo e não reentrante.
 Nesse caso, se o tratamento for demorado, outros processos terão um atraso de execução por falta de espaço de tempo no processador.
-Já se o tratamento da interrupção entrar em um laço infinito, o sistema entrará em \textit{livelock}, ou seja, o sistema não estará bloqueado, porém, não será capaz de prosseguir porque todo o processador estará sendo usado para o tratamento da interrupção \cite{salah2005analysis}.
-Como cada dispositivo transfere informações em taxas diferentes, alguns geram mais interrupções que outras. As redes gigabits por exemplo transferem com um taxa 10x maior que os discos rígidos e 1000x maior que os discos flexíveis como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}. 
+Já se o tratamento da interrupção entrar em um laço infinito, o sistema entrará em \textit{livelock}, ou seja, o sistema não estará bloqueado, porém, não será capaz de prosseguir porque todo o processador estará sendo usado para o tratamento da interrupção \cite{salah2005analysis}. 
+
+Cada interrupção de hardware possui no sistema um bit que pode estar ativado ou desativado.
+Quando este bit está desativado, o sistema desativa a interrupção e ignora todas as interrupções recebida pelo dispositivo. Já quando o bit está  ativado, o sistema permite que a interrupção gerada pelo hardware seja tratada. 
+O bit normalmente é desativado quando o sistema está tratando uma interrupção do dispositivo, e é reativado quando o sistema termina o tratamento.
+A desativação ocorre porque durante o tratamento da interrupção, o próprio dispositivo pode gerar várias interrupção e sobrecarregar o sistema de interrupções que precisam ser tratadas.
+
+Como cada dispositivo transfere informações em taxas diferentes, alguns geram mais interrupções que outros. As placas de rede que operam no padrão 10 Gigabit Ethernet por exemplo transferem dados com um taxa 3x maior que discos rígidos que operam no padrão SATA II como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}. 
 
 \begin{figure}[h!]
 \begin{center}
   \includegraphics[width=288pt,height=222pt]{./img/taxa.eps}
-\caption{Taxa de transferência para diferentes dispositivos de E/S \cite{stallings1986computer}}
+\caption{Taxa de transferência para diferentes dispositivos de E/S (traduzida e adaptada de \cite{stallings1986computer})}
 \label{taxa}
 \end{center}
 \end{figure}
 
-Já as interrupções de \textit{software} são semelhantes com as interrupções de hardware, porém, são geradas por software.
-Assim, qualquer software no espaço do núcleo do sistema é capaz de gerar interrupções de \textit{software}. 
-Elas são reentrantes, mas não são preemptivas, ou seja não podem ser interrompidas tanto por interrupções de \textit{software} como de \textit{hardware}, porém, podem ceder seu tempo para outros processos tornando-as mais flexíveis em relação ao tempo gasto no tratamento delas \cite{softint}.
+Já as interrupções de software são semelhantes às interrupções de \textit{hardware}, porém, são geradas por software.
+Assim, qualquer software no espaço do núcleo do sistema é capaz de gerar interrupções de software. 
+Elas são reentrantes, mas não são preemptivas, ou seja não podem ser interrompidas tanto por interrupções de software como de \textit{hardware}, porém, podem ceder seu tempo para outros processos tornando-as mais flexíveis em relação ao tempo gasto no tratamento delas \cite{softint}.
 O uso delas é normalmente reservado para processos do sistema que exigem tempo real e que são importantes. 
-Também são usadas pelo \textit{driver} no fim do tratamento de uma interrupção de \textit{hardware} para reativá-la.
+Também são usadas no fim do tratamento de uma interrupção de \textit{hardware} para que o sistema reative esta.
 
-O \textit{ksoftirqd} é um processo do núcleo do sistema que ajuda no processamento das interrupções de \textit{software}. 
-Quando muitas interrupções de \textit{software} são geradas, o sistema pode sobrecarregar.
-Nessa situação, o \textit{ksoftirqd} passa a processar essas interrupções, e a controlar a reativação delas. Caso algum núcleo do processador esteja desocupado, o \textit{ksoftirqd} será rapidamente escalonado.
+No sistema operacional GNU/Linux, o \textit{ksoftirqd} é um processo do núcleo do sistema que ajuda no processamento das interrupções de software.
+Quando muitas interrupções de software são geradas, o sistema pode sobrecarregar.
+Nessa situação, o \textit{ksoftirqd} passa a processar essas interrupções, e a controlar a reativação delas.
+Caso algum núcleo do processador esteja desocupado, o \textit{ksoftirqd} é rapidamente escalonado, já se não existir, é possível que o próprio \textit{ksoftirqd} consuma toda \textit{CPU}, então o sistema decide se valeria a pena escaloná-lo.
 
 %% ------------------------------------------------------------------------- %%
 
 \section{Computação em Nuvem}\index{Computação em nuvem!fundamentos}
 \label{sec:computacaoEmNuvem}
 
-A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de \textit{hardware} e \textit{software} dos CPDs (Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
+A computação em nuvem é um paradigma de computação no qual serviços computacionais são requisitados por clientes e executados por provedores de serviços, na grande maioria das vezes remotamente. Os clientes nesse paradigma pagam apenas pela quantidade de utilização dos serviços. A ideia da computação em nuvem é tornar a computação um serviço da mesma forma como acontece com a energia elétrica, ou seja, a infraestrutura deve ser transparente para o usuário que pagará apenas pela quantidade utilizada e que terá garantias de que seus requisitos de QoS serão atendidos. O termo computação em nuvem costuma ser usado para referir-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de \textit{hardware} e software dos CPDs (Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
 
-Como o termo computação em nuvem é muito abrangente, ele foi dividido em várias classificações \cite{armbrust2009above}, entre elas, o tipo de serviço o qual fornece. 
-Seguindo essa classificação existem as nuvens que fornecem \textit{software} como serviço (SaaS -- \textit{Software as a Service}), 
+Existem várias classificações para os serviços fornecidos na computação em nuvem. Uma das mais difundidas divide os serviços em três classes: software como serviço (SaaS -- \textit{Software as a Service}), 
 plataformas como serviço (PaaS -- \textit{Platform as a Service}), 
 e infraestruturas como serviço (IaaS -- \textit{Infrastructure as a Service}). 
 
@@ -98,30 +104,30 @@ Exemplificando:
 
 \begin{itemize}
 \item
-\textit{SaaS} oferecem aplicações como serviço para o cliente.
-Como exemplo temos o \textit{Google Docs}\footnote[1]{http://docs.google.com} que fornece um \textit{software} para edição de documentos como serviço;
+Nuvens que fornecem SaaS oferecem aplicações como serviço para o cliente.
+Como exemplo temos o \textit{Google Docs}\footnote[1]{http://docs.google.com} que fornece um software para edição de documentos como serviço e que pode ser acessado via navegador ou por aplicações dedicadas em dispositivos como celulares e \textit{tablets};
 \item
-\textit{PaaS} oferecem plataformas nas quais o cliente pode criar e implantar suas aplicações.
-O \textit{Google App Engine}\footnote[2]{http://developers.google.com/appengine/} e o \textit{Windows Azure}\footnote[3]{http://www.windowsazure.com/en-us/} são exemplos desse tipo de nuvem;
+Nuvens que fornecem PaaS oferecem plataformas nas quais o cliente pode criar e implantar suas aplicações.
+O \textit{Google App Engine}\footnote[2]{http://developers.google.com/appengine/} e o \textit{Windows Azure}\footnote[3]{http://www.windowsazure.com/en-us/} são exemplos desse tipo de nuvem. O cliente de PaaS na grande maioria das vezes são desenvolvedores de aplicações, diferente dos clientes de SaaS que não precisam ter qualquer conhecimento de desenvolvimento de aplicações para utilizarem os serviços;
 \item
-\textit{IaaS} oferecem infraestruturas computacionais ao cliente. Um exemplo desse tipo de nuvem é o \textit{Amazon EC2}\footnote[4]{http://aws.amazon.com/ec2/} que fornece uma infraestrutura a qual emula um computador.
+IaaS oferecem infraestruturas computacionais ao cliente. Um exemplo desse tipo de nuvem é o Amazon EC2\footnote[4]{http://aws.amazon.com/ec2/} que fornece uma infraestrutura a qual emula um computador. Clientes de IaaS podem ser tanto desenvolvedores quanto administradores de sistemas que pretendem implantar um sistema já desenvolvido em uma plataforma virtual para reduzir os custos com TI das suas empresas.
 \end{itemize}
-Nesse texto, iremos nos focar em fornecer infraestruturas, em específico, computadores como serviço (IaaS). Cada serviço pode receber várias requisições para hospedar programas de desenvolvedores e, nesse caso, terá que implantá-los na infraestrutura. Quando um cliente, em algum momento, faz uma requisição para executar esse programa, a nuvem executa o programa internamente e repassa o resultado ao cliente.
-Para que isso seja possível, a infraestrutura de nuvem contém vários nós, os quais são recursos físicos, como computadores ou mesmo CPDs inteiros, que contêm e controlam várias máquinas virtuais usando alguma técnica de virtualização. Cada requisição para implantar ou executar um programa é feita oferecendo as máquinas virtuais as quais estão contidas na infraestrutura.
 
+Nesta dissertação, o foco das análises é no fornecimento de infraestrutura, em específico, computadores como serviço (IaaS). Cada serviço pode receber várias requisições para hospedar programas de desenvolvedores e, nesse caso, terá que implantá-los na infraestrutura. Quando um cliente, em algum momento, faz uma requisição para executar esse programa, a nuvem executa o programa internamente e repassa o resultado ao cliente.
+Para que isso seja possível, a infraestrutura de nuvem contém vários nós, os quais são recursos físicos, como computadores ou mesmo CPDs inteiros, que contêm e controlam várias máquinas virtuais usando alguma técnica de virtualização. Cada requisição para implantar ou executar um programa é feita oferecendo as máquinas virtuais as quais estão contidas na infraestrutura.
 
 \section{Virtualização}\index{virtualização!fundamentos}
 \label{sec:virtualizacao}
 
-Na computação em nuvem, em particular quando se é fornecida uma infraestrutura para implantar aplicações (\textit{IaaS}), a adoção da virtualização melhora a utilização dos recursos e protege o computador de problemas que os software dos clientes possam causar em relação a computadores que não adotam virtualização \cite{chaudhary2008comparison}.
+Na computação em nuvem, em particular quando se é fornecida uma infraestrutura para implantar aplicações (IaaS), a adoção da virtualização, em relação a computadores que não adotam virtualização, melhora a utilização dos recursos e protege o computador de problemas que os softwares dos clientes possam causar \cite{chaudhary2008comparison}.
 Por exemplo, em um cenário com máquinas sem virtualização, um erro de programação que cause um laço infinito pode consumir toda a \textit{CPU} do computador, atrapalhando todos os usuários daquela máquina.
-Em um cenário virtualizado, temos um isolamento entre os recursos das máquinas virtuais o qual impede uma máquina virtual de usar recursos de outra máquina.
+Em um cenário virtualizado, há um isolamento entre os recursos das máquinas virtuais o qual impede uma máquina virtual de usar recursos alocados para outra máquina virtual.
 Assim, a única máquina afetada no cenário é aquela utilizada pelo programador. 
-Além disso, não é possível expandir a quantidade dos recursos sem permissão do administrador da nuvem, dando mais segurança na infraestrutura em relação a infraestruturas sem virtualização.
+Além disso, não é possível expandir a quantidade dos recursos sem permissão do administrador da nuvem, dando mais segurança e controle na infraestrutura em relação a infraestruturas sem virtualização.
 Além da segurança, outra consequência da virtualização, é o surgimento de um novo modelo de negócio chamado ``pague somente quando usa'', onde o cliente paga somente pelo tempo que o recurso é usado. 
-Além disso, o cliente tem a impressão de estar utilizando um ambiente com recursos infinitos, já que podemos aumentar os recursos de uma máquina virtual sem interrupção do serviço e mais máquinas podem ser agregadas para prover o serviço \cite{armbrust2009above}. 
+Além disso, o cliente tem a impressão de estar utilizando um ambiente com recursos infinitos, já que é possível aumentar os recursos de uma máquina virtual sem interrupção do serviço e mais máquinas podem ser agregadas para prover o serviço \cite{armbrust2009above}. 
 
-Essas características beneficiam o lado do servidor, que não precisará fornecer um recurso físico inteiro para cada cliente e terá maior segurança e tolerância a falhas, já que cada sistema é independente. Do lado do cliente, ele irá economizar dinheiro pelo novo modelo de negócio e terá recursos sob demanda.
+Essas características beneficiam o provedor do serviço, que não precisará fornecer um recurso físico inteiro para cada cliente e terá maior segurança e tolerância a falhas, já que cada sistema é independente. Do lado do cliente, ele irá economizar dinheiro pelo novo modelo de negócio e terá recursos sob demanda.
 
 Nos dispositivos de E/S, a virtualização permite a emulação de \textit{hardware}.
 Em relação a flexibilidade, é possível mapear os dispositivos lógicos com as implementações físicas, garantindo uma maior portabilidade.
@@ -129,53 +135,58 @@ Esse mapeamento pode também trazer novas funcionalidades ao recurso como: balanc
 
 \subsection{Virtualização de Computadores}
 As nuvens normalmente são constituídas de computadores que estão ligados de alguma forma por uma rede.
-A virtualização de computadores divide um computador, geralmente com grande capacidade de processamento, em recursos menores chamadas de máquinas virtuais de modo que cada uma age como se fosse um computador separado, podendo ter inclusive, diferentes sistemas operacionais \cite{barham2003xen}.
+A virtualização de computadores divide um computador, geralmente com grande capacidade de processamento, em recursos menores chamados de máquinas virtuais de modo que cada uma age como se fosse um computador separado, podendo ter inclusive, diferentes sistemas operacionais \cite{barham2003xen}.
 Segundo Walters, Chaudhary, Cha, Jr. e Gallo \cite{chaudhary2008comparison}, as estratégias de virtualização podem ser divididas em 4 grandes categorias: virtualização completa, para-virtualização, virtualização em nível de sistema operacional e virtualização nativa.
 
-Um \textit{hypervisor} fornece uma plataforma para as máquinas virtuais e gerencia a execução delas.
+Em ambientes virtualizados, o \textit{hypervisor} é o software que fornece a plataforma para as máquinas virtuais e gerencia a execução delas.
 No \textit{hypervisor} da virtualização completa, é feita a interceptação, tradução e execução das instruções sob demanda dos sistemas operacionais das máquinas virtuais.
 Nessa estratégia, o núcleo do sistema operacional que executa o \textit{hypervisor} não necessita de modificações.
-Dentro dessa categoria de \textit{hypervisors} estão o \textit{KVM}\footnote[1]{http://www.linux-kvm.org/}, o \textit{Xen}\footnote[2]{http://xen.org/}, o \textit{VMWare}\footnote[3]{http://www.vmware.com/} e o \textit{VirtualBox}\footnote[4]{http://www.virtualbox.org/}.
+Dentro dessa categoria de \textit{hypervisors} estão o KVM\footnote[1]{http://www.linux-kvm.org/}, o Xen\footnote[2]{http://xen.org/}, o VMware\footnote[3]{http://www.vmware.com/} e o VirtualBox\footnote[4]{http://www.virtualbox.org/}.
 
-A para-virtualização também utiliza um \textit{hypervisor} para gerenciar as máquinas virtuais, porém, ao invés desse ser executado num sistema operacional como na virtualização completa, ele é implantado diretamente no \textit{hardware} da máquina exigindo que o núcleo do sistema operacional da máquina física seja modificado.
+A para-virtualização também utiliza um \textit{hypervisor} para gerenciar as máquinas virtuais, porém, ao invés desse ser um programa executado sobre um sistema operacional sem modificações, como na virtualização completa, ele trabalha diretamente no \textit{hardware} e exige que o núcleo do sistema operacional da máquina física seja modificado.
 Assim, caso não exista o código-fonte do sistema, não é possível usar essa estratégia.
 Na para-virtualização, o hardware virtual consegue conversar diretamente com o dispositivo emulado.
 Isso garante uma sobrecarga mínima em relação a tentar emular o dispositivo real. 
-Nessa categoria estão incluídos o \textit{Xen} e o \textit{VMWare}.
+Nessa categoria estão incluídos o Xen e o VMware.
 
 A virtualização em nível de sistema operacional não utiliza um \textit{hypervisor}. 
 Ela modifica o núcleo do sistema isolando múltiplas instâncias do sistema operacional dentro de uma mesma máquina física. 
 Nesse caso, como é feito apenas um isolamento entre as instâncias, estas ficam limitadas a usarem o mesmo sistema operacional.
-Uma vantagem e ao mesmo tempo desvantagem dessa categoria é o compartilhamento do núcleo entre as instâncias do sistema operacional. O compartilhamento do núcleo simplifica os mecanismos de compartilhamento de memória e o acesso a dispositivos físicos que em outras virtualizações necessitam de implementar um canal de comunicação entre núcleos adicionando um carga extra no sistema. 
+Uma vantagem e ao mesmo tempo desvantagem dessa categoria é o compartilhamento do núcleo entre as instâncias do sistema operacional. O compartilhamento do núcleo simplifica os mecanismos de compartilhamento de memória e o acesso a dispositivos físicos que em outras virtualizações necessitam da implementação de um canal de comunicação entre núcleos adicionando um carga extra no sistema. 
 Por outro lado, como todas instâncias dependem de um único núcleo, este se torna um ponto único de falha.
-Está incluído nessa categoria o \textit{OpenVZ}\footnote[5]{http://wiki.openvz.org/}.
+Está incluído nessa categoria o OpenVZ\footnote[5]{http://wiki.openvz.org/}.
 
-Por fim, a virtualização nativa é uma virtualização completa ``melhorada''. 
+A virtualização nativa é uma virtualização completa ``melhorada''. 
 Ela aproveita o \textit{hardware} do processador que implementa mecanismos para otimizar a virtualização. 
-Isto permite que múltiplos sistemas operacionais rodem sobre outro, sendo capazes de cada um acessar diretamente o processador do hospedeiro. Como exemplos temos o \textit{Xen}, \textit{KVM}, o \textit{VMWare} e o \textit{VirtualBox}.
+Isto permite que múltiplos sistemas operacionais rodem sobre outro, sendo capazes de cada um acessar diretamente o processador do hospedeiro. Como exemplos temos o Xen, KVM, o VMware e o VirtualBox.
 
-As virtualizações completa e nativa têm uma grande vantagem em relação às outras: não é necessário alterar o núcleo do sistema operacional da máquina hospedeira. Isto as tornam mais simples e mais portáveis já que sistemas operacionais com código fechados podem ser utilizados.
+As virtualizações completa e nativa têm uma grande vantagem em relação às outras: não é necessário alterar o núcleo do sistema operacional da máquina hospedeira. Isto as tornam mais simples e mais portáveis já que sistemas operacionais com código fechado podem ser utilizados.
  A para-virtualização e a virtualização em nível de sistema operacional exigem uma modificação no núcleo da máquina hospedeira, porém, são as que tem um melhor desempenho pois elas têm acesso ao hardware físico. Comparando as duas, a virtualização em nível de sistema operacional é bem mais intrusiva e não permite a mudança do sistema operacional das máquinas virtuais \cite{padala2007performance} \cite{chaudhary2008comparison} \cite{schmidtanalise} \cite{che2010synthetical}.
 
-\subsubsection{A história do XEN}
-O projeto \textit{Xen} foi criado na Universidade de \textit{Cambridge} com o objetivo de aprimorar a técnica de virtualização completa através da para-virtualização, permitindo que a máquina virtual tenha conhecimento e acesso ao hardware da máquina física.
-Assim, foi desenvolvida uma nova interface de virtualização com a ajuda de pesquisadores da \textit{Intel} e \textit{Microsoft} usando o \textit{Linux} e o \textit{Windows XP} \cite{barham2003xen}.
-O \textit{Xen} para \textit{Windows} nunca saiu dos laboratórios, entretanto, para \textit{Linux} é mantido e atualizado até hoje por uma comunidade global de desenvolvedores \footnote[1]{http://xen.org/}.
+% De todos os hypervisores existentes, esta dissertação apresenta resultados de experimentos que utilizaram principalmente o Xen. Por causa disso a próxima subseção resume um pouco da história do Xen. Além disso, na subseção~\ref{xen_rede} são apresentadas algumas particularidades da virtualização de rede no Xen. 
 
-Enquanto a equipe do \textit{Xen} focava na para-virtualização, os engenheiros da \textit{Intel} e \textit{AMD} trabalhavam para aperfeiçoar a virtualização completa \cite{vtx} \cite{amdv}. O resultado é o que hoje chamamos de virtualização nativa. Nela, extensões para o processador foram criadas para simplificar a virtualização do processador. O \textit{Xen} acompanhou e passou a manter tanto máquinas com para-virtualização como com virtualização nativa \cite{ixen}.
+\subsubsection{A história do Xen}
+% DANIEL: remova o textit dos nomes dos softwares. Não tem necessidade (Xen, virtualBox, Linux, etc...) Ponha tudo sem itálico. O mesmo vale para os nomes das empresas. Varra todo este capítulo em busca de textit e remova aqueles que se encaixem na lista acima que eu escrevi de nomes de software e empresas
+O projeto Xen foi criado na Universidade de Cambridge com o objetivo de aprimorar a técnica de virtualização completa através da para-virtualização, permitindo que a máquina virtual tenha conhecimento e acesso ao hardware da máquina física.
+Assim, foi desenvolvida uma nova interface de virtualização com a ajuda de pesquisadores da Intel e Microsoft usando o Linux e o Windows XP \cite{barham2003xen}.
+
+O Xen para Windows nunca saiu dos laboratórios, entretanto, para Linux é mantido e atualizado até hoje por uma comunidade global de desenvolvedores \footnote[1]{http://xen.org/}.
+
+Enquanto a equipe do Xen focava na para-virtualização, os engenheiros dos processadores da Intel e AMD trabalhavam para aperfeiçoar a virtualização completa \cite{vtx} \cite{amdv}. O resultado é o que hoje chamamos de virtualização nativa. Nela, extensões para o processador foram criadas para simplificar a virtualização do processador. O Xen acompanhou e passou a manter tanto máquinas com para-virtualização como com virtualização nativa \cite{ixen}.
 
 Com a chegada dos processadores de 64 bits, a para-virtualização passa até o momento a ter problemas no desempenho. 
 Isso ocorre porque os processadores de 64 bits não conseguem manter no mesmo espaço de endereço a memória do usuário, do núcleo de sistema e do núcleo de sistema do hóspede.
-Essa divisão era feita com páginas de memória (separando o usuário do núcleo do sistema) e com limite de segmentação (separando o núcleo do sistema do hóspede dos outros dois). 
+Essa divisão era feita com páginas de memória (separando o usuário do núcleo do sistema) e com limite de segmentação (separando o núcleo do sistema do hóspede, do núcleo do sistema do usuário e do espaço do usuário). 
 Porém, como nenhum sistema operacional usava limite de segmentação, ele foi removido dos processadores de 64 bits \cite{xen_hist}.
 
-Atualmente, na para-virtualização, o \textit{Xen} separa o espaço de endereço entre o núcleo do hóspede, o núcleo de sistema e o usuário, fazendo com que cada chamada de sistema do hóspede faça o \textit{Xen} trocar de contexto para o espaço de endereço do hóspede reduzindo o acerto do cache e, como consequência, adicionando uma carga extra ao processador.
+Atualmente, na para-virtualização, o Xen separa o espaço de endereço entre o núcleo do hóspede, o núcleo de sistema e o usuário, fazendo com que cada chamada de sistema do hóspede faça o Xen trocar de contexto para o espaço de endereço do hóspede reduzindo o acerto do cache e, como consequência, adicionando uma carga extra ao processador.
 Na virtualização nativa, isso não ocorre pois as extensões do processador para virtualização nativa facilitam a divisão. Isso faz a máquina com virtualização nativa tão rápida quanto a máquina pura.
 
-Apesar da virtualização nativa ter um bom desempenho, as interrupções, os contadores, \textit{boot} legado e a virtualização de rede, de disco e de placa-mãe são melhores na para-virtualização. Assim, sugiram técnicas de virtualizações híbridas misturando técnicas da virtualização nativa e para-virtualização \cite{xen_hist}.
+Apesar da virtualização nativa ter um bom desempenho, as interrupções, os contadores, \textit{boot} legado e a virtualização de rede, de disco e de placa-mãe são melhores na para-virtualização\cite{xen_hist}.
+Assim, surgiram técnicas de virtualizações híbridas misturando técnicas da virtualização nativa e para-virtualização \cite{xen_hist}.
 A virtualização nativa com \textit{driver} para-virtualizado (\textit{PV-on-HVM}), como o próprio nome diz, é a virtualização nativa usando \textit{drivers} de rede e de disco para-virtualizados.
 \textit{PVHVM} é um aperfeiçoamento do \textit{PV-on-HVM}, além dos \textit{drivers}, as interrupções e contadores são para-virtualizados.
-Por fim, \textit{PVH} será um futuro aprimoramento da para-virtualização usando instruções privilegiadas e tabela de páginas da virtualização nativas.
+\textit{PVH} será um futuro aprimoramento da para-virtualização usando instruções privilegiadas e tabela de páginas da virtualização nativas.
 
 %% ------------------------------------------------------------------------- %%
 
@@ -186,7 +197,7 @@ Quando falamos em dispositivos físicos nos referimos ao dispositivo de E/S como 
 Com a virtualização de computadores, os dispositivos de E/S sofreram modificações já que em um computador não há apenas um único sistema operacional, mas sim, várias máquinas virtuais com um sistema dentro de cada uma.
 
 No trabalho de Rixner \cite{Rixner:2008:NVB:1348583.1348592}, foi separada a virtualização de E/S em duas categorias: privada ou compartilhada.
-Na virtualização de E/S privada, cada dispositivo físico é associado a apenas uma única máquina virtual enquanto que na virtualização de E/S compartilhada, o dispositivo é compartilhado por várias máquina virtual.
+Na virtualização de E/S privada, cada dispositivo físico é associado a apenas uma única máquina virtual enquanto que na virtualização de E/S compartilhada, o dispositivo é compartilhado por várias máquinas virtuais.
 
 Comparando a virtualização de E/S privada com a compartilhada há uma subutilização na virtualização privada, pois enquanto uma máquina virtual não utiliza o dispositivo, outra poderia necessitar do seu uso. Por outro lado, o desempenho da virtualização compartilhada é pior já que divide o recurso com outras máquinas.
 Quando pensamos em aumentar o número de máquinas virtuais, o custo da virtualização privada cresce absurdamente (com 10 máquinas virtuais teríamos que ter 10 dispositivos físicos enquanto que na virtualização compartilhada, talvez até um dispositivo poderia ser o suficiente para resolver o problema).
@@ -196,11 +207,11 @@ Porém, disponibilizar de maneira compartilhada o acesso a dispositivos físicos p
 Problemas de segurança surgem porque o usuário de uma máquina virtual pode tentar o acesso a uma outra máquina virtual justamente através do recurso que está sendo compartilhado \cite{Rixner:2008:NVB:1348583.1348592}. 
 O monitoramento é dificultado porque ferramentas comuns só fazem medições do dispositivo físico e como este está associado a várias máquinas virtuais, ficaria complexo separar as informações específicas de cada uma dentro do agregado \cite{goncalvesresource}.
 
-Para lidar com o problema de segurança causado pelo compartilhamento do dispositivo, na virtualização em nível de sistema operacional como o \textit{OpenVZ}, o núcleo do sistema gerencia a utilização do dispositivos entre as máquinas virtuais como mostra a Figura \ref{IO_um}.
-Já em \textit{hypervisors} como \textit{XEN}, \textit{KVM} e \textit{VMWare}, como cada máquina possui seu próprio núcleo, é muito complexo fazer o conjunto de núcleos gerenciar o dispositivo entre as máquinas. A solução foi restringir o acesso ao dispositivo físico para apenas uma máquina virtual ou para máquina hospedeira e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina.
+Para lidar com o problema de segurança causado pelo compartilhamento do dispositivo, na virtualização em nível de sistema operacional como o OpenVZ, o núcleo do sistema gerencia a utilização do dispositivo entre as máquinas virtuais como mostra a Figura \ref{IO_um}. Nela três máquinas virtuais acessam o dispositivo de E/S através do mesmo núcleo do sistema.
+Já em \textit{hypervisors} como Xen, KVM e VMware, como cada máquina possui seu próprio núcleo, é muito complexo fazer o conjunto de núcleos gerenciar o dispositivo entre as máquinas. A solução foi restringir o acesso ao dispositivo físico para apenas uma máquina virtual ou para a máquina hospedeira e o acesso a esse dispositivo pelas outras máquinas virtuais é feito através dessa máquina.
 Como é possível ver na Figura \ref{IO_varios}, a máquina virtual 0 gerencia o dispositivo de E/S enquanto que as máquinas virtuais 1 e 2 acessam o dispositivo se comunicando com o núcleo do sistema 0.
-Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando o uso da rede é intensa, porém, garante segurança já que é possível monitorar o tráfego de todas as máquinas através da máquina que gerencia o dispositivo \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.\\
-Em relação a monitoração, cada \textit{hypervisor} implementa seu próprio programa para monitorar os recursos de cada máquina virtual.
+Essa restrição traz uma perda de desempenho em relação a ambientes que não usam virtualização quando, por exemplo, o uso da placa de rede é intenso, porém, garante segurança já que é possível monitorar o tráfego de todas as máquinas através da máquina que gerencia o dispositivo \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating}.\\
+Em relação a monitoramento, cada \textit{hypervisor} implementa seu próprio programa para monitorar os recursos de cada máquina virtual.
 
 \begin{figure}[h!]
 \begin{center}
@@ -219,7 +230,7 @@ Em relação a monitoração, cada \textit{hypervisor} implementa seu próprio progra
 \end{figure}
 
 No trabalho de Waldspurger e Rosenblum \cite{Waldspurger:2012:IV:2063176.2063194}, foram feitas algumas menções sobre o uso de técnicas de virtualização de E/S que desacoplam o dispositivo físico da sua implementação lógica.
-Dentre as vantagens, ele cita a melhor utilização dos recursos e a economia de custos em relação a sistemas que estão com o dispositivo físico acoplado com a sua implementação lógica, pois vários sistemas podem aproveitar o mesmo recurso.
+Dentre as vantagens, é citada a melhor utilização dos recursos e a economia de custos em relação a sistemas que estão com o dispositivo físico acoplado com a sua implementação lógica, pois vários sistemas podem aproveitar o mesmo recurso.
 Em relação a flexibilidade, é possível mapear os dispositivos físicos com as implementações lógicas, garantindo uma maior portabilidade. 
 Esse mapeamento pode também trazer novas funcionalidades ao recurso como: balanceamento da carga de trabalho e mascaramento das falhas. 
 A funcionalidade de suspender, migrar e continuar uma máquina virtual também é possível, pois com o dispositivo físico desacoplado da implementação lógica, é possível reconectar a máquina virtual em outra máquina física com uma configuração diferente.
@@ -232,44 +243,44 @@ Outra possibilidade é criptografar a informação quando alguém escrever no disco,
 \subsection{Virtualização do Dispositivo de Rede}\index{virtualização!virtualização da rede}
 
 A virtualização do dispositivo de rede, que também é um dispositivo de E/S, tem algumas particularidades em relação a outros dispositivos.
-Segundo Rixner \cite{Rixner:2008:NVB:1348583.1348592}, a complexidade de virtualizar a rede é muito maior pelo fato de muitas vezes não se conhecer o destino de uma informação, pois esse está fora do sistema, diferente por exemplo do disco rígido que só se comunica com o sistema. Outra dificuldade é necessidade de estar preparada a qualquer momento para receber e responder ao tráfego da rede, diferentemente da virtualização de disco em que a leitura e escrita só ocorre quando requisitada pela máquina virtual.
+Segundo Rixner \cite{Rixner:2008:NVB:1348583.1348592}, a complexidade de virtualizar a rede é muito maior pelo fato de muitas vezes não se conhecer o destino de uma informação, pois esse está fora do sistema, diferente por exemplo do disco rígido que só se comunica com o sistema. Outra dificuldade é a necessidade do sistema operacional estar preparado a qualquer momento para receber e responder ao tráfego da rede, diferentemente da virtualização de disco em que a leitura e escrita só ocorre quando requisitada pela máquina virtual.
 
-Outra diferença é a taxa de transferência em relação a outros dispositivos de E/S, as redes gigabits comuns transferem com um taxa 10x maior que os discos rígidos e 1000x maior que os discos flexíveis como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}.
+Outra diferença é a taxa de transferência em relação a outros dispositivos de E/S, as placas de rede gigabit por exemplo transferem dados com um taxa 10x maior que os discos rígidos, como é possível ver na Figura \ref{taxa} \cite{stallings1986computer}.
 
 %% ------------------------------------------------------------------------- %%
-\subsubsection{Virtualização da Rede no XEN}
+\subsubsection{Virtualização da Rede no Xen}\label{xen_rede}
 \index{virtualização!xen}
-Apesar de estarmos descrevendo arquitetura de virtualização de rede específica do \textit{XEN}, esta é utilizada por outros \textit{hypervisors} como o \textit{KVM} e o \textit{VMWare} \cite{Santos:2008:BGS:1404014.1404017}.
-O \textit{XEN} é um \textit{hypervisor} de código aberto disponível para arquiteturas de máquina física x86, x86\_64, IA64, ARM. Ele permite a virtualização nativa e para-virtualizada de sistemas operacionais \textit{Windows}, \textit{Linux}, \textit{Solaris} e diversos outros sistemas baseados no BSD \cite{xenguide}.
 
-No \textit{XEN}, o \textit{dom0} ou domínio zero é a primeira máquina virtual iniciada. 
+Apesar desta subseção descrever a arquitetura de virtualização de rede específica do Xen, esta é utilizada por outros \textit{hypervisors} como o KVM e o VMware \cite{Santos:2008:BGS:1404014.1404017}.
+O Xen é um \textit{hypervisor} de código aberto disponível para arquiteturas de máquina física x86, x86\_64, IA64, ARM. Ele permite a virtualização nativa e para-virtualizada de sistemas operacionais Windows, Linux, Solaris e diversos outros sistemas baseados no BSD \cite{xenguide}.
+
+No Xen, o \textit{dom0} ou domínio zero é a primeira máquina virtual iniciada. 
 Ela tem certos privilégios que as outras máquinas virtuais não têm, como iniciar novas máquinas e acessar o hardware diretamente. 
-Os \texttt{domUs} ou domínios do usuário são máquinas virtuais que, por padrão, não tem alguns privilégios que o \texttt{dom0} tem como o acesso direto ao \textit{hardware}. 
+Os \texttt{domUs} ou domínios do usuário são máquinas virtuais que, por padrão, não tem alguns privilégios que o \texttt{dom0} tem, como o acesso direto ao \textit{hardware}. 
 Assim, é necessário um mecanismo para conseguir acessar o dispositivo de rede \cite{xenguide}.
 
-No \textit{XEN}, para todas as máquinas conseguirem acessar o dispositivo de rede ao mesmo tempo, existem dois tipos de configuração: ponte (\textit{bridge}) e roteador.
+No Xen, para todas as máquinas conseguirem acessar o dispositivo de rede ao mesmo tempo, existem dois tipos de configuração: ponte e roteador.
 Ambas as configurações seguem os conceitos dos equipamentos de mesmo nome que existem na interconexão de redes de computadores.
 Todos os dois tipos encaminham pacotes entre domínios baseados nas informações que os próprios pacotes contêm, porém a ponte se fundamenta nos dados da camada de enlace enquanto que o roteador se fundamenta nos dados da camada de rede \cite{bradner1999rfc}. 
-Podendo trafegar pacotes entre domínios, os \texttt{domUs} conseguem enviar e receber pacotes do dispositivo de rede com o \texttt{dom0} como intermediário.
+Com a possibilidade de trafegar pacotes entre domínios, os \texttt{domUs} conseguem enviar e receber pacotes do dispositivo de rede tendo o \texttt{dom0} como intermediário.
 
-No artigo de Eastep \cite{xenenv}, foi descrita a implementação da configuração de ponte na qual uma ponte virtual (\texttt{xenbr0}) é criada dentro do \texttt{dom0} como é possível ver na Figura \ref{ponte}.
+No artigo de Eastep \cite{xenenv}, foi descrita a implementação da configuração de ponte na qual uma ponte virtual (\texttt{xenbr0}) é criada dentro do \texttt{dom0}, como é possível ver na Figura \ref{ponte}.
 Essa ponte está ligada na interface de rede física \texttt{peth0}.
 A interface \texttt{vif0.0} está sendo usada para tráfegos de/para \texttt{dom0} e as interfaces \texttt{vifX.0}, onde X é um valor maior que 0, estão sendo usadas para tráfegos de/para algum \texttt{domU}.
-Como é possível observar, todo pacote que é recebido ou transmitido para alguma máquina virtual tem que passa pela ponte dentro do \texttt{dom0}.
+Como é possível observar, todo pacote que é recebido ou transmitido para alguma máquina virtual tem que passar pela ponte dentro do \texttt{dom0}.
 A configuração de roteador é muito semelhante à configuração da ponte, porém, ao invés de existir uma ponte virtual, o \textit{dom0} possui um roteador virtual que é configurado para encaminhar pacotes \textit{IP} (do inglês \textit{Internet Protocol} -- Protocolo Internet) entre os domínios e os \textit{domUs}.
 
-No experimento de James \cite{james2004performance}, foi comparado a ponte virtual e o roteador virtual. Os resultados foram semelhantes tanto na largura de banda como na latência e no uso do processador. 
-Nessa pesquisa focaremos na configuração de ponte devido ao fato dessa configuração trabalhar numa camada de rede mais baixa.
+No experimento de James \cite{james2004performance}, a ponte virtual e o roteador virtual foram comparados. Os resultados foram semelhantes tanto em termos de utilização da rede como na latência e no uso do processador. 
 
 \begin{figure}[h!]
 \begin{center}
   \includegraphics[width=266pt,height=225pt]{./img/diagramas/xen_bridge.eps}
-\caption{Ponte virtual criada no XEN traduzida de \cite{xenenv}}
+\caption{Ponte virtual criada no Xen (traduzida de \cite{xenenv})}
 \label{ponte}
 \end{center}
 \end{figure}
 
-Na Figura \ref{arq} vemos a arquitetura da virtualização da rede usando ponte no \textit{XEN} \cite{Santos:2008:BGS:1404014.1404017}.
+Na Figura \ref{arq} é apresentada a arquitetura da virtualização da rede usando ponte no Xen \cite{Santos:2008:BGS:1404014.1404017}.
 Para transmitir/receber um pacote no \texttt{domU} é usado o canal de E/S (\textit{I/O channel}).
 Esse canal evita que cada pacote tenha que ser copiado de um domínio a outro. Para tal, o \texttt{domU} compartilha algumas páginas de sua memória e informa a referência delas por esse canal para o outro domínio mapeá-las em seu espaço de endereço. Quando algum domínio envia algum pacote para essas páginas, uma notificação é enviada para o outro domínio.
 
@@ -280,11 +291,10 @@ O \textit{buffer} de descrição em anel guarda os detalhes de requisições entre o
 \begin{figure}[h!]
 \begin{center}
   \includegraphics[width=288pt,height=222pt]{./img/diagramas/rede_xen.eps}
-\caption{Arquitetura da rede virtual no XEN simplificada e traduzida de \cite{Santos:2008:BGS:1404014.1404017}}
+\caption{Arquitetura da rede virtual no Xen (simplificada e traduzida de \cite{Santos:2008:BGS:1404014.1404017})}
 \label{arq}
 \end{center}
 \end{figure}
-
 
 Para o \textit{dom0} ter acesso às páginas da memória do \textit{domU} é necessário um mecanismo de permissão. Neste, o \textit{domU} fornece páginas vazias da sua memória para serem usadas como \textit{buffer} de E/S. Essas páginas são passadas como referência na descrição da requisição.
 
@@ -294,18 +304,18 @@ Quando o dispositivo físico confirmar a transmissão, o \texttt{domU} libera as p
 
 Na recepção, o \textit{netfront} informa as possíveis páginas da memória que podem ser usadas como \textit{buffer} de E/S  ao \textit{netback}.
  Quando algum pacote chega pelo dispositivo físico, este envia uma interrupção de chegada de pacote à ponte dentro do \textit{dom0}.
- A ponte então avisa o \textit{netback} correto sobre a chegada de pacotes.  O \texttt{netback} o copia para uma página da memória que foi fornecida pelo \textit{netfront} e envia uma interrupção para o mesmo. Quando o \texttt{netfront} recebe a interrupção, ele pega o conteúdo que está no \textit{buffer}, envia para o seu sistema e libera as páginas fornecidas.
+ A ponte então avisa o \textit{netback} correto sobre a chegada de pacotes.  O \texttt{netback} o copia para uma página da memória que foi fornecida pelo \textit{netfront} e envia uma interrupção para o mesmo. Quando o \textit{netfront} recebe a interrupção, ele pega o conteúdo que está no \textit{buffer}, envia para o seu sistema e libera as páginas fornecidas.
 % ------------------------------------------------------------------------- %%
 
 \section{Agregação de Interrupções}\index{Agregação de interrupções}
 \label{sec:agrec}
 Quando o tráfego de pacotes possui uma taxa de transmissão da ordem de Gbps no meio físico, a quantidade de interrupções devido a chegada de pacotes é muito grande podendo sobrecarregar o processamento \cite{dong2011optimizing}.
-Isso ocorre porque as interrupções têm prioridade absoluta sobre todas as outras tarefas e se a taxa de interrupções é suficientemente elevada, o sistema gastará todo seu tempo para respondê-la e o rendimento do sistema cairá para zero \cite{salah2007coalesce}.
+Isso ocorre porque as interrupções têm prioridade absoluta sobre todas as outras tarefas e se a taxa de interrupções é suficientemente elevada, o sistema gastará todo seu tempo para respondê-las e o rendimento do sistema cairá para zero \cite{salah2007coalesce}.
 
 A agregação de interrupções por intervalo de tempo ou número de pacotes é uma proposta da literatura para resolver esse problema \cite{salah2007coalesce}.
-Ela pode ser implementada no \textit{driver} do dispositivo e usada através do programa \textit{ethtool}.
-O seu mecanismo reduz a quantidade de interrupções na transmissão/recepção de pacotes dentro de um intervalo de tempo ou número de pacotes em troca de aumentar a latência da rede.
-Para configurá-lo, existem 4 parâmetros: \texttt{tx-frames}, \texttt{rx-frames}, \texttt{tx-usecs} e \texttt{rx-usecs} (a descrição de cada parâmetro está na tabela \ref{funcoes}).
+Ela pode ser implementada no \textit{driver} do dispositivo e usada através do programa \textit{ethtool} no sistema operacional GNU/Linux.
+O mecanismo de agregação de interrupções reduz a quantidade de interrupções na transmissão/recepção de pacotes dentro de um intervalo de tempo ou número de pacotes causando aumento na latência da rede.
+Existem 4 parâmetros para configuração da agregação de interrupções: \texttt{tx-frames}, \texttt{rx-frames}, \texttt{tx-usecs} e \texttt{rx-usecs}. A descrição de cada parâmetro está na Tabela \ref{funcoes}.
 {
 \begin{table}[ht!]
 \caption{Parâmetros para agregação de interrupções}
@@ -326,58 +336,58 @@ Para configurá-lo, existem 4 parâmetros: \texttt{tx-frames}, \texttt{rx-frames},
 Como pode-se notar na Tabela \ref{funcoes}, a agregação de interrupções depende do tamanho do \textit{buffer} de transmissão e recepção.
 O \textit{buffer} pode ser tanto um espaço de memória da máquina (\textit{DMA}) como uma memória interna da placa de rede. 
 Caso este seja pequeno, vários pacotes serão descartados durante o tráfego de pacotes por falta de espaço, caso seja grande, pode aumentar a latência por ter muitos pacotes esperando serem lidos dentro dele.
-Um problema com essa proposta é que nem sempre a placa de rede virtual ou física implementa essa funcionalidade como o e1000 da Intel, o dispositivo de rede do \textit{XEN} e o \textit{Virtio} que são mais usados pelos \textit{hypervisors}.
+Um problema com essa proposta é que nem sempre a placa de rede virtual ou física implementa essa funcionalidade, como o driver e1000 da Intel, o dispositivo de rede do Xen e o Virtio, que são mais usados pelos \textit{hypervisors}.
 
 \subsection{NAPI}
 A \textit{NAPI} (\textit{New API}) \cite{Corbet:2005:LDD:1209083} é um conjunto de interfaces oferecido pelo núcleo do Linux que os \textit{drivers} dos dispositivos de rede implementam para agregar interrupções.
 O objetivo dela é reduzir a carga extra do processamento na recepção de uma grande quantidade de pacotes em um ou mais dispositivos de rede.
 Para isso, no momento que uma grande quantidade de pacotes for enviada para o dispositivo de rede, ao invés do dispositivo enviar uma interrupção de \textit{hardware} ao \textit{driver} para cada pacote que chega, o \textit{driver} desabilita a interrupção na chegada do primeiro pacote e processa continuamente os próximos pacotes numa estratégia de varredura.
 
-No processo dos pacotes, o \textit{driver} envia uma tarefa de recepção de pacotes na fila de varredura do núcleo do sistema\cite{NAPI}.
-Para cada tarefa da fila de varredura, é gerada uma interrupção de \textit{software} para o sistema processar a tarefa da fila. 
+No processamento dos pacotes, o \textit{driver} envia uma tarefa de recepção de pacotes na fila de varredura do núcleo do sistema\cite{NAPI}.
+Para cada tarefa da fila de varredura, é gerada uma interrupção de software para o sistema processar a tarefa da fila. 
 A quantidade de pacotes que essa tarefa poderá processar é definida por uma variável peso.
 Quanto maior o peso, mais pacotes poderão ser processados, mas não existe uma relação clara entre os pacotes e o peso, pois cada \textit{driver} faz uma implementação diferente da recepção de pacotes.
 Durante o processo de recepção, é verificada a quantidade de pacotes recebida, se uma estimada quantidade não for recebida, a tarefa é retirada da fila de varredura, a interrupção de \textit{hardware} é reativada e será necessária a chegada de outro pacote para a tarefa ser devolvida para a fila, já se essa quantidade é processada, a tarefa é encerrada e recolocada na fila \cite{NAPI}. 
 Caso o sistema fique sobrecarregado e não seja possível processar mais pacotes, o \textit{driver} descarta os pacotes.
 
-Comparando o uso da \textit{NAPI} com a estratégia comum de interrupção dirigida à E/S e \textit{DMA} e a estratégia de agregação de interrupções por intervalo de tempo e por pacote, temos prós e contras.
+Comparando o uso da \textit{NAPI} com a estratégia comum de interrupção dirigida a E/S, \textit{DMA} e a estratégia de agregação de interrupções por intervalo de tempo e por pacote, nota-se prós e contras.
 
 Prós do uso da \textit{NAPI}:
 \begin{itemize}
 \item
-A quantidade reduzida de interrupções de \textit{hardware} gerada pelo dispositivo, já que a interrupção é desabilitada durante o processo de pacotes;
+A quantidade reduzida de interrupções de \textit{hardware} geradas pelo dispositivo, já que a interrupção é desabilitada durante o processamento de pacotes;
 \item
 O processador fica menos ocupado tratando uma interrupção de \textit{hardware} e, assim, reduz a chance do sistema entrar em \textit{livelock};
-Nesse caso é possível ainda, devido as interrupções de \textit{software}, sobrecarregar a \textit{CPU}, porém, o núcleo do sistema é capaz de controlar o tratamento delas através do \texttt{ksoftirqd};
+Nesse caso é possível ainda, devido as interrupções de software, sobrecarregar a \textit{CPU}, porém, o núcleo do sistema é capaz de controlar o tratamento delas através do \texttt{ksoftirqd};
 \item
 Simplicidade, diferente da estratégia de agregação por intervalo de tempo e pacotes que necessita de ajustes manuais na configuração de acordo com o tipo de tráfego, a \textit{NAPI} se ajusta ao tráfego, agregando mais interrupções quanto maior o tráfego de pacotes;
 \item
-A maioria dos \textit{drivers} de dispositivos de rede virtuais atuais implementam \textit{NAPI}. Foram vistos o \textit{Virtio}, o driver do \textit{Xen} e o e1000 da \textit{Intel}.
+A maioria dos \textit{drivers} de dispositivos de rede virtuais atuais implementam \textit{NAPI}. Por exemplo o Virtio, o driver do Xen e o e1000 da Intel.
 \end{itemize}
 
 Contras:
 \begin{itemize}
 \item
-Existe uma carga adicional com \textit{NAPI}, já que não é gerada apenas uma interrupção de \textit{hardware}, como também é gerada uma interrupção de \textit{software};
+Existe uma carga adicional com \textit{NAPI}, já que não é gerada apenas uma interrupção de \textit{hardware}, como também é gerada uma interrupção de software;
 \item
 O \textit{driver} precisa implementar \textit{NAPI}.
 \end{itemize}
 
-O peso, normalmente, na implementação do \textit{driver} é a quantidade limite de pacotes que o \textit{driver} consegue processar em cada ciclo de varredura, por isso nos experimentos iremos chamá-lo de limite.
+O peso, normalmente, na implementação do \textit{driver} é a quantidade limite de pacotes que o \textit{driver} consegue processar em cada ciclo de varredura, por isso nos experimentos esse valor será chamado de limite.
 
 \section{Agregação de Interrupções na Transmissão x Recepção}
 \label{sec:agtrans}
 Tanto a transmissão quanto a recepção de pacotes podem gerar interrupções com uma frequência grande \cite{menon2006optimizing}.
 A transmissão gera uma interrupção quando um pacote é transmitido com sucesso e a recepção gera uma interrupção quando um pacote é recebido \cite{Corbet:2005:LDD:1209083}.
 A diferença entre elas é que enquanto a transmissão pode controlar os pacotes que são enviados pelo sistema, a recepção não consegue controlar os pacotes que chegam.
-Assim, na transmissão podemos reduzir de outras formas a quantidade de interrupções. Uma das principais propostas da literatura é o \textit{GSO} (do inglês \textit{generic segmentation offload}) \cite{gro}. O \textit{GSO} permite ao \textit{driver} de rede segmentar os pacotes, uma tarefa que normalmente é feita pelo processador.
+Assim, na transmissão pode-se reduzir de outras formas a quantidade de interrupções. Uma das principais propostas da literatura é o \textit{GSO} (do inglês \textit{Generic Segmentation Offload}) \cite{gro}. O \textit{GSO} permite ao \textit{driver} de rede segmentar os pacotes, uma tarefa que normalmente é feita pelo processador.
 
-Atualmente, o tamanho do pacote é limitado pela \textit{MTU} (do inglês \textit{maximum transmission unit} -- unidade máxima de transmissão). No protocolo \textit{Ethernet} ela tem como valor padrão 1500 bytes. Esse valor acabou sendo adotado na época do crescimento da Internet pelos limites de \textit{hardware} da época e infelizmente continua até hoje. Assim, não é possível enviar pacotes maiores que 1500 bytes pela Internet, o que força o sistema operacional a segmentar seus dados em pacotes pequenos para conseguir enviá-los. Isso sobrecarrega o processador tanto para segmentar os dados, como para enviar e receber esses pacotes.
+Atualmente, o tamanho do pacote é limitado pela \textit{MTU} (do inglês \textit{Maximum Transmission Unit} -- Unidade Máxima de Transmissão). No protocolo Ethernet ela tem como valor padrão 1500 bytes. Esse valor acabou sendo adotado na época do crescimento da Internet pelos limites de \textit{hardware} da época e infelizmente continua até hoje. Assim, não é possível enviar pacotes maiores que 1500 bytes pela Internet, o que força o sistema operacional a segmentar seus dados em pacotes pequenos para conseguir enviá-los. Isso sobrecarrega o processador tanto para segmentar os dados, como para enviar e receber esses pacotes.
 
 Com a segmentação sendo feita apenas no momento da transmissão dos pacotes pelo \textit{GSO}, pode-se configurar o \textit{MTU} da interface de rede do sistema acima do limite do dispositivo físico. Com um \textit{MTU} maior, o pacote é segmentado em pedaços grandes e em menor quantidade quando o sistema manda transmiti-lo. Com menos pacotes, a quantidade de interrupções por pacote é reduzida. 
-Na recepção, o \textit{LRO} (do inglês \textit{large receive offload}) e o \textit{GRO} (do inglês \textit{generic receive offload}) \cite{gro} são soluções baseadas no \textit{GSO}, onde os pacotes são montados quando recebidos. O \textit{LRO} monta cada pacote agregando os pacotes \textit{TCP} que chegam, porém, se por exemplo, existir uma diferença nos cabeçalhos do pacote \textit{TCP}, haverá perdas na montagem, pois o pacote será montado sem considerar essa diferença.
+Na recepção, o \textit{LRO} (do inglês \textit{Large Receive Offload}) e o \textit{GRO} (do inglês \textit{Generic Receive Offload}) \cite{gro} são soluções baseadas no \textit{GSO}, onde os pacotes são montados quando recebidos. O \textit{LRO} monta cada pacote agregando os pacotes \textit{TCP} que chegam, porém, se por exemplo, existir uma diferença nos cabeçalhos do pacote \textit{TCP}, haverá perdas na montagem, pois o pacote será montado sem considerar essa diferença.
 Já o \textit{GRO}, restringe a montagem dos pacotes pelos cabeçalhos, o que não gera perdas e, além disso, o \textit{GRO} não é limitado ao protocolo \textit{TCP}. 
 Apesar da proposta permitir a montagem de pacotes, como já foi dito, não é possível controlar a chegada de pacotes, o que força a adoção de alguma técnica de agregação de interrupções como a \textit{NAPI} para conseguir montar os pacotes.
 
 Todas as otimizações dessa seção já foram implementadas nos \textit{drivers} atuais.
-É possível configurá-las diretamente no código-fonte do \textit{driver} ou pela ferramenta \texttt{ethtool} do \textit{Linux}.
+É possível configurá-las diretamente no código-fonte do \textit{driver} ou pela ferramenta \texttt{ethtool} do Linux.

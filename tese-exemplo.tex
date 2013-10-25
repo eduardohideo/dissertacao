@@ -112,11 +112,11 @@ framexrightmargin=10pt
 \thispagestyle{empty}
 \begin{center}
     \vspace*{2.3cm}
-    \textbf{\Large{ Análise de Desempenho de\\
-		    Interfaces de Rede Virtualizadas\\[0.25cm]
-		    com NAPI}}\\
+    \textbf{\Large{ Análise de desempenho de\\
+		    interfaces de rede virtualizadas\\[0.25cm]
+		    com Napi}}\\
     
-    \vspace*{1.0cm}
+    \vspace*{0.7cm}
     \Large{Eduardo Hideo Kuroda}
     
     \vskip 2cm
@@ -137,10 +137,10 @@ framexrightmargin=10pt
 
    	\vskip 1cm
     \normalsize{Durante o desenvolvimento deste trabalho o autor recebeu auxílio
-    financeiro da Comissão Européia e da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior}
+    financeiro da Comissão Europeia e da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior}
     
     \vskip 0.5cm
-    \normalsize{São Paulo, setembro de 2013}
+    \normalsize{São Paulo, outubro de 2013}
 \end{center}
 
 % ---------------------------------------------------------------------------- %
@@ -153,7 +153,7 @@ framexrightmargin=10pt
 \thispagestyle{empty}
     \begin{center}
         \vspace*{2.3 cm}
-        \textbf{\Large{Análise de Desempenho de Interfaces de Rede Virtualizadas com NAPI}}\\
+        \textbf{\Large{Análise de desempenho de interfaces de rede virtualizadas com Napi}}\\
         \vspace*{2 cm}
     \end{center}
 
@@ -174,38 +174,45 @@ framexrightmargin=10pt
 % ---------------------------------------------------------------------------- %
 % Resumo
 \chapter*{Resumo}
-Em ambientes virtualizados, como nuvens computacionais, a
-capacidade efetiva de transmissão de dados via rede tende a ser
-inferior do que em ambientes não virtualizados quando aplicações que
-fazem uso intensivo da rede são executadas. Uma das principais causas
-para essa diferença na capacidade de transmissão é a arquitetura da
-virtualização de rede, que adiciona passos para o sistema
-operacional transmitir e receber um pacote. Esses passos adicionais
-acarretam em mais utilização de memória e de processamento. Em
-ambientes virtualizados com o sistema operacional GNU/Linux, a
-\textit{New Application Programming Interface} (NAPI) é utilizada para
-reduzir os impactos negativos da virtualização por meio de agregação
-de interrupções. 
-Nesta dissertação de mestrado, estudamos mecanismos que modificam a
-configuração da NAPI. Experimentos mostraram que esses mecanismos afetam o
-desempenho de máquinas virtuais e tem consequências diretas nas
-aplicações que fazem uso intensivo de rede e que são executadas em
-ambientes com os softwares de virtualização Xen, VMware e VirtualBox.
-
+Em ambientes virtualizados, como nuvens computacionais, a capacidade
+efetiva de transmissão de dados via rede tende a ser inferior do que
+em ambientes não virtualizados quando aplicações que fazem uso
+intensivo da rede são executadas. Uma das principais causas para essa
+diferença na capacidade de transmissão é a arquitetura da
+virtualização de rede, que adiciona passos para o sistema operacional
+transmitir e receber um pacote. Esses passos adicionais acarretam em
+mais utilização de memória e de processamento. Em ambientes
+virtualizados com o sistema operacional GNU/Linux, a \textit{New
+Application Programming Interface} (NAPI) é utilizada para reduzir os
+impactos negativos da virtualização por meio de agregação de
+interrupções.  Nesta dissertação de mestrado, são estudados mecanismos
+que modificam a configuração da NAPI. Experimentos mostram que esses
+mecanismos afetam o desempenho de máquinas virtuais e tem
+consequências diretas nas aplicações que fazem uso intensivo de rede e
+que são executadas em ambientes com os softwares de virtualização Xen,
+VMware e VirtualBox.\\
 \noindent \textbf{Palavras-chave:} computação em nuvem, virtualização de rede, agregação de interrupções, NAPI
 
 % ---------------------------------------------------------------------------- %
 % Abstract
 \chapter*{Abstract}
-Cloud infrastructures shows inferior performance if compared to infrastructures without virtualization in scenarios where there is intensive use of network.
-One of the main reasons is the network virtualization's architecture.
-Differently from the standard network architecture, there are some extra steps to transmit and receive a packet of information within a virtual machine, which implies an additional cost in both memory and processing.
-To reduce the processing cost, a modern solution is the NAPI.
-NAPI is a set of interfaces provided by the Linux kernel that the drivers of network devices use to coalesce interruptions. To control the amount of interruptions coalesced, there is a param called budget.
-In this master's thesis, we study a mechanism to improve the bandwidth and CPU usage performance choosing a value to budget.
-Results showed that budgets with high values have better performance than low values on Xen, VMware, VirtualBox not requiring changes in the budget's value default.
-
-\noindent \textbf{Keywords:} cloud computing, network virtualization, interrupt coalescence
+In virtualized environments, like cloud computing, the effective
+capacity of data transmission via network cards tends to be lower than
+that in non-virtualized environments, when network-intensive
+applications are executed. A major cause for this difference in the
+transmission capacity is the architecture of network virtualization,
+which adds some steps to be performed by the system when packets are
+transmitted or received. These additional steps cause more memory and
+processing usage. In virtualized environments with the GNU/Linux
+operating system, the New Application Programming Interface (NAPI) is
+used to reduce the negative impacts of virtualization through
+interrupt coalescence.  In this dissertation, mechanisms that
+modify the configuration of NAPI are studied. Experiments show that
+these mechanisms affect the performance of virtual machines and have
+direct effects in applications that make intensive use of the network
+in environments with Xen, VMware and VirtualBox.\\
+\noindent \textbf{Keywords:} cloud computing, network virtualization,
+interrupt coalescence, NAPI
 
 % ---------------------------------------------------------------------------- %
 % Sumário

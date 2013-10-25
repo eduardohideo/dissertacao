@@ -1,56 +1,44 @@
 %% ------------------------------------------------------------------------- %%
 \chapter{Introdução}
 \label{cap:introducao}
-A computação em nuvem refere-se tanto a aplicações fornecidas como serviços por meio da Internet como também a sistemas de \textit{hardware} e \textit{software} dos CPDs (Centro de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}.
+A computação em nuvem é um conceito que refere-se tanto a aplicações fornecidas como serviços por meio da Internet, como também a sistemas de \textit{hardware} e software dos CPDs (Centros de Processamento de Dados) que fornecem os serviços \cite{armbrust2009above}. Quando uma infraestrutura computacional é oferecida como serviço, recursos computacionais devem ser alocados a qualquer momento de acordo com os requisitos do usuário \cite{goncalvesresource}. Para que a infraestrutura suporte esse tipo de alocação dinâmica, ela utiliza virtualização.
 
-Quando fornecemos uma infraestrutura computacional como serviço, recursos computacionais devem ser alocados a qualquer momento de acordo com os requisitos do usuário \cite{goncalvesresource}. 
-Para que a infraestrutura suporte esse tipo de recurso, ela adota uma tecnologia chamada virtualização.
+Na grande maioria das vezes a virtualização é utilizada para dividir, virtualmente, um recurso físico com grande capacidade, em recursos menores. Quando o recurso compartilhado é um computador, os recursos menores são chamados de máquinas virtuais \cite{barham2003xen}. Essa divisão em recursos menores pode ser modificada em tempo de execução permitindo que o provedor de recursos virtuais adeque as máquinas virtuais à demanda e aos requisitos de QoS (do inglês \textit{Quality of Service} -- Qualidade de Serviço) dos clientes \cite{armbrust2009above}. Nesse cenário há ganhos do lado do cliente, que não precisa adquirir equipamentos mais potentes para atender apenas um pico momentâneo de demanda, e há ganhos do lado do provedor, que pode gerenciar os seus recursos de modo que fiquem ligados apenas aqueles que estão de fato servindo a algum cliente. Além disso o provedor pode utilizar mecanismos que otimizam a utilização dos recursos físicos de modo a aproveitá-los da melhor forma possível ao reduzir a quantidade de tempo em que eles ficam ociosos.
 
-A virtualização divide um recurso com grande capacidade de processamento em recursos menores chamados de máquinas virtuais \cite{barham2003xen}.
-Com recursos menores, é possível fornecer ao consumidor uma quantidade menor de recursos computacionais que ainda satisfaçam seus requisitos e também alocar mais sob demanda \cite{armbrust2009above}.
+A vantagem da computação em nuvem para os clientes pode ser melhor compreendida com um simples exemplo. Considere uma empresa de comércio eletrônico que queira garantir um tempo de resposta aceitável para a sua página em qualquer época do ano. Nas vésperas do Natal, do dia Crianças, do dia dos Pais e do dia das Mães, essa empresa alugaria uma quantidade $x$ de processadores de um provedor de computação em nuvem. Em outras épocas do ano entretanto, esse aluguel pode ser reduzido para $x/16$, já que a quantidade de acessos fora de épocas festivas tende a ser reduzida. Nesse cenário há ainda a vantagem de que o cliente pode pagar apenas pelo que usa, da mesma forma que acontece com outros serviços como telefonia, água e energia elétrica.
 
-Por exemplo, uma empresa de comércio eletrônico pode alugar uma quantidade $x$ de processadores de uma máquina física na véspera do natal, afim de garantir que todos os clientes terão sucesso nas compras, e reduzir esse aluguel para $x/16$ após a data festiva, já que a quantidade esperada de acessos tende a cair.
-Apesar das máquinas virtuais ajudarem a aumentar a flexibilidade, elas ainda têm um desempenho abaixo das máquinas físicas quando são executadas aplicações que usam muito a rede
- \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. 
+Apesar das máquinas virtuais viabilizarem a flexibilidade exibida pela computação em nuvem, elas ainda têm um desempenho abaixo das máquinas físicas quando são executadas aplicações que usam muito a rede
+ \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}. Uma das principais causas é a forma com que o \textit{hypervisor}, módulo que gerencia as máquinas virtuais, intermedeia a comunicação das máquinas virtuais com os dispositivos físicos de rede.
+Diferentemente dos computadores físicos, as máquinas virtuais necessitam executar alguns passos adicionais para transmitir ou receber um pacote de informação, o que implica em um custo adicional no processamento e pode levar a variações na capacidade da rede vista pelas aplicações \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
 
-Uma das principais causas é a forma com que o \textit{hypervisor}, módulo que gerencia as máquinas virtuais, intermedeia a comunicação das máquinas virtuais com os dispositivos de rede.
-Diferentemente dos computadores físicos, as máquinas virtuais necessitam executar alguns passos adicionais para transmitir ou receber um pacote de informação que implicam em um custo adicional no processamento \cite{chaudhary2008comparison} \cite{ekanayake2010high} \cite{liu2010evaluating} \cite{Waldspurger:2012:IV:2063176.2063194} \cite{Rixner:2008:NVB:1348583.1348592}.
+Uma proposta para reduzir a carga no processamento da rede em máquinas virtuais, em relação às máquinas físicas, é adotar estratégias que agreguem as interrupções geradas para a transmissão/recepção de pacotes \cite{salah2007coalesce} \cite{dong2011optimizing}. Uma estratégia simples é agregar as interrupções por intervalo de tempo ou por quantidade de pacotes. Dessa forma, o dispositivo de rede deixa de gerar interrupções a cada pacote que chega ou que é transmitido e passa a gerar uma única interrupção apenas de acordo com a configuração: após um intervalo de tempo, ou após uma certa quantidade de pacotes ser alcançada. Como apenas uma interrupção é gerada para um agrupamento de pacotes, isso reduz a quantidade de interrupções, porém, essa técnica pode levar a atrasos no processamento de pacote perceptíveis pela aplicação.
 
-Uma proposta para reduzir a carga no processamento da rede é adotar estratégias que agreguem as interrupções geradas para a transmissão/recepção de pacotes \cite{salah2007coalesce}, \cite{dong2011optimizing}.
-Uma Estratégia simples é agregar as interrupções por intervalo de tempo ou por pacotes. Nela, o dispositivo deixa de gerar interrupções a cada pacote que chega ou é transmitido e passa a gerar uma única interrupção apenas depois de um intervalo de tempo que um pacote é recebido ou transmitido, ou quando uma quantidade de pacotes determinada é transmitida/recebida.
-Como apenas uma interrupção é gerada para um agrupamento de pacotes, isso reduz a quantidade de interrupções por pacote, porém, também pode atrasa o processamento de pacote já que cada pacote poderá ser processado somente quando a interrupção for gerada.
-
-Atualmente, uma estratégia de agregação muito utilizada é a \textit{NAPI} (\textit{New API}) \cite{Corbet:2005:LDD:1209083}, um conjunto de interfaces oferecido pelo núcleo do \textit{Linux} que os \textit{drivers} dos dispositivos de rede implementam para agregar interrupções. 
-Nela, quando uma grande quantidade de pacotes for enviada para o dispositivo de rede, ao invés do dispositivo enviar uma interrupção ao \textit{driver} para cada pacote que chega, o \textit{driver} desabilita as interrupções na chegada do primeiro pacote e processa continuamente os próximos pacotes. Esse processamento continuo dos pacotes é chamado varredura.
-
-Atualmente a \textit{NAPI} é a proposta mais implementada pelos \textit{drivers} de dispositivos de rede para agregar interrupções, porém, há poucos estudos na área, principalmente quando consideramos dispositivos virtuais. Neste trabalho de mestrado realizamos um estudo aprofundado da \textit{NAPI} e identificamos quais parâmetros influenciam o desempenho em função da banda de rede e uso de \textit{CPU} (do inglês \textit{central processing unit} -- unidade central de processamento). 
+Atualmente, uma estratégia de agregação muito utilizada é a \textit{NAPI} (\textit{New Application Programming Interface}) \cite{Corbet:2005:LDD:1209083}, um conjunto de interfaces oferecido pelo núcleo Linux que os \textit{drivers} dos dispositivos de rede implementam para agregar interrupções. Porém, há poucos estudos na área, principalmente quando consideramos dispositivos virtuais. Neste trabalho de mestrado realizamos um estudo aprofundado da \textit{NAPI} e identificamos quais parâmetros influenciam o desempenho em termos de capacidade efetiva da rede e do uso da \textit{CPU} (do inglês \textit{Central Processing Unit} -- Unidade Central de Processamento).
 
 %% ------------------------------------------------------------------------- %%
 \section{Objetivos}
 \label{sec:objetivo}
-A \textit{NAPI} possui um parâmetro chamado limite. Esse parâmetro limita a quantidade de pacotes processada pelo sistema a cada ciclo de varredura, podendo controlar o momento em que  o sistema deve iniciar uma varredura.
-O limite é estudado no artigo de Corbet \cite{NAPI} e Salah \cite{salah2005analysis}, porém, apenas considerando dispositivos físicos.
-Assim, o objetivo desse trabalho é elaborar um mecanismo que escolha o melhor valor para o parâmetro limite da \textit{NAPI}, no qual o sistema tenha um bom desempenho tanto no uso de \textit{CPU} como na largura de banda.
+
+Na \textit{NAPI}, quando uma grande quantidade de pacotes é enviada para o dispositivo de rede, ao invés do dispositivo enviar uma interrupção ao \textit{driver} para cada pacote que chega, o \textit{driver} desabilita as interrupções na chegada do primeiro pacote e processa continuamente os próximos pacotes. Esse processamento contínuo dos pacotes é chamado varredura.
+
+A \textit{NAPI} possui um parâmetro chamado limite. Esse parâmetro limita a quantidade de pacotes processada pelo sistema a cada ciclo de varredura. Os efeitos de diferentes valores de limite são estudados nos trabalhos de Corbet \cite{NAPI} e Salah \cite{salah2005analysis}, porém, apenas considerando dispositivos físicos. Assim, o objetivo desse trabalho é elaborar um mecanismo que escolha o melhor valor para o parâmetro limite da \textit{NAPI}, no qual o sistema tenha um bom desempenho tanto em termos de uso de \textit{CPU}  como na capacidade efetiva da placa de rede.
 %% ------------------------------------------------------------------------- %%
 \section{Contribuições}
 \label{sec:contribucoes}
 
-As principais contribuições desse trabalho são:
+As principais contribuições desta dissertação são:
 
 \begin{itemize}
-  \item
-	Um estudo aprofundado sobre o comportamento dos dispositivos de rede virtuais usando \textit{NAPI}.
-	Atualmente, estudos foram feitos apenas com dispositivos de rede reais.
-  \item
-	Um mecanismo que define o melhor valor para o parâmetro limite da \textit{NAPI}, considerando a largura de banda e uso de \textit{CPU} para os seguintes \textit{hypervisors}: \textit{VirtualBox}, \textit{Xen} e \textit{Vmware}.
+  \item Uma apresentação detalhada de conceitos relacionados com virtualização de placas de rede;
+  \item Um estudo aprofundado sobre o comportamento dos dispositivos de rede virtuais usando \textit{NAPI}. Estudos encontrados na literatura atualmente foram realizados apenas com dispositivos de rede físicos;
+  \item Um mecanismo que define o melhor valor para o parâmetro limite da \textit{NAPI}, considerando a capacidade efetiva da placa de rede e o uso de \textit{CPU} para os seguintes \textit{hypervisors}: Xen, VMware e VirtualBox.
 \end{itemize}
 
 %% ------------------------------------------------------------------------- %%
-\section{Organização do Trabalho}
+\section{Organização da Dissertação}
 \label{sec:organizacao_trabalho}
 
-Este texto está organizado da seguinte forma: no Capítulo~\ref{cap:conceitos}, são apresentados os conceitos de dispositivos de E/S, interrupções de \textit{hardware} e \textit{software}, virtualização de computadores, virtualização de rede, agregação de interrupções e computação em nuvem.
+Esta dissertação está organizada da seguinte forma: no Capítulo~\ref{cap:conceitos}, são apresentados os conceitos de dispositivos de Entrada e Saída (E/S), interrupções de \textit{hardware} e software, virtualização de computadores, virtualização de rede, agregação de interrupções e computação em nuvem.
 No Capítulo~\ref{cap:revisao_bibliografica} é apresentada uma revisão bibliográfica na área de virtualização de rede.
-No Capítulo~\ref{cap:proposta} é apresentada a proposta de pesquisa.
-No Capítulo~\ref{cap:experimentos} são apresentados os experimentos com \textit{NAPI}.
+No Capítulo~\ref{cap:experimentos} são apresentados os experimentos que avaliam os efeitos de diferentes valores de limite na \textit{NAPI}.
 Por fim, no Capítulo~\ref{cap:conclusoes} são apresentadas as conclusões do trabalho.

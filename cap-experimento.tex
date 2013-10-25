@@ -1,8 +1,8 @@
 \chapter{Experimentos}
 \label{cap:experimentos}
 
-Para analisar o desempenho da \textit{NAPI} em dispositivos de rede virtuais, foram feitos experimentos variando o parâmetro limite do \textit{driver} de rede e1000 da \textit{Intel} em vários \textit{hypervisors} diferentes.
-Esse \textit{driver} implementa \textit{NAPI} e tem o código-fonte claro e bem escrito, sendo usado por vários \textit{hypervisors} como  \textit{Xen}, \textit{VirtualBox}, \textit{VMWare} e \textit{KVM} para processar a recepção e transmissão de dados pela rede na máquina virtual. Outras soluções que os \textit{hypervisors} teriam são os \textit{drivers} de para-virtualização do \textit{Xen} e do \textit{Virtio}.
+Para analisar o desempenho da \textit{NAPI} em dispositivos de rede virtuais, foram feitos experimentos variando o parâmetro limite do \textit{driver} de rede e1000 da Intel em vários \textit{hypervisors} diferentes.
+Esse \textit{driver} implementa NAPI e tem o código-fonte claro e bem escrito, sendo usado por vários \textit{hypervisors} como  Xen, VirtualBox, VMware e KVM para processar a recepção e transmissão de dados pela rede na máquina virtual. Outras soluções que os \textit{hypervisors} teriam são os \textit{drivers} de para-virtualização do Xen e do Virtio.
 Ambos têm um desempenho superior ao e1000 por usarem técnicas de para-virtualização, porém, são mais complexos porque se comunicam diretamente com a máquina física.
 
 Na implementação de recepção de pacotes do e1000, o limite define a quantidade limite de pacotes que a tarefa de recepção poderá coletar por ciclo de varredura. Se a quantidade de pacotes atingir esse limite ou esgotar o tempo limite de espera de pacotes, a tarefa é recolocada na fila de varredura, caso contrário, é removida da fila.
@@ -10,8 +10,8 @@ Na implementação de recepção de pacotes do e1000, o limite define a quantidade l
 
 \section{Banda X Limite}
 Nesse primeiro experimento estudamos a largura de banda em relação a variação de protocolo e limite.
-Como \textit{hypervisor} foi usado o \textit{VirtualBox}. 
-A máquina física contém um processador i7-2620M de dois núcleos e quatro fluxos de execução, 8 Gigabytes de memória \textit{RAM} e sistema operacional \textit{Mac OS X} 10.6.8 enquanto que a máquina virtual usa dois fluxos de execução, 5 Gigabytes de memória \textit{RAM} e sistema operacional \textit{Ubuntu} 11.10 com núcleo \textit{Linux} 3.0.43.
+Como \textit{hypervisor} foi usado o VirtualBox. 
+A máquina física contém um processador i7-2620M de dois núcleos e quatro fluxos de execução, 8 Gigabytes de memória \textit{RAM} e sistema operacional Mac OS X 10.6.8 enquanto que a máquina virtual usa dois fluxos de execução, 5 Gigabytes de memória \textit{RAM} e sistema operacional Ubuntu 11.10 com núcleo Linux 3.0.43.
 
 Foram analisadas a largura de banda na recepção do \texttt{iperf} e a quantidade total de pacotes processada pelo \textit{driver}. O limite variou de 1 a 10 de um em um, de 10 a 100 de dez em dez e com o valor 200. A banda de transmissão foi a máxima que a máquina poderia transmitir, no \textit{TCP} dependeria do seu mecanismo de controle de fluxo e no UDP configuramos para a transmitir 1 Gbit/s, mas a transmissão alcançou apenas 810 Mbits/s.
 
@@ -94,10 +94,10 @@ No próximo passo, será estudada a causa dos \textit{drivers} com limites altos t
 
 \section{Interrupções}
 Foram realizados experimentos com o limite em relação as interrupções com o protocolo \textit{UDP}.
-Como \textit{hypervisor} foram usados o \textit{VirtualBox}, o \textit{VMware} e o \textit{Xen} com virtualização completa.
+Como \textit{hypervisor} foram usados o VirtualBox, o VMware e o Xen com virtualização completa.
 
-No experimento com o \textit{VirtualBox} e \textit{VMware} foram usadas as mesmas configurações de \textit{hardware} e sistema operacional que o experimento anterior.
-No \textit{Xen}, a máquina física contém um processador i7 Ivy bridge de quatro núcleos e oito fluxos de execução, 16 Gigabytes de memória \textit{RAM} e sistema operacional \textit{Ubuntu} 12.10 enquanto que a máquina virtual usa dois fluxos de execução, 5 Gigabytes de memória \textit{RAM} e sistema operacional \textit{Ubuntu} 11.10 com núcleo \textit{Linux} 3.0.12.
+No experimento com o VirtualBox e VMware foram usadas as mesmas configurações de \textit{hardware} e sistema operacional que o experimento anterior.
+No Xen, a máquina física contém um processador i7 Ivy bridge de quatro núcleos e oito fluxos de execução, 16 Gigabytes de memória \textit{RAM} e sistema operacional Ubuntu 12.10 enquanto que a máquina virtual usa dois fluxos de execução, 5 Gigabytes de memória \textit{RAM} e sistema operacional Ubuntu 11.10 com núcleo Linux 3.0.12.
 
 Foram variados a largura de banda de transmissão de 100 até 1000 Mbits/s de cem em cem e o limite em 1, 2, 60 e 200 usando protocolo \textit{UDP}.
 A escolha do \textit{UDP} foi devido a possibilidade de controlar a banda de envio e a pouca intervenção no fluxo de pacotes em relação ao \textit{TCP}.
@@ -155,13 +155,13 @@ Essa redução será analisada melhor no próximo experimento.\newline
 
 Na Figura \ref{vbox_cpu} é mostrado o uso de \textit{CPU} dentro da máquina virtual. Percebemos que com limite igual a 1, a máquina virtual excedeu consideravelmente seu uso em relação aos demais.
 Monitorando os processos em execução, notamos que com limite igual a 1 e largura de banda de transmissão maior que 500 Mbits/s o \texttt{ksoftirqd} estava usando a \textit{CPU} próximo de 100\%.
-Possivelmente o \texttt{ksoftirqd} estava processando as interrupções de \textit{software}. Isso ocupou uma \textit{CPU} inteira enquanto que  o \texttt{iperf} ocupou a outra \textit{CPU}.
+Possivelmente o \texttt{ksoftirqd} estava processando as interrupções de software. Isso ocupou uma \textit{CPU} inteira enquanto que  o \texttt{iperf} ocupou a outra \textit{CPU}.
 
 Já com limites maiores que 1, o uso de \textit{CPU} se limitou a 100\%.
 Isso foi devido tanto ao sistema quanto ao \texttt{iperf} dividirem a mesma \textit{CPU} e não conseguirem processar os pacotes paralelamente.
 Em 300 Mbits/s, o sistema atingiu 100\% e houve perda de pacotes, mas diferentemente do que aconteceu com limite igual a 1, as interrupções não ocuparam 100\% da \textit{CPU} como mostrado na Figura \ref{vbox_soft}. 
 Nesse caso, o sistema perdeu os pacotes no \texttt{iperf}, que divide a \textit{CPU} com as interrupções, e não conseguiu \textit{CPU} o suficiente para processar os pacotes.
-Somente quando a largura de banda de transmissão se aproximou de 800 Mbits/s, o sistema teve uma considerável redução de uso de \textit{CPU} pelas interrupções de \textit{software} permitindo o \texttt{iperf} usar mais a \textit{CPU}.\newline
+Somente quando a largura de banda de transmissão se aproximou de 800 Mbits/s, o sistema teve uma considerável redução de uso de \textit{CPU} pelas interrupções de software permitindo o \texttt{iperf} usar mais a \textit{CPU}.\newline
 
 \begin{figure}[h!]
 \begin{center}
@@ -184,21 +184,21 @@ Nesse caso, consideramos o resultado da máquina física, pois a máquina virtual n
 \end{figure}
 
 \subsubsection{Conclusão}
-Nesse experimento percebemos que uma única \textit{CPU} é dividida entre as interrupções de \textit{software} e o \texttt{iperf} o que causa perda de pacotes no \texttt{iperf}.
+Nesse experimento percebemos que uma única \textit{CPU} é dividida entre as interrupções de software e o \texttt{iperf} o que causa perda de pacotes no \texttt{iperf}.
 Vimos que com exceção da configuração com limite igual a 1, todos tiveram uma redução no uso de \textit{CPU} com transmissão acima de 700 Mbits/s. Isso será melhor analisado no próximo experimento.
-Também vimos que o processamento das interrupções de \textit{software} quando ocupa uma \textit{CPU} inteira, faz o sistema alocar processos, nesse caso o \texttt{iperf}, para outra \textit{CPU}.
+Também vimos que o processamento das interrupções de software quando ocupa uma \textit{CPU} inteira, faz o sistema alocar processos, nesse caso o \texttt{iperf}, para outra \textit{CPU}.
 Percebemos uma diferença no resultado da medição dentro e fora da máquina virtual, foi considerado o resultado da medição fora da máquina virtual.
-No próximo experimento separaremos em diferentes \textit{CPUs} as interrupções de \textit{software} do \texttt{iperf} para que o sistema possa ter um melhor proveito da \textit{CPU}.
+No próximo experimento separaremos em diferentes \textit{CPUs} as interrupções de software do \texttt{iperf} para que o sistema possa ter um melhor proveito da \textit{CPU}.
 \clearpage
 %-----------------------------------------------------------------------------------------------------
 \subsection{VirtualBox com Afinidade de CPU}
-No experimento anterior, vimos que as interrupções de \textit{software} e o \texttt{iperf} usam a mesma \textit{CPU} e como resultado, o \texttt{iperf} não conseguiu processar todos os pacotes. Assim, temos duas soluções: definir uma \textit{CPU} para o \texttt{iperf} ser executado ou definir uma \textit{CPU} para a interrupção.
+No experimento anterior, vimos que as interrupções de software e o \texttt{iperf} usam a mesma \textit{CPU} e como resultado, o \texttt{iperf} não conseguiu processar todos os pacotes. Assim, temos duas soluções: definir uma \textit{CPU} para o \texttt{iperf} ser executado ou definir uma \textit{CPU} para a interrupção.
 A configuração de associar um processo a uma determinada \textit{CPU} é chamada de afinidade de \textit{CPU}, já a de associar uma interrupção a uma \textit{CPU} é chamada de balanceamento de interrupções.
 Decidimos associar uma \textit{CPU} para o \texttt{iperf} por ser uma solução simples feita através da ferramenta \texttt{taskset}.
 Nesse experimento, foram usados o mesmo \textit{hardware} e sistema operacional do experimento anterior.
 
 \subsubsection{Largura de Banda e Recepção pelo \textit{Driver}}
-As Figuras \ref{vbox_core_iperf} e \ref{vbox_core_if} mostram respectivamente a largura de banda recebida pelo \texttt{iperf} e a quantidade de pacotes recebida pelo \textit{driver} no \textit{VirtualBox}. 
+As Figuras \ref{vbox_core_iperf} e \ref{vbox_core_if} mostram respectivamente a largura de banda recebida pelo \texttt{iperf} e a quantidade de pacotes recebida pelo \textit{driver} no VirtualBox. 
 Percebemos que são muito semelhantes e não existe uma queda na banda como no experimento anterior (Figura \ref{vbox_iperf}). Notamos também que com limite igual a 1 continua tendo perdas de pacotes no \textit{driver}. 
 
 \begin{figure}[h!]
@@ -218,7 +218,7 @@ Percebemos que são muito semelhantes e não existe uma queda na banda como no exp
 \end{figure}
 
 \subsubsection{Uso de CPU}
-Na Figura \ref{vbox_core_cpu_f} é mostrado o uso da \textit{CPU} pelo \textit{VirtualBox} na máquina física. 
+Na Figura \ref{vbox_core_cpu_f} é mostrado o uso da \textit{CPU} pelo VirtualBox na máquina física. 
 Vemos que o uso de \textit{CPU} muito foi maior que em relação ao experimento passado (Figura \ref{vbox_cpu_f}) chegando a ultrapassar 200\%. Esse aumento foi devido a configuração de afinidade de \textit{CPU}.
 
 \begin{figure}[h!]
@@ -237,7 +237,7 @@ Iremos dividir essa explicação em dois cenários: entre 700 Mbits/s e 800 Mbits/s
 \clearpage
 Entre 700 Mbits/s e 800 Mbits/s, as Figuras \ref{vbox_dmesg700} e \ref{vbox_dmesg800} mostram a frequência de pacotes processada por ciclo de varredura com limite igual a 60 e respectivamente largura de banda de transmissão igual a 700 e 800 Mbits/s.
 Com transmissão de 700 Mbits/s, nota-se que o sistema processa num intervalo entre 5 e 12 pacotes, já com 800 Mbits/s o sistema passa a processar quantidades maiores de pacotes, ainda na maioria das vezes é processado entre 5 e 12 pacotes, mas em frequência menor.
-Com o aumento de pacotes processados por ciclo de varredura, a quantidade de ciclos para processar todos os pacotes é reduzida e, consequentemente, o uso de \textit{CPU} pelas interrupções de \textit{software}.
+Com o aumento de pacotes processados por ciclo de varredura, a quantidade de ciclos para processar todos os pacotes é reduzida e, consequentemente, o uso de \textit{CPU} pelas interrupções de software.
 
 \begin{figure}[h!]
 \centering
@@ -299,8 +299,8 @@ Com esse ajuste dinâmico de envios, é muito provável que ocorra mais rajadas de 
 \subsubsection{Interrupções de Software}
 Nas Figuras \ref{vbox_core_soft} e \ref{vbox_core_cpu} é mostrado o uso da \textit{CPU} respectivamente pelas interrupções de software e total. 
 Comparando com os resultados sem afinidade de \textit{CPU}, percebemos que o uso de \textit{CPU} pelas interrupções de software e total foram muito menores.
-Mas como já foi mostrado na Figura \ref{vbox_core_cpu_f}, o uso da \textit{CPU} pelo \textit{VirtualBox} foi muito maior em relação ao experimento anterior.
-Não foi possível descobrir o motivo do \texttt{sar} mostrar uma redução do uso de \textit{CPU} dentro da máquina. É possível que seja um problema do próprio \textit{VirtualBox}.
+Mas como já foi mostrado na Figura \ref{vbox_core_cpu_f}, o uso da \textit{CPU} pelo VirtualBox foi muito maior em relação ao experimento anterior.
+Não foi possível descobrir o motivo do \texttt{sar} mostrar uma redução do uso de \textit{CPU} dentro da máquina. É possível que seja um problema do próprio VirtualBox.
 
 \begin{figure}[h!]
 \begin{center}
@@ -329,7 +329,7 @@ Percebemos que o \texttt{iperf} configurado para enviar pacotes em taxas maiores
 Isso provavelmente fez reduzir o uso da \textit{CPU} com 900 Mbits/s e 1000 Mbits/s em relação ao resultado com 800 Mbits/s.
 
 Também concluímos que o parâmetro de limite não afeta a largura de banda ou o uso real da \textit{CPU}, a não ser que o valor seja muito baixo.
-As medições de dentro da máquina virtual não mostraram com precisão o uso da \textit{CPU} pelas interrupções de \textit{software} quando usamos duas \textit{CPUs}, não foi possível descobrir a causa.
+As medições de dentro da máquina virtual não mostraram com precisão o uso da \textit{CPU} pelas interrupções de software quando usamos duas \textit{CPUs}, não foi possível descobrir a causa.
 
 %\subsubsection{Interrupções de Hardware}
 %Na Figura \ref{vbox_core_int}, em todos limites vemos que a quantidade de interrupções por segundo tem um intervalo de crescimento seguido de uma queda. Quanto menor o limite, mais rápida é a queda e com menos banda ela começa a decrescer. Esse crescimento pode ser explicado pela chegada de pacotes em taxas cada vez maiores enquanto que a queda pode ser explicada pelo mecanismo de varredura da \textit{NAPI}.
@@ -343,10 +343,10 @@ As medições de dentro da máquina virtual não mostraram com precisão o uso da \te
 %-----------------------------------------------------------------------------------------------------
 
 \subsection{Xen}
-Nos experimentos com o \textit{Xen}, ocorreram problemas tanto no \textit{buffer} do \textit{socket} quanto no uso da mesma \textit{CPU} pelo \texttt{iperf} e as interrupções de \textit{software} como no experimento com o \textit{VirtualBox}. 
+Nos experimentos com o Xen, ocorreram problemas tanto no \textit{buffer} do \textit{socket} quanto no uso da mesma \textit{CPU} pelo \texttt{iperf} e as interrupções de software como no experimento com o VirtualBox. 
 Para resolvê-los, novamente aumentamos o tamanho do \textit{buffer} e associamos uma \textit{CPU} para o \texttt{iperf}.\newline
 
-Nas Figuras \ref{xen_iperf} e \ref{xen_if} que mostram respectivamente a banda de recepção, a quantidade de pacotes recebida pelo \textit{driver}, ocorreu uma situação semelhante a vista no \textit{VirtualBox}, ambos os gráficos ficaram iguais e com limite igual a 1, houve perda de pacotes, porém, ao invés da perda ocorrer quando a transmissão é maior que 400 Mbits/s como no caso do \textit{VirtualBox}, esta ocorre com transmissões maiores que 600 Mbits/s. O limite da transmissão novamente é próximo de 810 Mbits/s. \newline
+Nas Figuras \ref{xen_iperf} e \ref{xen_if} que mostram respectivamente a banda de recepção, a quantidade de pacotes recebida pelo \textit{driver}, ocorreu uma situação semelhante a vista no VirtualBox, ambos os gráficos ficaram iguais e com limite igual a 1, houve perda de pacotes, porém, ao invés da perda ocorrer quando a transmissão é maior que 400 Mbits/s como no caso do VirtualBox, esta ocorre com transmissões maiores que 600 Mbits/s. O limite da transmissão novamente é próximo de 810 Mbits/s. \newline
 
 \begin{figure}[h!]
 \begin{center}
@@ -365,7 +365,7 @@ Nas Figuras \ref{xen_iperf} e \ref{xen_if} que mostram respectivamente a banda d
 \end{figure}
 
 Na Figura \ref{xen_cpu}, vemos o uso de \textit{CPU} da máquina virtual. 
-Esses dados foram obtidos através do \texttt{xentop}, aplicação de monitoramento que o \textit{Xen} fornece. 
+Esses dados foram obtidos através do \texttt{xentop}, aplicação de monitoramento que o Xen fornece. 
 Percebe-se que o uso de \textit{CPU} é maior quanto maior o limite, mas entre experimentos com limite igual a 60 ou 200 quase não existe diferença.
 Nota-se também que o uso de \textit{CPU} não excedeu 100\%, mas com limite igual a 1 e largura de banda maior que 600 Mbits/s o sistema parece estar no máximo não conseguindo exceder o uso da \textit{CPU}.
 Acima de 800 Mbits/s o sistema parece reduzir pouco o uso da \textit{CPU}.\newline
@@ -378,18 +378,18 @@ Acima de 800 Mbits/s o sistema parece reduzir pouco o uso da \textit{CPU}.\newli
 \end{center}
 \end{figure}
 
-Nas medições de uso de \textit{CPU} dentro da máquina virtual ocorreu algo semelhante ao experimento do \textit{VirtualBox}. Houve uma diferença entre a medição interna e externa. Então, desconsideramos a medição interna.
+Nas medições de uso de \textit{CPU} dentro da máquina virtual ocorreu algo semelhante ao experimento do VirtualBox. Houve uma diferença entre a medição interna e externa. Então, desconsideramos a medição interna.
 
 \subsubsection{Conclusão}
-No \textit{Xen}, percebemos que o uso de \textit{CPU} pelo tráfego de rede foi menor em relação ao \textit{VirtualBox}. 
+No Xen, percebemos que o uso de \textit{CPU} pelo tráfego de rede foi menor em relação ao VirtualBox. 
 Também notamos que com limite igual a 1, o sistema é capaz de processar mais pacotes. 
-Entre 700 Mbits/s e 800 Mbits/s novamente com exceção do experimento com limite igual a 1, houve uma redução no uso da \textit{CPU} mas muito menor em relação ao \textit{VirtualBox}.
+Entre 700 Mbits/s e 800 Mbits/s novamente com exceção do experimento com limite igual a 1, houve uma redução no uso da \textit{CPU} mas muito menor em relação ao VirtualBox.
 Com limites igual a 1 vimos que novamente houve perda de pacotes já com limite igual a 2 houve um uso maior da \textit{CPU} em relação aos limites iguais a 60 e 200.
 %-----------------------------------------------------------------------------------------------------
 
 \clearpage
 \subsection{VMware}
-No \textit{VMware}. Ocorreram os mesmos problemas do \textit{Xen} e do \textit{VirtualBox} então reconfiguramos o \textit{buffer} do \textit{socket} e a afinidade de \textit{CPU} do \texttt{iperf}.\newline
+No VMware, ocorreram os mesmos problemas do Xen e do VirtualBox então reconfiguramos o \textit{buffer} do \textit{socket} e a afinidade de \textit{CPU} do \texttt{iperf}.\newline
 
 Nas Figuras \ref{vmware_iperf} e \ref{vmware_if}, que mostram respectivamente a banda de recepção e a quantidade de pacotes recebida pelo \textit{driver}, ambos os gráficos ficaram iguais.
 Com limite igual a 1 e 2, houve perda de pacotes quando a transferência é maior que 400 Mbits/s. Notamos que houve perda de pacotes com banda de transmissão maior que 800 Mbits/s. O limite da transmissão, novamente, é próximo de 810 Mbits/s.\newline
@@ -436,12 +436,12 @@ Houve um bom desempenho tanto em uso de \textit{CPU} como largura de banda com l
 
 Entre 700 e 800 Mbits/s em todos experimentos, houve uma redução de uso de \textit{CPU} devido a agregação de interrupções através do processamento contínuo de pacotes e a redução de ciclos de varredura.
 Valores de banda de transmissão acima de 800 Mbits/s causaram um aumento de rajadas longas de pacotes. 
-No \textit{VMware}, isso gerou perdas de pacotes, no \textit{VirtualBox} e no \textit{Xen} houve uma redução de uso de \textit{CPU}.
+No VMware, isso gerou perdas de pacotes, no VirtualBox e no Xen houve uma redução de uso de \textit{CPU}.
 
 Houve uma grande diferença no uso de \textit{CPU} pelas máquinas virtuais. 
-O \textit{VirtualBox} foi o que mais gastou \textit{CPU} com até 270\% de uso. 
-Já o \textit{Xen} foi o que menos gastou com até 80\% de uso. 
-Por fim, o \textit{Vmware} gastou até 175\% da \textit{CPU}, porém, ele chegou ao limite de uso de \textit{CPU} mais rápido, enquanto que os outros \textit{hypervisors}, atingiram o máximo com 700 Mbits/s, o \textit{Vmware} atingiu o máximo em 300 Mbits/s.
+O VirtualBox foi o que mais gastou \textit{CPU} com até 270\% de uso. 
+Já o Xen foi o que menos gastou com até 80\% de uso. 
+Por fim, o VMware gastou até 175\% da \textit{CPU}, porém, ele chegou ao limite de uso de \textit{CPU} mais rápido, enquanto que os outros \textit{hypervisors}, atingiram o máximo com 700 Mbits/s, o VMware atingiu o máximo em 300 Mbits/s.
 
 \begin{figure}[h!]
 \begin{center}
