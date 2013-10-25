@@ -163,30 +163,6 @@ Isto permite que múltiplos sistemas operacionais rodem sobre outro, sendo capaze
 As virtualizações completa e nativa têm uma grande vantagem em relação às outras: não é necessário alterar o núcleo do sistema operacional da máquina hospedeira. Isto as tornam mais simples e mais portáveis já que sistemas operacionais com código fechado podem ser utilizados.
  A para-virtualização e a virtualização em nível de sistema operacional exigem uma modificação no núcleo da máquina hospedeira, porém, são as que tem um melhor desempenho pois elas têm acesso ao hardware físico. Comparando as duas, a virtualização em nível de sistema operacional é bem mais intrusiva e não permite a mudança do sistema operacional das máquinas virtuais \cite{padala2007performance} \cite{chaudhary2008comparison} \cite{schmidtanalise} \cite{che2010synthetical}.
 
-% De todos os hypervisores existentes, esta dissertação apresenta resultados de experimentos que utilizaram principalmente o Xen. Por causa disso a próxima subseção resume um pouco da história do Xen. Além disso, na subseção~\ref{xen_rede} são apresentadas algumas particularidades da virtualização de rede no Xen. 
-
-\subsubsection{A história do Xen}
-% DANIEL: remova o textit dos nomes dos softwares. Não tem necessidade (Xen, virtualBox, Linux, etc...) Ponha tudo sem itálico. O mesmo vale para os nomes das empresas. Varra todo este capítulo em busca de textit e remova aqueles que se encaixem na lista acima que eu escrevi de nomes de software e empresas
-O projeto Xen foi criado na Universidade de Cambridge com o objetivo de aprimorar a técnica de virtualização completa através da para-virtualização, permitindo que a máquina virtual tenha conhecimento e acesso ao hardware da máquina física.
-Assim, foi desenvolvida uma nova interface de virtualização com a ajuda de pesquisadores da Intel e Microsoft usando o Linux e o Windows XP \cite{barham2003xen}.
-
-O Xen para Windows nunca saiu dos laboratórios, entretanto, para Linux é mantido e atualizado até hoje por uma comunidade global de desenvolvedores \footnote[1]{http://xen.org/}.
-
-Enquanto a equipe do Xen focava na para-virtualização, os engenheiros dos processadores da Intel e AMD trabalhavam para aperfeiçoar a virtualização completa \cite{vtx} \cite{amdv}. O resultado é o que hoje chamamos de virtualização nativa. Nela, extensões para o processador foram criadas para simplificar a virtualização do processador. O Xen acompanhou e passou a manter tanto máquinas com para-virtualização como com virtualização nativa \cite{ixen}.
-
-Com a chegada dos processadores de 64 bits, a para-virtualização passa até o momento a ter problemas no desempenho. 
-Isso ocorre porque os processadores de 64 bits não conseguem manter no mesmo espaço de endereço a memória do usuário, do núcleo de sistema e do núcleo de sistema do hóspede.
-Essa divisão era feita com páginas de memória (separando o usuário do núcleo do sistema) e com limite de segmentação (separando o núcleo do sistema do hóspede, do núcleo do sistema do usuário e do espaço do usuário). 
-Porém, como nenhum sistema operacional usava limite de segmentação, ele foi removido dos processadores de 64 bits \cite{xen_hist}.
-
-Atualmente, na para-virtualização, o Xen separa o espaço de endereço entre o núcleo do hóspede, o núcleo de sistema e o usuário, fazendo com que cada chamada de sistema do hóspede faça o Xen trocar de contexto para o espaço de endereço do hóspede reduzindo o acerto do cache e, como consequência, adicionando uma carga extra ao processador.
-Na virtualização nativa, isso não ocorre pois as extensões do processador para virtualização nativa facilitam a divisão. Isso faz a máquina com virtualização nativa tão rápida quanto a máquina pura.
-
-Apesar da virtualização nativa ter um bom desempenho, as interrupções, os contadores, \textit{boot} legado e a virtualização de rede, de disco e de placa-mãe são melhores na para-virtualização\cite{xen_hist}.
-Assim, surgiram técnicas de virtualizações híbridas misturando técnicas da virtualização nativa e para-virtualização \cite{xen_hist}.
-A virtualização nativa com \textit{driver} para-virtualizado (\textit{PV-on-HVM}), como o próprio nome diz, é a virtualização nativa usando \textit{drivers} de rede e de disco para-virtualizados.
-\textit{PVHVM} é um aperfeiçoamento do \textit{PV-on-HVM}, além dos \textit{drivers}, as interrupções e contadores são para-virtualizados.
-\textit{PVH} será um futuro aprimoramento da para-virtualização usando instruções privilegiadas e tabela de páginas da virtualização nativas.
 
 %% ------------------------------------------------------------------------- %%
 
